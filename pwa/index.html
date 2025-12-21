@@ -64,8 +64,8 @@
           <h2 class="section-title">Mode</h2>
           <div class="mode-buttons" data-kuhul-bind="inference_mode">
             <button class="mode-btn active" data-mode="chat">Chat</button>
-            <button class="mode-btn" data-mode="reasoning">Reason</button>
-            <button class="mode-btn" data-mode="analysis">Analyze</button>
+            <button class="mode-btn" data-mode="code">Code</button>
+            <button class="mode-btn" data-mode="api">API</button>
           </div>
         </div>
 
@@ -275,6 +275,9 @@ Examples:
   <script src="lib/scxq2.js"></script>
   <script src="lib/kuhul-xjson.js"></script>
   <script src="lib/kuhul-client.js"></script>
+  <script src="lib/kuhul-packs.js"></script>
+  <script src="lib/pi-goat.js"></script>
+  <script src="lib/pi-goat-api.js"></script>
 
   <!-- Main Application -->
   <script>
@@ -468,17 +471,24 @@ Examples:
         elements.xjsonRequest.textContent = JSON.stringify(xjson, null, 2);
       }
 
-      // Run model inference
+      // Run model inference or code execution
       async function runInference() {
         if (state.isInferring || !state.prompt_input.trim()) return;
 
         state.isInferring = true;
         setInferringUI(true);
 
-        const xjsonRequest = state.xjson_request;
-
         try {
-          const response = await window.KuhulClient.infer(xjsonRequest);
+          let response;
+
+          // Route to Pi-GOAT for code/api modes
+          if (state.inference_mode === 'code' || state.inference_mode === 'api') {
+            response = await runPiGoat();
+          } else {
+            // Chat mode: use KuhulClient
+            const xjsonRequest = state.xjson_request;
+            response = await window.KuhulClient.infer(xjsonRequest);
+          }
 
           if (response['@error']) {
             throw new Error(response['@error']['@message']);
@@ -534,6 +544,81 @@ Examples:
         elements.promptInput.value = '';
         elements.charCount.textContent = '0';
         updateXJSONPreview();
+      }
+
+      // Run Pi-GOAT polyglot execution
+      async function runPiGoat() {
+        const source = state.prompt_input;
+        const mode = state.inference_mode;
+
+        // Use Pi-GOAT API adapter for API mode
+        if (mode === 'api' && window.PiGoatAPI) {
+          const result = await window.PiGoatAPI.dispatch({
+            source: source,
+            context: { model: state.selected_model }
+          });
+
+          // Convert Pi-GOAT response to XJSON completion format
+          return {
+            '@completion': {
+              '@model': 'pi-goat-api',
+              '@runner': 'pi_goat',
+              '@text': JSON.stringify(result.result, null, 2),
+              '@tokens': {
+                input: source.length,
+                output: JSON.stringify(result.result).length
+              },
+              '@metrics': {
+                latency_ms: result.metrics?.latency_ms || 0,
+                backend: result.runtime || 'api_runtime',
+                language: result.language,
+                endpoint: result.metrics?.endpoint
+              },
+              '@scxq2': result.scxq2 || ''
+            }
+          };
+        }
+
+        // Use Pi-GOAT core for code mode
+        if (window.PiGoat) {
+          const result = await window.PiGoat.dispatch({
+            source: source,
+            mode: 'code',
+            context: { model: state.selected_model }
+          });
+
+          // Convert Pi-GOAT response to XJSON completion format
+          return {
+            '@completion': {
+              '@model': 'pi-goat-' + result.language,
+              '@runner': 'pi_goat',
+              '@text': result.success ?
+                (typeof result.result === 'string' ? result.result : JSON.stringify(result.result, null, 2)) :
+                'Error: ' + result.error,
+              '@tokens': {
+                input: result.ast?.meta?.tokens || source.length,
+                output: result.result ? JSON.stringify(result.result).length : 0
+              },
+              '@metrics': {
+                latency_ms: result.metrics?.latency_ms || 0,
+                backend: result.runtime || 'unknown',
+                language: result.language,
+                complexity: result.ast?.meta?.complexity || 0,
+                entry_points: result.ast?.meta?.entryPoints || []
+              },
+              '@scxq2': result.scxq2 || ''
+            }
+          };
+        }
+
+        // Fallback: return error
+        return {
+          '@error': {
+            '@runner': 'pi_goat',
+            '@message': 'Pi-GOAT not available',
+            '@code': 500
+          }
+        };
       }
 
       // Check runner health
