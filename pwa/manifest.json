@@ -1,0 +1,125 @@
+{
+  "name": "K'uhul Model Runner - Ollama PWA",
+  "short_name": "K'uhul lam.o",
+  "description": "K'uhul Multi Hive OS Model Runner with XJSON Contract - Powered by Ollama",
+  "version": "1.0.0",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#00ff88",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "en-US",
+  "categories": ["productivity", "developer", "utilities"],
+  "icons": [
+    {
+      "src": "icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icons/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "icons/screenshot-narrow.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Chat",
+      "short_name": "Chat",
+      "description": "Start a new model inference session",
+      "url": "/?action=new-chat",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Model Status",
+      "short_name": "Status",
+      "description": "Check lam.o model runner status",
+      "url": "/?action=status",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "kuhul": {
+    "lam": {
+      "o": {
+        "n": "Ollama Model Server",
+        "t": "model_runner",
+        "e": "http://localhost:61683/api/infer",
+        "p": 61683,
+        "ca": ["multiple_models", "local_inference", "model_management"],
+        "st": "live"
+      }
+    },
+    "pack": {
+      "id": "pack_lam_o",
+      "name": "Ollama Model Runner Pack",
+      "role": "model_runner_backend",
+      "fold": "AI",
+      "functions": ["lam.o.describe", "lam.o.infer", "lam.o.health"]
+    },
+    "runner_caps": {
+      "lam.o": {
+        "models": ["deepseek-r1", "llama3", "qwen2.5", "janus"],
+        "modes": ["chat", "reasoning", "analysis", "image_gen"],
+        "max_tokens": 8192,
+        "streaming": true
+      }
+    },
+    "scx_version": "SCXQ2-v1",
+    "protocol": "ollama_http_v1"
+  }
+}
