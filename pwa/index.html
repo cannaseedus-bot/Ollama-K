@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#00ff88">
+  <meta name="description" content="K'uhul Model Runner - Ollama-powered XJSON inference PWA">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="K'uhul lam.o">
+
+  <title>K'uhul Model Runner | lam.o</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127756;</text></svg>">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- K'uhul Symbolic DOM Structure -->
+  <!-- Using symbolic glyphs: D=Document, C=Card, B=Button, N=Numeric semantic -->
+
+  <div class="kuhul-root" id="kuhul-app" data-kuhul-glyph="D" data-scxq2="">
+
+    <!-- Header with Model Runner Status -->
+    <header class="kuhul-header" data-kuhul-glyph="C" data-kuhul-semantic="HEADER,C0">
+      <div class="header-logo">
+        <span class="glyph-icon">&#127756;</span>
+        <h1>K'uhul <span class="accent">lam.o</span></h1>
+      </div>
+      <div class="header-status">
+        <div class="status-indicator" id="runner-status" data-kuhul-bind="runner_status">
+          <span class="status-dot offline"></span>
+          <span class="status-text">Checking...</span>
+        </div>
+        <button class="icon-btn" id="settings-btn" data-kuhul-pop="open_settings" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Brain Grid Layout -->
+    <main class="brain-grid" data-kuhul-glyph="D" data-kuhul-semantic="BRAIN_GRID">
+
+      <!-- Sidebar: Model Selection & History -->
+      <aside class="sidebar" data-kuhul-glyph="C" data-kuhul-semantic="SIDEBAR,MC">
+        <div class="sidebar-section">
+          <h2 class="section-title">Model</h2>
+          <select id="model-select" class="model-selector" data-kuhul-bind="selected_model">
+            <option value="deepseek-r1">deepseek-r1</option>
+            <option value="llama3" selected>llama3</option>
+            <option value="qwen2.5">qwen2.5</option>
+            <option value="janus">janus</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" id="refresh-models" data-kuhul-pop="refresh_models">
+            Refresh Models
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <h2 class="section-title">Mode</h2>
+          <div class="mode-buttons" data-kuhul-bind="inference_mode">
+            <button class="mode-btn active" data-mode="chat">Chat</button>
+            <button class="mode-btn" data-mode="reasoning">Reason</button>
+            <button class="mode-btn" data-mode="analysis">Analyze</button>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <h2 class="section-title">Parameters</h2>
+          <div class="param-group">
+            <label for="temperature">Temperature: <span id="temp-value">0.7</span></label>
+            <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7" data-kuhul-bind="temperature">
+          </div>
+          <div class="param-group">
+            <label for="top-p">Top P: <span id="top-p-value">0.9</span></label>
+            <input type="range" id="top-p" min="0" max="1" step="0.05" value="0.9" data-kuhul-bind="top_p">
+          </div>
+        </div>
+
+        <div class="sidebar-section history-section">
+          <h2 class="section-title">History</h2>
+          <div id="history-list" class="history-list" data-kuhul-bind="history_list">
+            <!-- History items populated dynamically -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content: Model Runner Panel -->
+      <section class="main-panel" data-kuhul-glyph="C" data-kuhul-semantic="MR,C1">
+
+        <!-- Model Runner Icon (9-layer spec) -->
+        <div class="runner-icon" id="lam-o-icon"
+             data-kuhul-glyph="C"
+             data-kuhul-semantic="MR,ICON"
+             data-kuhul-role="model_runner_backend"
+             data-kuhul-capabilities="multiple_models,local_inference,model_management"
+             data-kuhul-fold="AI"
+             data-scxq2="">
+          <div class="icon-visual">
+            <div class="torus-lattice">
+              <div class="torus-ring ring-1"></div>
+              <div class="torus-ring ring-2"></div>
+              <div class="torus-ring ring-3"></div>
+              <span class="runner-glyph">&#9883;</span>
+            </div>
+          </div>
+          <div class="icon-label">Model Runner</div>
+          <div class="icon-status" id="icon-status">INITIALIZING</div>
+        </div>
+
+        <!-- Prompt Panel -->
+        <div class="prompt-panel" data-kuhul-glyph="C" data-kuhul-semantic="MC,C1" id="prompt-panel">
+          <div class="prompt-header">
+            <span class="panel-title">Prompt</span>
+            <span class="char-count" id="char-count">0</span>
+          </div>
+          <textarea
+            id="prompt-input"
+            class="prompt-textarea"
+            data-kuhul-bind="prompt_input"
+            placeholder="Enter your prompt here...
+
+Examples:
+- Explain symbolic compression in K'uhul
+- Write a Python function to sort a list
+- Analyze this code for security issues"
+            rows="6"
+          ></textarea>
+          <div class="prompt-actions">
+            <button class="btn btn-secondary" id="clear-prompt" data-kuhul-pop="clear_prompt">
+              Clear
+            </button>
+            <button class="btn btn-primary" id="run-inference"
+                    data-kuhul-pop="run_inference"
+                    data-kuhul-args='{"runner":"lam.o"}'>
+              <span class="btn-text">Run Model</span>
+              <span class="btn-spinner hidden"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="output-panel" data-kuhul-glyph="C" data-kuhul-semantic="MC,C0" id="output-panel">
+          <div class="output-header">
+            <span class="panel-title">Output</span>
+            <div class="output-actions">
+              <button class="icon-btn" id="copy-output" title="Copy to clipboard">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <pre class="output-content" id="model-output" data-kuhul-bind="model_output">Ready for inference...</pre>
+        </div>
+
+        <!-- Metrics Panel -->
+        <div class="metrics-panel" data-kuhul-glyph="C" data-kuhul-semantic="METRICS,N0" id="metrics-panel">
+          <div class="metric-card">
+            <span class="metric-label">Latency</span>
+            <span class="metric-value" id="metric-latency" data-kuhul-bind="latency_ms">--</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Input Tokens</span>
+            <span class="metric-value" id="metric-input-tokens" data-kuhul-bind="input_tokens">--</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Output Tokens</span>
+            <span class="metric-value" id="metric-output-tokens" data-kuhul-bind="output_tokens">--</span>
+          </div>
+          <div class="metric-card scxq2-card">
+            <span class="metric-label">SCXQ2</span>
+            <span class="metric-value scxq2-hash" id="metric-scxq2" data-kuhul-bind="scxq2_hash">--</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: XJSON Inspector -->
+      <aside class="xjson-panel" data-kuhul-glyph="C" data-kuhul-semantic="XJSON_INSPECTOR">
+        <div class="panel-header">
+          <h2>XJSON Inspector</h2>
+          <div class="panel-toggle">
+            <button class="tab-btn active" data-tab="request">Request</button>
+            <button class="tab-btn" data-tab="response">Response</button>
+          </div>
+        </div>
+        <div class="xjson-content">
+          <pre id="xjson-request" class="xjson-code" data-kuhul-bind="xjson_request">{
+  "@infer": {
+    "@runner": "lam.o",
+    "@model": "llama3",
+    "@prompt": "",
+    "@params": {
+      "temperature": 0.7,
+      "top_p": 0.9
+    }
+  }
+}</pre>
+          <pre id="xjson-response" class="xjson-code hidden" data-kuhul-bind="xjson_response">{
+  "@completion": {
+    "@model": "--",
+    "@runner": "lam.o",
+    "@text": "",
+    "@tokens": {},
+    "@metrics": {}
+  }
+}</pre>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Settings Modal -->
+    <div class="modal hidden" id="settings-modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content" data-kuhul-glyph="C" data-kuhul-semantic="SETTINGS_MODAL">
+        <div class="modal-header">
+          <h2>Settings</h2>
+          <button class="icon-btn modal-close" id="close-settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="settings-group">
+            <h3>Endpoints</h3>
+            <div class="setting-row">
+              <label for="orchestrator-url">Orchestrator URL</label>
+              <input type="url" id="orchestrator-url" value="http://localhost:61683/api/infer" data-kuhul-bind="orchestrator_url">
+            </div>
+            <div class="setting-row">
+              <label for="ollama-url">Ollama URL (fallback)</label>
+              <input type="url" id="ollama-url" value="http://localhost:11434/api/generate" data-kuhul-bind="ollama_url">
+            </div>
+          </div>
+          <div class="settings-group">
+            <h3>K'uhul Options</h3>
+            <div class="setting-row">
+              <label for="enable-scxq2">Enable SCXQ2 Fingerprinting</label>
+              <input type="checkbox" id="enable-scxq2" checked data-kuhul-bind="enable_scxq2">
+            </div>
+            <div class="setting-row">
+              <label for="enable-logging">Enable XJSON Logging</label>
+              <input type="checkbox" id="enable-logging" checked data-kuhul-bind="enable_logging">
+            </div>
+          </div>
+          <div class="settings-group">
+            <h3>Cache</h3>
+            <button class="btn btn-danger" id="clear-cache" data-kuhul-pop="clear_cache">
+              Clear All Caches
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Install Prompt -->
+    <div class="install-prompt hidden" id="install-prompt">
+      <span>Install K'uhul lam.o for offline use</span>
+      <button class="btn btn-primary btn-sm" id="install-btn">Install</button>
+      <button class="btn btn-ghost btn-sm" id="dismiss-install">Later</button>
+    </div>
+  </div>
+
+  <!-- K'uhul Libraries -->
+  <script src="lib/scxq2.js"></script>
+  <script src="lib/kuhul-xjson.js"></script>
+  <script src="lib/kuhul-client.js"></script>
+
+  <!-- Main Application -->
+  <script>
+    // K'uhul lam.o PWA Application
+    (function() {
+      'use strict';
+
+      // Application State
+      const state = {
+        prompt_input: '',
+        selected_model: 'llama3',
+        inference_mode: 'chat',
+        temperature: 0.7,
+        top_p: 0.9,
+        model_output: 'Ready for inference...',
+        runner_status: 'offline',
+        latency_ms: '--',
+        input_tokens: '--',
+        output_tokens: '--',
+        scxq2_hash: '--',
+        xjson_request: null,
+        xjson_response: null,
+        history: [],
+        isInferring: false
+      };
+
+      // DOM Elements
+      const elements = {};
+
+      // Initialize application
+      function init() {
+        cacheDOMElements();
+        bindEventListeners();
+        registerServiceWorker();
+        checkRunnerHealth();
+        loadModels();
+        loadHistory();
+        setupInstallPrompt();
+        updateXJSONPreview();
+      }
+
+      // Cache DOM elements
+      function cacheDOMElements() {
+        elements.promptInput = document.getElementById('prompt-input');
+        elements.modelSelect = document.getElementById('model-select');
+        elements.modelOutput = document.getElementById('model-output');
+        elements.runButton = document.getElementById('run-inference');
+        elements.clearButton = document.getElementById('clear-prompt');
+        elements.runnerStatus = document.getElementById('runner-status');
+        elements.iconStatus = document.getElementById('icon-status');
+        elements.temperature = document.getElementById('temperature');
+        elements.topP = document.getElementById('top-p');
+        elements.tempValue = document.getElementById('temp-value');
+        elements.topPValue = document.getElementById('top-p-value');
+        elements.charCount = document.getElementById('char-count');
+        elements.metricLatency = document.getElementById('metric-latency');
+        elements.metricInputTokens = document.getElementById('metric-input-tokens');
+        elements.metricOutputTokens = document.getElementById('metric-output-tokens');
+        elements.metricScxq2 = document.getElementById('metric-scxq2');
+        elements.xjsonRequest = document.getElementById('xjson-request');
+        elements.xjsonResponse = document.getElementById('xjson-response');
+        elements.historyList = document.getElementById('history-list');
+        elements.settingsBtn = document.getElementById('settings-btn');
+        elements.settingsModal = document.getElementById('settings-modal');
+        elements.closeSettings = document.getElementById('close-settings');
+        elements.copyOutput = document.getElementById('copy-output');
+        elements.refreshModels = document.getElementById('refresh-models');
+        elements.clearCache = document.getElementById('clear-cache');
+        elements.installPrompt = document.getElementById('install-prompt');
+        elements.installBtn = document.getElementById('install-btn');
+        elements.dismissInstall = document.getElementById('dismiss-install');
+        elements.toastContainer = document.getElementById('toast-container');
+        elements.modeButtons = document.querySelectorAll('.mode-btn');
+        elements.tabButtons = document.querySelectorAll('.tab-btn');
+      }
+
+      // Bind event listeners
+      function bindEventListeners() {
+        // Prompt input
+        elements.promptInput.addEventListener('input', handlePromptInput);
+        elements.promptInput.addEventListener('keydown', handleKeyDown);
+
+        // Inference
+        elements.runButton.addEventListener('click', runInference);
+        elements.clearButton.addEventListener('click', clearPrompt);
+
+        // Model selection
+        elements.modelSelect.addEventListener('change', handleModelChange);
+
+        // Parameters
+        elements.temperature.addEventListener('input', handleTemperatureChange);
+        elements.topP.addEventListener('input', handleTopPChange);
+
+        // Mode buttons
+        elements.modeButtons.forEach(btn => {
+          btn.addEventListener('click', handleModeChange);
+        });
+
+        // Tab buttons
+        elements.tabButtons.forEach(btn => {
+          btn.addEventListener('click', handleTabChange);
+        });
+
+        // Settings
+        elements.settingsBtn.addEventListener('click', openSettings);
+        elements.closeSettings.addEventListener('click', closeSettings);
+        elements.settingsModal.querySelector('.modal-backdrop').addEventListener('click', closeSettings);
+
+        // Actions
+        elements.copyOutput.addEventListener('click', copyOutput);
+        elements.refreshModels.addEventListener('click', loadModels);
+        elements.clearCache.addEventListener('click', clearAllCaches);
+
+        // Install
+        elements.installBtn.addEventListener('click', installApp);
+        elements.dismissInstall.addEventListener('click', dismissInstall);
+
+        // Service worker messages
+        navigator.serviceWorker?.addEventListener('message', handleSWMessage);
+      }
+
+      // Handle prompt input
+      function handlePromptInput(e) {
+        state.prompt_input = e.target.value;
+        elements.charCount.textContent = state.prompt_input.length;
+        updateXJSONPreview();
+      }
+
+      // Handle keyboard shortcuts
+      function handleKeyDown(e) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          runInference();
+        }
+      }
+
+      // Handle model change
+      function handleModelChange(e) {
+        state.selected_model = e.target.value;
+        updateXJSONPreview();
+      }
+
+      // Handle temperature change
+      function handleTemperatureChange(e) {
+        state.temperature = parseFloat(e.target.value);
+        elements.tempValue.textContent = state.temperature.toFixed(1);
+        updateXJSONPreview();
+      }
+
+      // Handle top_p change
+      function handleTopPChange(e) {
+        state.top_p = parseFloat(e.target.value);
+        elements.topPValue.textContent = state.top_p.toFixed(2);
+        updateXJSONPreview();
+      }
+
+      // Handle mode change
+      function handleModeChange(e) {
+        elements.modeButtons.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        state.inference_mode = e.target.dataset.mode;
+        updateXJSONPreview();
+      }
+
+      // Handle tab change
+      function handleTabChange(e) {
+        elements.tabButtons.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        const tab = e.target.dataset.tab;
+        elements.xjsonRequest.classList.toggle('hidden', tab !== 'request');
+        elements.xjsonResponse.classList.toggle('hidden', tab !== 'response');
+      }
+
+      // Update XJSON preview
+      function updateXJSONPreview() {
+        const xjson = {
+          '@infer': {
+            '@runner': 'lam.o',
+            '@model': state.selected_model,
+            '@prompt': state.prompt_input || '',
+            '@params': {
+              'temperature': state.temperature,
+              'top_p': state.top_p
+            },
+            '@mode': state.inference_mode,
+            '@context': []
+          }
+        };
+        state.xjson_request = xjson;
+        elements.xjsonRequest.textContent = JSON.stringify(xjson, null, 2);
+      }
+
+      // Run model inference
+      async function runInference() {
+        if (state.isInferring || !state.prompt_input.trim()) return;
+
+        state.isInferring = true;
+        setInferringUI(true);
+
+        const xjsonRequest = state.xjson_request;
+
+        try {
+          const response = await window.KuhulClient.infer(xjsonRequest);
+
+          if (response['@error']) {
+            throw new Error(response['@error']['@message']);
+          }
+
+          const completion = response['@completion'];
+
+          // Update state
+          state.model_output = completion['@text'];
+          state.xjson_response = response;
+          state.latency_ms = completion['@metrics']?.latency_ms?.toFixed(0) + 'ms' || '--';
+          state.input_tokens = completion['@tokens']?.input || '--';
+          state.output_tokens = completion['@tokens']?.output || '--';
+          state.scxq2_hash = completion['@scxq2']?.substring(0, 24) + '...' || '--';
+
+          // Update UI
+          elements.modelOutput.textContent = state.model_output;
+          elements.xjsonResponse.textContent = JSON.stringify(response, null, 2);
+          elements.metricLatency.textContent = state.latency_ms;
+          elements.metricInputTokens.textContent = state.input_tokens;
+          elements.metricOutputTokens.textContent = state.output_tokens;
+          elements.metricScxq2.textContent = state.scxq2_hash;
+
+          // Set SCXQ2 on root element
+          document.getElementById('kuhul-app').dataset.scxq2 = completion['@scxq2'] || '';
+
+          // Add to history
+          addToHistory(xjsonRequest, response);
+
+          showToast('Inference complete', 'success');
+
+        } catch (error) {
+          console.error('Inference error:', error);
+          elements.modelOutput.textContent = `Error: ${error.message}`;
+          showToast(error.message, 'error');
+        } finally {
+          state.isInferring = false;
+          setInferringUI(false);
+        }
+      }
+
+      // Set inferring UI state
+      function setInferringUI(inferring) {
+        elements.runButton.disabled = inferring;
+        elements.runButton.querySelector('.btn-text').textContent = inferring ? 'Running...' : 'Run Model';
+        elements.runButton.querySelector('.btn-spinner').classList.toggle('hidden', !inferring);
+        elements.modelOutput.classList.toggle('inferring', inferring);
+      }
+
+      // Clear prompt
+      function clearPrompt() {
+        state.prompt_input = '';
+        elements.promptInput.value = '';
+        elements.charCount.textContent = '0';
+        updateXJSONPreview();
+      }
+
+      // Check runner health
+      async function checkRunnerHealth() {
+        try {
+          const health = await window.KuhulClient.healthCheck();
+
+          const isOnline = health.orchestrator || health.ollama;
+          state.runner_status = isOnline ? 'online' : 'offline';
+
+          const statusDot = elements.runnerStatus.querySelector('.status-dot');
+          const statusText = elements.runnerStatus.querySelector('.status-text');
+
+          statusDot.classList.toggle('online', isOnline);
+          statusDot.classList.toggle('offline', !isOnline);
+          statusText.textContent = isOnline ? 'Online' : 'Offline';
+
+          elements.iconStatus.textContent = isOnline ? 'READY' : 'OFFLINE';
+          elements.iconStatus.className = 'icon-status ' + (isOnline ? 'online' : 'offline');
+
+        } catch (error) {
+          console.error('Health check failed:', error);
+          state.runner_status = 'offline';
+        }
+
+        // Recheck every 30 seconds
+        setTimeout(checkRunnerHealth, 30000);
+      }
+
+      // Load available models
+      async function loadModels() {
+        try {
+          const models = await window.KuhulClient.getModels();
+
+          if (models && models.length > 0) {
+            elements.modelSelect.innerHTML = models.map(m =>
+              `<option value="${m.name}" ${m.name === state.selected_model ? 'selected' : ''}>${m.name}</option>`
+            ).join('');
+            showToast('Models loaded', 'success');
+          }
+        } catch (error) {
+          console.warn('Could not load models:', error);
+        }
+      }
+
+      // Add to history
+      function addToHistory(request, response) {
+        const entry = {
+          id: Date.now(),
+          prompt: request['@infer']['@prompt'].substring(0, 50) + '...',
+          model: request['@infer']['@model'],
+          scxq2: response['@completion']['@scxq2'],
+          timestamp: new Date().toLocaleTimeString()
+        };
+
+        state.history.unshift(entry);
+        if (state.history.length > 20) state.history.pop();
+
+        localStorage.setItem('kuhul_history', JSON.stringify(state.history));
+        renderHistory();
+      }
+
+      // Load history from storage
+      function loadHistory() {
+        try {
+          const saved = localStorage.getItem('kuhul_history');
+          if (saved) {
+            state.history = JSON.parse(saved);
+            renderHistory();
+          }
+        } catch (e) {
+          console.warn('Could not load history:', e);
+        }
+      }
+
+      // Render history
+      function renderHistory() {
+        elements.historyList.innerHTML = state.history.map(entry => `
+          <div class="history-item" data-id="${entry.id}">
+            <div class="history-prompt">${escapeHtml(entry.prompt)}</div>
+            <div class="history-meta">
+              <span class="history-model">${entry.model}</span>
+              <span class="history-time">${entry.timestamp}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Copy output to clipboard
+      async function copyOutput() {
+        try {
+          await navigator.clipboard.writeText(state.model_output);
+          showToast('Copied to clipboard', 'success');
+        } catch (error) {
+          showToast('Copy failed', 'error');
+        }
+      }
+
+      // Clear all caches
+      async function clearAllCaches() {
+        if (navigator.serviceWorker?.controller) {
+          const channel = new MessageChannel();
+          navigator.serviceWorker.controller.postMessage({ type: 'KUHUL_CLEAR_CACHE' }, [channel.port2]);
+        }
+        localStorage.clear();
+        state.history = [];
+        renderHistory();
+        showToast('Caches cleared', 'success');
+      }
+
+      // Settings modal
+      function openSettings() {
+        elements.settingsModal.classList.remove('hidden');
+      }
+
+      function closeSettings() {
+        elements.settingsModal.classList.add('hidden');
+      }
+
+      // Show toast notification
+      function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        elements.toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+          toast.classList.add('fade-out');
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      // Escape HTML
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Register service worker
+      async function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+          try {
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            console.log('Service worker registered:', registration.scope);
+          } catch (error) {
+            console.error('Service worker registration failed:', error);
+          }
+        }
+      }
+
+      // Handle service worker messages
+      function handleSWMessage(event) {
+        const { type, request, response } = event.data;
+
+        if (type === 'KUHUL_XJSON_LOG') {
+          console.log('[K\'uhul] XJSON logged:', { request, response });
+        }
+      }
+
+      // PWA Install
+      let deferredPrompt;
+
+      function setupInstallPrompt() {
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          deferredPrompt = e;
+          elements.installPrompt.classList.remove('hidden');
+        });
+
+        window.addEventListener('appinstalled', () => {
+          elements.installPrompt.classList.add('hidden');
+          deferredPrompt = null;
+          showToast('App installed successfully!', 'success');
+        });
+      }
+
+      async function installApp() {
+        if (!deferredPrompt) return;
+
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+
+        if (outcome === 'accepted') {
+          showToast('Installing...', 'info');
+        }
+
+        deferredPrompt = null;
+        elements.installPrompt.classList.add('hidden');
+      }
+
+      function dismissInstall() {
+        elements.installPrompt.classList.add('hidden');
+      }
+
+      // Initialize on DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
