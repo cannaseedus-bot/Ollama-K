@@ -583,6 +583,136 @@
   }
 
   // ============================================
+  // APF TO FOLD CONVERSION
+  // ============================================
+
+  /**
+   * Convert APF AST to atomic fold format (JSON)
+   */
+  function astToFold(ast, options = {}) {
+    const fold = {
+      '@fold': options.foldId || 'APF.PROGRAM.V1',
+      '@role': options.role || 'TASK',
+      '@intent': deriveIntent(ast),
+      '@scope': options.scope || 'LOCAL',
+      '@symbols': ast.symbols.map(s => s.symbol),
+      '@constraints': ast.constraints.map(c => c.value),
+      '@input': options.input || {},
+      '@output': {
+        type: options.outputType || 'structured_text',
+        format: options.outputFormat || 'plain',
+        max_tokens: options.maxTokens || 256
+      }
+    };
+
+    if (options.epoch !== undefined) {
+      fold['@epoch'] = options.epoch;
+    }
+
+    return fold;
+  }
+
+  /**
+   * Derive intent from AST based on primary symbols
+   */
+  function deriveIntent(ast) {
+    if (ast.symbols.length === 0) return 'EXECUTE';
+
+    const primary = ast.symbols[0];
+    const symbol = primary.symbol;
+
+    // Map cognitive symbols to intents
+    if (symbol === 'T.R') return 'REASON';
+    if (symbol === 'G.G') return 'GENERATE';
+    if (symbol === 'G.C') return 'VERIFY';
+    if (symbol === 'O.C') return 'TRANSFORM';
+    if (symbol === 'M.I') return 'EXPLAIN';
+    if (symbol === 'G.K') return 'SUMMARIZE';
+    if (symbol === 'O.X') return 'EXECUTE';
+
+    return 'EXECUTE';
+  }
+
+  /**
+   * Convert fold to shortform glyph notation
+   */
+  function foldToShortform(fold) {
+    const parts = [];
+
+    // Intent prefix
+    const intentMap = {
+      'EXPLAIN': 'EXP', 'REASON': 'RSN', 'DECIDE': 'DEC',
+      'GENERATE': 'GEN', 'TRANSFORM': 'XFM', 'VERIFY': 'VRF',
+      'SUMMARIZE': 'SUM', 'SIMULATE': 'SIM', 'EXECUTE': 'EXE'
+    };
+
+    if (fold['@intent']) {
+      parts.push(`⟁${fold['@fold']?.split('.')[0] || 'APF'}.${intentMap[fold['@intent'].toUpperCase()] || 'EXE'}`);
+    }
+
+    // Output shortform
+    if (fold['@output']?.max_tokens) {
+      if (fold['@output'].max_tokens <= 100) parts.push('⟁OUT.SHORT');
+      else if (fold['@output'].max_tokens <= 500) parts.push('⟁OUT.MED');
+      else parts.push('⟁OUT.LONG');
+    }
+
+    // Constraints
+    if (fold['@constraints']?.includes('SAFE_OUTPUT') || fold['@constraints']?.includes('SAFE')) {
+      parts.push('⟁SAFE.ON');
+    }
+
+    // Symbols as context
+    if (fold['@symbols']?.length > 0) {
+      const syms = fold['@symbols'].slice(0, 4).join('.');
+      parts.push(`⟁CTX.${syms}`);
+    }
+
+    return parts.join(' ');
+  }
+
+  /**
+   * Parse shortform glyph notation back to fold
+   */
+  function shortformToFold(shortform) {
+    const fold = {
+      '@fold': 'APF.SHORTFORM.V1',
+      '@role': 'TASK',
+      '@intent': 'EXECUTE',
+      '@scope': 'LOCAL',
+      '@symbols': [],
+      '@constraints': [],
+      '@output': { type: 'structured_text', format: 'plain', max_tokens: 256 }
+    };
+
+    const parts = shortform.split(/\s+/).filter(p => p.startsWith('⟁'));
+
+    for (const part of parts) {
+      const cmd = part.slice(1); // Remove ⟁
+      const [prefix, suffix] = cmd.split('.');
+
+      if (['APF', 'LLM', 'SYS'].includes(prefix)) {
+        fold['@fold'] = `${prefix}.${suffix}.V1`;
+        const intentMap = {
+          'EXP': 'EXPLAIN', 'RSN': 'REASON', 'DEC': 'DECIDE',
+          'GEN': 'GENERATE', 'XFM': 'TRANSFORM', 'VRF': 'VERIFY',
+          'SUM': 'SUMMARIZE', 'SIM': 'SIMULATE', 'EXE': 'EXECUTE'
+        };
+        if (intentMap[suffix]) fold['@intent'] = intentMap[suffix];
+      } else if (prefix === 'OUT') {
+        const tokenMap = { 'SHORT': 100, 'MED': 500, 'LONG': 2000, 'MAX': 8000 };
+        fold['@output'].max_tokens = tokenMap[suffix] || 256;
+      } else if (prefix === 'SAFE') {
+        if (suffix === 'ON') fold['@constraints'].push('SAFE_OUTPUT');
+      } else if (prefix === 'CTX') {
+        fold['@symbols'] = suffix.split('.').filter(s => COGNITIVE_ALPHABET[s]);
+      }
+    }
+
+    return fold;
+  }
+
+  // ============================================
   // PUBLIC API
   // ============================================
 
@@ -651,6 +781,107 @@
      */
     getSymbolsByDomain: function(domain) {
       return Object.values(COGNITIVE_ALPHABET).filter(s => s.domain === domain);
+    },
+
+    // ============================================
+    // FOLD CONVERSION API
+    // ============================================
+
+    /**
+     * Convert compiled APF to atomic fold format
+     */
+    toFold: function(compiled, options = {}) {
+      return astToFold(compiled.ast, options);
+    },
+
+    /**
+     * Convert fold to shortform glyph notation
+     * e.g. "⟁LLM.RSN ⟁OUT.SHORT ⟁SAFE.ON ⟁CTX.T.R.M.I"
+     */
+    foldToShortform: function(fold) {
+      return foldToShortform(fold);
+    },
+
+    /**
+     * Parse shortform glyph notation to fold
+     */
+    shortformToFold: function(shortform) {
+      return shortformToFold(shortform);
+    },
+
+    /**
+     * Compile APF source directly to fold
+     */
+    compileToFold: function(source, options = {}) {
+      const compiled = this.compile(source);
+      return this.toFold(compiled, options);
+    },
+
+    // ============================================
+    // APSX BINARY ENCODING API
+    // ============================================
+
+    /**
+     * Encode APF to APSX binary format
+     * Requires APSX library to be loaded
+     */
+    toAPSX: async function(source, options = {}) {
+      if (typeof APSX === 'undefined') {
+        throw new Error('APSX library not loaded. Import lib/apsx.js first.');
+      }
+      const fold = typeof source === 'string' ? this.compileToFold(source, options) : source;
+      return APSX.pack(fold);
+    },
+
+    /**
+     * Decode APSX binary to fold
+     */
+    fromAPSX: async function(bytes, options = {}) {
+      if (typeof APSX === 'undefined') {
+        throw new Error('APSX library not loaded. Import lib/apsx.js first.');
+      }
+      return APSX.unpack(bytes, options);
+    },
+
+    /**
+     * Validate APSX binary
+     */
+    validateAPSX: async function(bytes) {
+      if (typeof APSX === 'undefined') {
+        throw new Error('APSX library not loaded. Import lib/apsx.js first.');
+      }
+      return APSX.validate(bytes);
+    },
+
+    /**
+     * Get APSX statistics
+     */
+    statsAPSX: async function(bytes) {
+      if (typeof APSX === 'undefined') {
+        throw new Error('APSX library not loaded. Import lib/apsx.js first.');
+      }
+      return APSX.stats(bytes);
+    },
+
+    // ============================================
+    // COMPRESSION HELPERS
+    // ============================================
+
+    /**
+     * Compute compression ratio: JSON size vs APSX size
+     */
+    compressionRatio: async function(source, options = {}) {
+      const fold = typeof source === 'string' ? this.compileToFold(source, options) : source;
+      const jsonSize = new TextEncoder().encode(JSON.stringify(fold)).length;
+      const apsxBytes = await this.toAPSX(fold);
+      const apsxSize = apsxBytes.length;
+
+      return {
+        jsonSize,
+        apsxSize,
+        ratio: jsonSize / apsxSize,
+        savings: ((jsonSize - apsxSize) / jsonSize * 100).toFixed(1) + '%'
+      };
     }
   };
 

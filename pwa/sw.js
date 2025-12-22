@@ -40,6 +40,7 @@ const STATIC_ASSETS = [
   '/lib/khl-parser.js',
   '/lib/khl-runtime.js',
   '/lib/apsxb.js',
+  '/lib/apsx.js',
   '/lib/apf.js',
   '/lib/gas-shards.js',
   '/styles.css'
