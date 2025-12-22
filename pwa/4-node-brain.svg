@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>K'UHUL π Persistent Brain Cluster - IDB + LocalStorage Runtime</title>
+  
+  <!-- External JavaScript references (XML-compatible) -->
+  <script xlink:href="data:text/javascript;base64,ewogIC8vIE1pbmlmaWVkIElEQiBBUEkgd3JhcHBlcgogIGNsYXNzIFBlcnNpc3RlbnRTdG9yZSB7CiAgICBjb25zdHJ1Y3RvcihzdG9yZU5hbWUgPSAnZGF0YS1zdG9yZScpIHsKICAgICAgdGhpcy5zdG9yZU5hbWUgPSBzdG9yZU5hbWU7CiAgICB9CiAgICAKICAgIGFzeW5jIG9wZW4oKSB7CiAgICAgIHRoaXMuZGIgPSBhd2FpdCBpbmRleGVkREIub3Blbih0aGlzLnN0b3JlTmFtZSwgMSwgKGRiLCBldmVudCkgPT4gewogICAgICAgIGNvbnN0IHN0b3JlID0gZGJyZWFrLmNyZWF0ZU9iamVjdFN0b3JlKCdkYXRhJywgeyBrZXlQYXRoOiAnJyB9KTsKICAgICAgICBzdG9yZS5jcmVhdGVJbmRleCgnY2F0ZWdvcnknLCAnY2F0ZWdvcnknLCB7IHVuaXF1ZTogZmFsc2UgfSk7CiAgICAgICAgc3RvcmUuY3JlYXRlSW5kZXgoJ3RpbWVzdGFtcCcsICd0aW1lc3RhbXAnLCB7IHVuaXF1ZTogZmFsc2UgfSk7CiAgICAgIH0pOwogICAgICByZXR1cm4gdGhpcy5kYjsKICAgIH0KICAgIAogICAgYXN5bmMgc2F2ZShrZXksIHZhbHVlLCBvcHRpb25zID0ge30pIHsKICAgICAgY29uc3QgZGIgPSBhd2FpdCB0aGlzLm9wZW4oKTsKICAgICAgY29uc3QgdHhuID0gZGIudHJhbnNhY3Rpb24oWydkYXRhJ10sICdyZWFkd3JpdGUnKTsKICAgICAgY29uc3Qgc3RvcmUgPSB0eG4ub2JqZWN0U3RvcmUoJ2RhdGEnKTsKICAgICAgCiAgICAgIGNvbnN0IGl0ZW0gPSB7CiAgICAgICAgX2lkOiBrZXksCiAgICAgICAgdmFsdWUsCiAgICAgICAgdGltZXN0YW1wOiBEYXRlLm5vdygpLAogICAgICAgIGNhdGVnb3J5OiBvcHRpb25zLmNhdGVnb3J5IHx8ICdkZWZhdWx0JwogICAgICB9OwogICAgICAKICAgICAgc3RvcmUucHV0KGl0ZW0pOwogICAgICBhd2FpdCB0eG4uZG9uZTsKICAgICAgcmV0dXJuIGl0ZW07CiAgICB9CiAgICAKICAgIGFzeW5jIGdldChrZXkpIHsKICAgICAgY29uc3QgZGIgPSBhd2FpdCB0aGlzLm9wZW4oKTsKICAgICAgY29uc3QgdHhuID0gZGIudHJhbnNhY3Rpb24oWydkYXRhJ10sICdyZWFkb25seScpOwogICAgICBjb25zdCBzdG9yZSA9IHR4bi5vYmplY3RTdG9yZSgnZGF0YScpOwogICAgICAKICAgICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgc3RvcmUuZ2V0KGtleSk7CiAgICAgIGF3YWl0IHR4bi5kb25lOwogICAgICByZXR1cm4gcmVzdWx0ID8gcmVzdWx0LnZhbHVlIDogbnVsbDsKICAgIH0KICAgIAogICAgYXN5bmMgbGlzdENhdGVnb3J5KGNhdGVnb3J5LCBsaW1pdCA9IDEwMCkgewogICAgICBjb25zdCBkYiA9IGF3YWl0IHRoaXMub3BlbigpOwogICAgICBjb25zdCB0eG4gPSBkYi50cmFuc2FjdGlvbihbJ2RhdGEnXSwgJ3JlYWRvbmx5Jyk7CiAgICAgIGNvbnN0IHN0b3JlID0gdHhuLm9iamVjdFN0b3JlKCdkYXRhJyk7CiAgICAgIGNvbnN0IGluZGV4ID0gc3RvcmUuaW5kZXgoJ2NhdGVnb3J5Jyk7CiAgICAgIAogICAgICBjb25zdCByZXN1bHRzID0gW107CiAgICAgIGxldCBjdXJzb3IgPSBhd2FpdCBpbmRleC5vcGVuQ3Vyc29yKGNhdGVnb3J5KTsKICAgICAgCiAgICAgIGxldCBjb3VudCA9IDA7CiAgICAgIHdoaWxlIChjdXJzb3IgJiYgY291bnQgPCBsaW1pdCkgewogICAgICAgIHJlc3VsdHMucHVzaChjdXJzb3IudmFsdWUudmFsdWUpOwogICAgICAgIGNvdW50Kys7CiAgICAgICAgY3Vyc29yID0gYXdhaXQgY3Vyc29yLmNvbnRpbnVlKCk7CiAgICAgIH0KICAgICAgCiAgICAgIGF3YWl0IHR4bi5kb25lOwogICAgICByZXR1cm4gcmVzdWx0czsKICAgIH0KICB9CgogIGNvbnN0IHN0b3JhZ2UgPSBuZXcgUGVyc2lzdGVudFN0b3JlKCdrdWh1bC1jbHVzdGVyJyk7CiAgd2luZG93LlBlcnNpc3RlbnRTdG9yZSA9IHN0b3JhZ2U7CiAgY29uc29sZS5sb2coJ0lEQiBQZXJzaXN0ZW50U3RvcmUgcmVhZHknKTsKfQo=" type="text/javascript"/>
+  
+  <defs>
+    <!-- Visual Styles -->
+    <linearGradient id="storageGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00ffd0" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#00aaff" stop-opacity="0.4"/>
+    </linearGradient>
+    
+    <linearGradient id="memoryGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff3366" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#ff3366" stop-opacity="0.2"/>
+    </linearGradient>
+    
+    <filter id="pulseFilter" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Database Icons -->
+    <g id="icon-db">
+      <rect x="-12" y="-8" width="24" height="16" rx="3" fill="#00ffd0" opacity="0.2" stroke="#00ffd0" stroke-width="1"/>
+      <rect x="-10" y="-6" width="20" height="4" rx="1" fill="#00ffd0" opacity="0.5"/>
+      <rect x="-8" y="2" width="16" height="4" rx="1" fill="#00ffd0" opacity="0.3"/>
+    </g>
+    
+    <g id="icon-memory">
+      <rect x="-10" y="-6" width="20" height="12" rx="2" fill="#ff3366" opacity="0.2" stroke="#ff3366" stroke-width="1"/>
+      <line x1="-6" y1="-4" x2="6" y2="-4" stroke="#ff3366" stroke-width="1"/>
+      <line x1="-6" y1="0" x2="6" y2="0" stroke="#ff3366" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="-6" y1="4" x2="6" y2="4" stroke="#ff3366" stroke-width="1"/>
+    </g>
+    
+    <g id="icon-event">
+      <circle cx="0" cy="0" r="8" fill="none" stroke="#f5c451" stroke-width="1.5"/>
+      <path d="M-4,-2 L4,-2 L4,2 L-4,2 Z" fill="#f5c451" opacity="0.7"/>
+      <line x1="-2" y1="-5" x2="2" y2="-1" stroke="#f5c451" stroke-width="1"/>
+      <line x1="2" y1="-5" x2="-2" y2="-1" stroke="#f5c451" stroke-width="1"/>
+    </g>
+    
+    <!-- Persistent Data Structure -->
+    <metadata id="persistent-config">
+      <data id="storage-schemas">
+        <schema name="inference-events">
+          <field name="id" type="string" indexed="true"/>
+          <field name="timestamp" type="number" indexed="true"/>
+          <field name="input" type="string"/>
+          <field name="output" type="object"/>
+          <field name="duration" type="number"/>
+          <field name="node-usage" type="array"/>
+        </schema>
+        <schema name="cluster-folds">
+          <field name="character" type="string" indexed="true"/>
+          <field name="weights" type="object"/>
+          <field name="personality" type="object"/>
+          <field name="created" type="number"/>
+          <field name="last-used" type="number"/>
+        </schema>
+        <schema name="glyph-cache">
+          <field name="hash" type="string" indexed="true"/>
+          <field name="glyph" type="object"/>
+          <field name="data" type="string"/>
+          <field name="size" type="number"/>
+          <field name="accessed" type="number"/>
+        </schema>
+        <schema name="system-metrics">
+          <field name="timestamp" type="number" indexed="true"/>
+          <field name="memory-usage" type="number"/>
+          <field name="queue-length" type="number"/>
+          <field name="response-times" type="array"/>
+          <field name="node-health" type="object"/>
+        </schema>
+      </data>
+      
+      <data id="storage-config">
+        <localstorage enabled="true" quota="5242880"> <!-- 5MB -->
+          <keys>
+            <key>cluster-state</key>
+            <key>active-fold</key>
+            <key>session-id</key>
+            <key>last-sync</key>
+          </keys>
+        </localstorage>
+        <indexeddb enabled="true" version="3" stores="4">
+          <store name="events" keypath="id"/>
+          <store name="folds" keypath="character"/>
+          <store name="glyphs" keypath="hash"/>
+          <store name="metrics" keypath="timestamp"/>
+        </indexeddb>
+        <sync enabled="true" interval="30000" max-items="1000"/>
+      </data>
+    </metadata>
+  </defs>
+  
+  <!-- Background with Storage Visualization -->
+  <rect width="512" height="512" rx="92" fill="#05070b"/>
+  
+  <!-- Main Cluster Area -->
+  <g transform="translate(256, 256)">
+    <!-- Central Processing Core with Storage Ring -->
+    <circle cx="0" cy="0" r="120" fill="none" stroke="url(#storageGlow)" stroke-width="3" opacity="0.5"/>
+    <circle cx="0" cy="0" r="80" fill="rgba(0,255,208,0.05)" stroke="#00ffd0" stroke-width="2"/>
+    
+    <!-- Active Storage Indicator -->
+    <circle cx="0" cy="0" r="65" fill="none" stroke="#00ffd0" stroke-width="4" opacity="0.3">
+      <animate attributeName="r" values="65;70;65" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Storage Nodes (4 quadrants) -->
+    <g id="storage-nodes">
+      <!-- Node 0: Event Store -->
+      <g transform="translate(-80, -80)">
+        <use xlink:href="#icon-event" x="0" y="0"/>
+        <circle cx="0" cy="0" r="25" fill="none" stroke="#f5c451" stroke-width="2" opacity="0.3"/>
+        <text x="0" y="40" text-anchor="middle" fill="#f5c451" font-size="9">Events</text>
+        <text x="0" y="50" text-anchor="middle" fill="rgba(245,196,81,0.7)" font-size="8" id="storage-count-events">0</text>
+      </g>
+      
+      <!-- Node 1: Fold Store -->
+      <g transform="translate(80, -80)">
+        <use xlink:href="#icon-db" x="0" y="0"/>
+        <circle cx="0" cy="0" r="25" fill="none" stroke="#00ffd0" stroke-width="2" opacity="0.3"/>
+        <text x="0" y="40" text-anchor="middle" fill="#00ffd0" font-size="9">Folds</text>
+        <text x="0" y="50" text-anchor="middle" fill="rgba(0,255,208,0.7)" font-size="8" id="storage-count-folds">0</text>
+      </g>
+      
+      <!-- Node 2: Glyph Cache -->
+      <g transform="translate(-80, 80)">
+        <use xlink:href="#icon-memory" x="0" y="0"/>
+        <circle cx="0" cy="0" r="25" fill="none" stroke="#ff3366" stroke-width="2" opacity="0.3"/>
+        <text x="0" y="40" text-anchor="middle" fill="#ff3366" font-size="9">Glyphs</text>
+        <text x="0" y="50" text-anchor="middle" fill="rgba(255,51,102,0.7)" font-size="8" id="storage-count-glyphs">0</text>
+      </g>
+      
+      <!-- Node 3: Metrics Store -->
+      <g transform="translate(80, 80)">
+        <circle cx="0" cy="0" r="12" fill="none" stroke="#a78bfa" stroke-width="2"/>
+        <path d="M-8,-5 L8,-5 L10,5 L-10,5 Z" fill="#a78bfa" opacity="0.3"/>
+        <text x="0" y="40" text-anchor="middle" fill="#a78bfa" font-size="9">Metrics</text>
+        <text x="0" y="50" text-anchor="middle" fill="rgba(167,139,250,0.7)" font-size="8" id="storage-count-metrics">0</text>
+      </g>
+    </g>
+    
+    <!-- Data Flow Between Storage Nodes -->
+    <g id="storage-flow" opacity="0.6">
+      <path d="M-80,-80 Q0,-100 80,-80" stroke="#f5c451" stroke-width="1.5" stroke-dasharray="4,4" fill="none"/>
+      <path d="M80,-80 Q100,0 80,80" stroke="#00ffd0" stroke-width="1.5" stroke-dasharray="4,4" fill="none"/>
+      <path d="M80,80 Q0,100 -80,80" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="4,4" fill="none"/>
+      <path d="M-80,80 Q-100,0 -80,-80" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,4" fill="none"/>
+    </g>
+    
+    <!-- Central Memory Display -->
+    <g id="memory-display">
+      <rect x="-40" y="-15" width="80" height="30" rx="6" fill="rgba(0,0,0,0.7)" stroke="#00ffd0" stroke-width="1"/>
+      <text x="0" y="-5" text-anchor="middle" fill="#00ffd0" font-size="10" font-weight="bold" id="memory-total">0KB</text>
+      <text x="0" y="8" text-anchor="middle" fill="rgba(0,255,208,0.7)" font-size="8" id="memory-used">0 items</text>
+    </g>
+  </g>
+  
+  <!-- Status Bar -->
+  <g transform="translate(256, 450)">
+    <rect x="-200" y="-15" width="400" height="30" rx="6" fill="rgba(5,7,11,0.9)" stroke="#00ffd0" stroke-width="1"/>
+    <text x="-180" y="0" text-anchor="start" fill="#00ffd0" font-size="10" font-weight="bold">Persistent Brain Cluster</text>
+    <text x="180" y="0" text-anchor="end" fill="rgba(0,255,208,0.7)" font-size="9" id="storage-status">IDB: Ready</text>
+    <text x="0" y="0" text-anchor="middle" fill="#a78bfa" font-size="9" id="storage-mode">Local + IndexedDB</text>
+  </g>
+  
+  <!-- Control Panel -->
+  <g transform="translate(256, 60)">
+    <rect x="-80" y="-20" width="160" height="40" rx="8" fill="rgba(5,7,11,0.8)" stroke="#f5c451" stroke-width="1"/>
+    <g id="control-buttons">
+      <!-- Save Current State -->
+      <g transform="translate(-50, 0)" style="cursor: pointer" onclick="window.persistentCluster?.saveCurrentState()">
+        <circle cx="0" cy="0" r="8" fill="#00ffd0" opacity="0.7"/>
+        <path d="M-5,-3 L5,-3 L5,3 L-5,3 Z" fill="#05070b"/>
+        <text x="0" y="18" text-anchor="middle" fill="#00ffd0" font-size="8">Save</text>
+      </g>
+      
+      <!-- Load from Storage -->
+      <g transform="translate(-15, 0)" style="cursor: pointer" onclick="window.persistentCluster?.loadFromStorage()">
+        <circle cx="0" cy="0" r="8" fill="#f5c451" opacity="0.7"/>
+        <path d="M-5,3 L5,3 L0,-4 Z" fill="#05070b"/>
+        <text x="0" y="18" text-anchor="middle" fill="#f5c451" font-size="8">Load</text>
+      </g>
+      
+      <!-- Clear Storage -->
+      <g transform="translate(20, 0)" style="cursor: pointer" onclick="window.persistentCluster?.clearStorage()">
+        <circle cx="0" cy="0" r="8" fill="#ff3366" opacity="0.7"/>
+        <path d="M-4,-4 L4,4 M4,-4 L-4,4" stroke="#05070b" stroke-width="2"/>
+        <text x="0" y="18" text-anchor="middle" fill="#ff3366" font-size="8">Clear</text>
+      </g>
+      
+      <!-- Export Data -->
+      <g transform="translate(55, 0)" style="cursor: pointer" onclick="window.persistentCluster?.exportData()">
+        <circle cx="0" cy="0" r="8" fill="#a78bfa" opacity="0.7"/>
+        <path d="M-3,-3 L3,-3 L3,5 L-3,5 Z" fill="#05070b"/>
+        <path d="M0,-5 L0,-2" stroke="#05070b" stroke-width="2"/>
+        <text x="0" y="18" text-anchor="middle" fill="#a78bfa" font-size="8">Export</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Event Log Display -->
+  <g transform="translate(256, 380)">
+    <rect x="-180" y="-20" width="360" height="40" rx="6" fill="rgba(5,7,11,0.7)" stroke="#f5c451" stroke-width="1"/>
+    <text x="-170" y="-5" text-anchor="start" fill="#f5c451" font-size="9" font-weight="bold">Event Log:</text>
+    <text x="-170" y="8" text-anchor="start" fill="rgba(245,196,81,0.8)" font-size="8" id="last-event">Ready</text>
+    <text x="170" y="8" text-anchor="end" fill="rgba(245,196,81,0.6)" font-size="7" id="event-time">-</text>
+  </g>
+  
+  <!-- Embedded Persistent Runtime (Pure XML JavaScript) -->
+  <script type="application/javascript"><![CDATA[
+    // K'UHUL π PERSISTENT BRAIN CLUSTER
+    // Full IDB + LocalStorage runtime in pure XML/JavaScript
+    
+    class PersistentBrainCluster {
+      constructor() {
+        // Storage instances
+        this.storage = {
+          local: window.localStorage,
+          idb: null,
+          schemas: this.loadSchemas()
+        };
+        
+        // Runtime state
+        this.state = {
+          sessionId: this.generateSessionId(),
+          started: Date.now(),
+          folds: new Map(),
+          events: [],
+          metrics: {
+            storageUsed: 0,
+            itemsStored: 0,
+            lastSave: null,
+            saveCount: 0
+          }
+        };
+        
+        // Initialize storage
+        this.initStorage().then(() => {
+          this.updateDisplay();
+          this.startMetricsCollection();
+          this.logEvent('system', 'Persistent cluster initialized');
+        });
+      }
+      
+      // Load schemas from metadata
+      loadSchemas() {
+        const metadata = document.getElementById('persistent-config');
+        const schemaData = metadata.querySelector('#storage-schemas').textContent;
+        try {
+          return JSON.parse(schemaData);
+        } catch (e) {
+          return {
+            'inference-events': { fields: ['id', 'timestamp', 'input', 'output', 'duration'] },
+            'cluster-folds': { fields: ['character', 'weights', 'personality', 'created'] },
+            'glyph-cache': { fields: ['hash', 'glyph', 'data', 'size'] },
+            'system-metrics': { fields: ['timestamp', 'memory-usage', 'queue-length'] }
+          };
+        }
+      }
+      
+      // Initialize IndexedDB
+      async initStorage() {
+        try {
+          // Check if IndexedDB is available
+          if (!window.indexedDB) {
+            this.logEvent('warning', 'IndexedDB not available, using localStorage only');
+            return;
+          }
+          
+          // Open database
+          const request = indexedDB.open('kuhul-persistent-cluster', 3);
+          
+          request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            
+            // Create object stores
+            if (!db.objectStoreNames.contains('events')) {
+              const eventsStore = db.createObjectStore('events', { keyPath: 'id' });
+              eventsStore.createIndex('timestamp', 'timestamp', { unique: false });
+              eventsStore.createIndex('category', 'category', { unique: false });
+            }
+            
+            if (!db.objectStoreNames.contains('folds')) {
+              const foldsStore = db.createObjectStore('folds', { keyPath: 'character' });
+              foldsStore.createIndex('created', 'created', { unique: false });
+              foldsStore.createIndex('lastUsed', 'lastUsed', { unique: false });
+            }
+            
+            if (!db.objectStoreNames.contains('glyphs')) {
+              const glyphsStore = db.createObjectStore('glyphs', { keyPath: 'hash' });
+              glyphsStore.createIndex('accessed', 'accessed', { unique: false });
+              glyphsStore.createIndex('size', 'size', { unique: false });
+            }
+            
+            if (!db.objectStoreNames.contains('metrics')) {
+              const metricsStore = db.createObjectStore('metrics', { keyPath: 'timestamp' });
+              metricsStore.createIndex('type', 'type', { unique: false });
+            }
+          };
+          
+          request.onsuccess = (event) => {
+            this.storage.idb = event.target.result;
+            this.logEvent('system', 'IndexedDB initialized successfully');
+            
+            // Load initial data
+            this.loadInitialData();
+            
+            // Set up periodic sync
+            this.startPeriodicSync();
+          };
+          
+          request.onerror = (event) => {
+            console.error('IndexedDB error:', event.target.error);
+            this.logEvent('error', 'IndexedDB initialization failed');
+          };
+          
+        } catch (error) {
+          this.logEvent('error', `Storage init error: ${error.message}`);
+        }
+      }
+      
+      // Load initial data from storage
+      async loadInitialData() {
+        try {
+          // Load session from localStorage
+          const savedSession = this.storage.local.getItem('kuhul-cluster-session');
+          if (savedSession) {
+            this.state = { ...this.state, ...JSON.parse(savedSession) };
+          }
+          
+          // Load folds from IDB
+          const folds = await this.getAll('folds');
+          folds.forEach(fold => {
+            this.state.folds.set(fold.character, fold);
+          });
+          
+          // Update counts
+          await this.updateStorageCounts();
+          
+          this.logEvent('system', `Loaded ${folds.length} folds from storage`);
+          
+        } catch (error) {
+          this.logEvent('error', `Load error: ${error.message}`);
+        }
+      }
+      
+      // Core Storage Operations
+      async save(key, data, store = 'events') {
+        try {
+          const item = {
+            ...data,
+            id: data.id || `${store}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: Date.now(),
+            sessionId: this.state.sessionId
+          };
+          
+          if (this.storage.idb) {
+            const transaction = this.storage.idb.transaction([store], 'readwrite');
+            const objectStore = transaction.objectStore(store);
+            await objectStore.put(item);
+            
+            // Also save to localStorage for quick access
+            if (store === 'folds') {
+              this.storage.local.setItem(`fold_${data.character}`, JSON.stringify(item));
+            }
+          } else {
+            // Fallback to localStorage
+            this.storage.local.setItem(`${store}_${key}`, JSON.stringify(item));
+          }
+          
+          this.state.metrics.saveCount++;
+          this.state.metrics.lastSave = Date.now();
+          
+          this.logEvent('storage', `Saved to ${store}: ${key}`);
+          this.updateDisplay();
+          
+          return item;
+          
+        } catch (error) {
+          this.logEvent('error', `Save error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async get(key, store = 'events') {
+        try {
+          if (this.storage.idb) {
+            const transaction = this.storage.idb.transaction([store], 'readonly');
+            const objectStore = transaction.objectStore(store);
+            const request = objectStore.get(key);
+            
+            return new Promise((resolve, reject) => {
+              request.onsuccess = () => resolve(request.result);
+              request.onerror = () => reject(request.error);
+            });
+          } else {
+            const item = this.storage.local.getItem(`${store}_${key}`);
+            return item ? JSON.parse(item) : null;
+          }
+        } catch (error) {
+          this.logEvent('error', `Get error: ${error.message}`);
+          return null;
+        }
+      }
+      
+      async getAll(store, index = null, range = null) {
+        try {
+          if (this.storage.idb) {
+            const transaction = this.storage.idb.transaction([store], 'readonly');
+            const objectStore = transaction.objectStore(store);
+            const source = index ? objectStore.index(index) : objectStore;
+            
+            const request = range ? source.getAll(range) : source.getAll();
+            
+            return new Promise((resolve, reject) => {
+              request.onsuccess = () => resolve(request.result || []);
+              request.onerror = () => reject(request.error);
+            });
+          } else {
+            // Fallback: get all from localStorage
+            const items = [];
+            for (let i = 0; i < this.storage.local.length; i++) {
+              const key = this.storage.local.key(i);
+              if (key.startsWith(`${store}_`)) {
+                const item = JSON.parse(this.storage.local.getItem(key));
+                items.push(item);
+              }
+            }
+            return items;
+          }
+        } catch (error) {
+          this.logEvent('error', `GetAll error: ${error.message}`);
+          return [];
+        }
+      }
+      
+      // Brain Cluster Specific Operations
+      async saveInferenceEvent(input, output, duration, nodeUsage) {
+        const event = {
+          input: input.substring(0, 500), // Limit size
+          output: output,
+          duration: duration,
+          nodeUsage: nodeUsage,
+          category: 'inference'
+        };
+        
+        const saved = await this.save(`inf_${Date.now()}`, event, 'events');
+        
+        // Update metrics
+        this.state.events.push(saved);
+        if (this.state.events.length > 1000) {
+          this.state.events = this.state.events.slice(-1000);
+        }
+        
+        return saved;
+      }
+      
+      async saveClusterFold(character, weights, personality) {
+        const fold = {
+          character: character,
+          weights: weights,
+          personality: personality,
+          created: Date.now(),
+          lastUsed: Date.now()
+        };
+        
+        const saved = await this.save(character, fold, 'folds');
+        
+        // Update in-memory map
+        this.state.folds.set(character, saved);
+        
+        return saved;
+      }
+      
+      async getClusterFold(character) {
+        // Check memory first
+        if (this.state.folds.has(character)) {
+          const fold = this.state.folds.get(character);
+          fold.lastUsed = Date.now();
+          return fold;
+        }
+        
+        // Load from storage
+        const fold = await this.get(character, 'folds');
+        if (fold) {
+          this.state.folds.set(character, fold);
+        }
+        
+        return fold;
+      }
+      
+      async saveGlyph(hash, glyph, data) {
+        const glyphData = {
+          hash: hash,
+          glyph: glyph,
+          data: data,
+          size: new Blob([JSON.stringify(data)]).size,
+          accessed: Date.now()
+        };
+        
+        return await this.save(hash, glyphData, 'glyphs');
+      }
+      
+      async getGlyph(hash) {
+        const glyph = await this.get(hash, 'glyphs');
+        if (glyph) {
+          glyph.accessed = Date.now();
+          await this.save(hash, glyph, 'glyphs'); // Update access time
+        }
+        return glyph;
+      }
+      
+      // Save current cluster state
+      async saveCurrentState() {
+        const state = {
+          sessionId: this.state.sessionId,
+          folds: Array.from(this.state.folds.values()),
+          lastInference: this.state.events[this.state.events.length - 1],
+          metrics: this.state.metrics,
+          timestamp: Date.now()
+        };
+        
+        // Save to localStorage for persistence
+        this.storage.local.setItem('kuhul-cluster-state', JSON.stringify(state));
+        
+        // Also save to IDB
+        await this.save('current_state', state, 'events');
+        
+        this.logEvent('system', 'Cluster state saved');
+        return state;
+      }
+      
+      // Load from storage
+      async loadFromStorage() {
+        const saved = this.storage.local.getItem('kuhul-cluster-state');
+        if (saved) {
+          const state = JSON.parse(saved);
+          
+          // Restore folds
+          state.folds?.forEach(fold => {
+            this.state.folds.set(fold.character, fold);
+          });
+          
+          this.logEvent('system', 'Cluster state loaded from storage');
+          this.updateDisplay();
+          
+          return state;
+        }
+        return null;
+      }
+      
+      // Clear storage
+      async clearStorage() {
+        try {
+          if (this.storage.idb) {
+            const stores = ['events', 'folds', 'glyphs', 'metrics'];
+            for (const store of stores) {
+              const transaction = this.storage.idb.transaction([store], 'readwrite');
+              const objectStore = transaction.objectStore(store);
+              await objectStore.clear();
+            }
+          }
+          
+          // Clear localStorage
+          const prefix = 'kuhul-';
+          for (let i = 0; i < this.storage.local.length; i++) {
+            const key = this.storage.local.key(i);
+            if (key.startsWith(prefix)) {
+              this.storage.local.removeItem(key);
+            }
+          }
+          
+          // Reset state
+          this.state.folds.clear();
+          this.state.events = [];
+          this.state.metrics.saveCount = 0;
+          
+          this.logEvent('system', 'Storage cleared');
+          this.updateDisplay();
+          
+        } catch (error) {
+          this.logEvent('error', `Clear error: ${error.message}`);
+        }
+      }
+      
+      // Export data
+      async exportData() {
+        const exportData = {
+          metadata: {
+            version: '2.0',
+            exportDate: new Date().toISOString(),
+            sessionId: this.state.sessionId
+          },
+          folds: Array.from(this.state.folds.values()),
+          recentEvents: this.state.events.slice(-100),
+          metrics: this.state.metrics
+        };
+        
+        const dataStr = JSON.stringify(exportData, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.setAttribute('href', dataUri);
+        link.setAttribute('download', `kuhul-cluster-export-${Date.now()}.json`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        this.logEvent('system', 'Data exported');
+      }
+      
+      // Metrics and Monitoring
+      async updateStorageCounts() {
+        try {
+          const counts = {};
+          
+          if (this.storage.idb) {
+            const stores = ['events', 'folds', 'glyphs', 'metrics'];
+            for (const store of stores) {
+              const items = await this.getAll(store);
+              counts[store] = items.length;
+            }
+          } else {
+            // Count from localStorage
+            counts.events = this.countLocalStorageItems('events_');
+            counts.folds = this.countLocalStorageItems('fold_');
+            counts.glyphs = this.countLocalStorageItems('glyphs_');
+            counts.metrics = this.countLocalStorageItems('metrics_');
+          }
+          
+          // Update display elements
+          this.updateCountDisplay('events', counts.events || 0);
+          this.updateCountDisplay('folds', counts.folds || 0);
+          this.updateCountDisplay('glyphs', counts.glyphs || 0);
+          this.updateCountDisplay('metrics', counts.metrics || 0);
+          
+          // Update total memory display
+          const totalItems = Object.values(counts).reduce((a, b) => a + b, 0);
+          this.updateMemoryDisplay(totalItems);
+          
+        } catch (error) {
+          console.error('Count update error:', error);
+        }
+      }
+      
+      countLocalStorageItems(prefix) {
+        let count = 0;
+        for (let i = 0; i < this.storage.local.length; i++) {
+          if (this.storage.local.key(i).startsWith(prefix)) {
+            count++;
+          }
+        }
+        return count;
+      }
+      
+      startMetricsCollection() {
+        // Collect metrics every 30 seconds
+        setInterval(async () => {
+          await this.collectSystemMetrics();
+        }, 30000);
+        
+        // Update storage counts every 10 seconds
+        setInterval(async () => {
+          await this.updateStorageCounts();
+        }, 10000);
+      }
+      
+      async collectSystemMetrics() {
+        const metrics = {
+          timestamp: Date.now(),
+          type: 'system',
+          memoryUsage: this.estimateMemoryUsage(),
+          eventsCount: this.state.events.length,
+          foldsCount: this.state.folds.size,
+          saveCount: this.state.metrics.saveCount,
+          sessionDuration: Date.now() - this.state.started
+        };
+        
+        await this.save(`metrics_${Date.now()}`, metrics, 'metrics');
+        
+        // Keep only last 1000 metrics
+        const allMetrics = await this.getAll('metrics');
+        if (allMetrics.length > 1000) {
+          // Cleanup old metrics would go here
+        }
+      }
+      
+      estimateMemoryUsage() {
+        try {
+          const stateStr = JSON.stringify(this.state);
+          const localStr = JSON.stringify(this.storage.local);
+          return (stateStr.length + localStr.length) / 1024; // KB
+        } catch (e) {
+          return 0;
+        }
+      }
+      
+      startPeriodicSync() {
+        // Auto-save every minute
+        setInterval(async () => {
+          await this.saveCurrentState();
+        }, 60000);
+      }
+      
+      // Logging
+      logEvent(category, message) {
+        const event = {
+          category: category,
+          message: message,
+          timestamp: Date.now()
+        };
+        
+        // Save to IDB
+        this.save(`log_${Date.now()}`, event, 'events');
+        
+        // Update in-memory events
+        this.state.events.push(event);
+        if (this.state.events.length > 50) {
+          this.state.events = this.state.events.slice(-50);
+        }
+        
+        // Update display
+        this.updateEventDisplay(message);
+        
+        console.log(`[${category}] ${message}`);
+      }
+      
+      // Display Updates
+      updateDisplay() {
+        this.updateStorageCounts();
+        this.updateStatusDisplay();
+      }
+      
+      updateCountDisplay(type, count) {
+        const element = document.getElementById(`storage-count-${type}`);
+        if (element) {
+          element.textContent = count;
+          
+          // Add animation for changes
+          element.style.transform = 'scale(1.2)';
+          setTimeout(() => {
+            element.style.transform = 'scale(1)';
+          }, 300);
+        }
+      }
+      
+      updateMemoryDisplay(totalItems) {
+        const totalElement = document.getElementById('memory-total');
+        const usedElement = document.getElementById('memory-used');
+        
+        if (totalElement && usedElement) {
+          const memoryKB = this.estimateMemoryUsage();
+          totalElement.textContent = `${Math.round(memoryKB)}KB`;
+          usedElement.textContent = `${totalItems} items`;
+        }
+      }
+      
+      updateStatusDisplay() {
+        const statusElement = document.getElementById('storage-status');
+        const modeElement = document.getElementById('storage-mode');
+        
+        if (statusElement && modeElement) {
+          const idbStatus = this.storage.idb ? 'IDB: Ready' : 'IDB: Offline';
+          const mode = this.storage.idb ? 'Local + IndexedDB' : 'LocalStorage Only';
+          
+          statusElement.textContent = idbStatus;
+          modeElement.textContent = mode;
+        }
+      }
+      
+      updateEventDisplay(message) {
+        const eventElement = document.getElementById('last-event');
+        const timeElement = document.getElementById('event-time');
+        
+        if (eventElement && timeElement) {
+          eventElement.textContent = message.length > 40 ? message.substring(0, 40) + '...' : message;
+          timeElement.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          // Highlight briefly
+          eventElement.style.fill = '#f5c451';
+          setTimeout(() => {
+            eventElement.style.fill = 'rgba(245,196,81,0.8)';
+          }, 1000);
+        }
+      }
+      
+      // Utility Methods
+      generateSessionId() {
+        return 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      }
+      
+      // Public API
+      getAPI() {
+        return {
+          saveInference: (input, output, duration, nodeUsage) => 
+            this.saveInferenceEvent(input, output, duration, nodeUsage),
+          
+          saveFold: (character, weights, personality) => 
+            this.saveClusterFold(character, weights, personality),
+          
+          getFold: (character) => this.getClusterFold(character),
+          
+          saveGlyph: (hash, glyph, data) => this.saveGlyph(hash, glyph, data),
+          
+          getGlyph: (hash) => this.getGlyph(hash),
+          
+          saveState: () => this.saveCurrentState(),
+          
+          loadState: () => this.loadFromStorage(),
+          
+          clear: () => this.clearStorage(),
+          
+          export: () => this.exportData(),
+          
+          log: (category, message) => this.logEvent(category, message),
+          
+          getStats: () => ({
+            events: this.state.events.length,
+            folds: this.state.folds.size,
+            saves: this.state.metrics.saveCount,
+            sessionId: this.state.sessionId,
+            memory: this.estimateMemoryUsage()
+          })
+        };
+      }
+    }
+    
+    // Initialize when SVG loads
+    let persistentCluster;
+    
+    function initPersistentCluster() {
+      try {
+        persistentCluster = new PersistentBrainCluster();
+        window.persistentCluster = persistentCluster;
+        
+        // Test save/load cycle
+        setTimeout(async () => {
+          // Save a test fold
+          await persistentCluster.saveClusterFold('test-assistant', {
+            creativity: 0.8,
+            precision: 0.7,
+            verbosity: 0.6
+          }, {
+            personality: 'helpful',
+            style: 'technical'
+          });
+          
+          // Save a test inference
+          await persistentCluster.saveInferenceEvent(
+            'Test input',
+            { response: 'Test response', confidence: 0.9 },
+            150,
+            [0.25, 0.25, 0.25, 0.25]
+          );
+          
+          persistentCluster.logEvent('test', 'Test data saved to persistent storage');
+        }, 1000);
+        
+        console.log('💾 Persistent Brain Cluster initialized with IDB + LocalStorage');
+        
+      } catch (error) {
+        console.error('Failed to initialize persistent cluster:', error);
+      }
+    }
+    
+    // Initialize when ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPersistentCluster);
+    } else {
+      initPersistentCluster();
+    }
+    
+    // Global access
+    window.KuhulPersistentCluster = {
+      getInstance: () => persistentCluster,
+      getAPI: () => persistentCluster?.getAPI()
+    };
+  ]]></script>
+</svg>
