@@ -5,8 +5,20 @@
  * Sek sw_pipeline -> cache_static -> intercept_fetch -> handle_xjson -> respond
  */
 
-const CACHE_NAME = 'kuhul-lam-o-v1';
-const XJSON_CACHE_NAME = 'kuhul-xjson-cache-v1';
+const CACHE_NAME = 'kuhul-lam-o-v7';
+const XJSON_CACHE_NAME = 'kuhul-xjson-cache-v7';
+const KHL_CACHE_NAME = 'kuhul-khl-cache-v1';
+
+// K'UHUL π Kernel State
+const KernelState = {
+  booted: false,
+  khlProgram: null,
+  handlers: new Map(),
+  variables: new Map(),
+  asxRam: new Map(),
+  bootSteps: [],
+  errors: []
+};
 
 // Static assets to cache for offline support
 const STATIC_ASSETS = [
@@ -16,6 +28,14 @@ const STATIC_ASSETS = [
   '/lib/kuhul-xjson.js',
   '/lib/scxq2.js',
   '/lib/kuhul-client.js',
+  '/lib/kuhul-packs.js',
+  '/lib/pi-goat.js',
+  '/lib/pi-goat-api.js',
+  '/lib/model-manager.js',
+  '/lib/abr-engine.js',
+  '/lib/abr-blackcode.js',
+  '/lib/khl-parser.js',
+  '/lib/khl-runtime.js',
   '/styles.css'
 ];
 
@@ -62,22 +82,33 @@ self.addEventListener('activate', (event) => {
       .then((cacheNames) => {
         return Promise.all(
           cacheNames
-            .filter((name) => name !== CACHE_NAME && name !== XJSON_CACHE_NAME)
+            .filter((name) => name !== CACHE_NAME && name !== XJSON_CACHE_NAME && name !== KHL_CACHE_NAME)
             .map((name) => {
               console.log('[K\'uhul SW] Deleting old cache:', name);
               return caches.delete(name);
             })
         );
       })
-      .then(() => self.clients.claim())
+      .then(() => {
+        // Boot kernel on activation
+        bootKernel(null);
+        return self.clients.claim();
+      })
   );
 });
 
 /**
  * Fetch event - handle requests with caching strategy
+ * Sek fetch_pipeline: khl_check -> xjson_check -> api_check -> static_serve
  */
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+
+  // Handle KHL requests - kernel dispatch
+  if (isKHLRequest(event.request)) {
+    event.respondWith(handleKHLRequest(event.request));
+    return;
+  }
 
   // Handle XJSON inference requests specially
   if (isXJSONRequest(event.request)) {
@@ -457,4 +488,324 @@ async function handleGetModels(event) {
   }
 }
 
+// ============================================
+// K'UHUL π KERNEL - KHL INTEGRATION
+// ============================================
+
+/**
+ * Boot K'UHUL π Kernel with KHL program
+ * Implements: ⟁Pop⟁ kernel_boot -> load_manifest -> register_handlers
+ */
+async function bootKernel(khlSource) {
+  if (KernelState.booted) {
+    return { ok: true, status: 'already_booted' };
+  }
+
+  KernelState.bootSteps.push('kernel_boot_start');
+
+  try {
+    // Parse KHL if source provided
+    if (khlSource) {
+      KernelState.khlProgram = await parseKHL(khlSource);
+      KernelState.bootSteps.push('khl_parsed');
+
+      // Register handlers from KHL
+      if (KernelState.khlProgram.handlers) {
+        for (const [name, handler] of Object.entries(KernelState.khlProgram.handlers)) {
+          KernelState.handlers.set(name, handler);
+        }
+        KernelState.bootSteps.push('handlers_registered');
+      }
+
+      // Register variables
+      if (KernelState.khlProgram.variables) {
+        for (const [name, variable] of Object.entries(KernelState.khlProgram.variables)) {
+          KernelState.variables.set(name, variable.value);
+        }
+        KernelState.bootSteps.push('variables_registered');
+      }
+    }
+
+    // Initialize ASX-RAM
+    KernelState.asxRam.set('os.boot.count',
+      (KernelState.asxRam.get('os.boot.count') || 0) + 1);
+    KernelState.asxRam.set('os.state', 'active');
+    KernelState.asxRam.set('os.kernel', 'sw.khl Ω.∞.Ω');
+    KernelState.asxRam.set('os.scxq2_version', SCXQ2_VERSION);
+
+    KernelState.booted = true;
+    KernelState.bootSteps.push('kernel_boot_complete');
+
+    console.log('[K\'uhul π Kernel] Boot complete:', KernelState.bootSteps);
+
+    return {
+      ok: true,
+      status: 'booted',
+      bootSteps: KernelState.bootSteps,
+      handlersCount: KernelState.handlers.size,
+      variablesCount: KernelState.variables.size
+    };
+
+  } catch (error) {
+    KernelState.errors.push({ error: error.message, timestamp: Date.now() });
+    console.error('[K\'uhul π Kernel] Boot failed:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+/**
+ * Parse KHL source (minimal parser for SW context)
+ * Full parsing done via KHLParser in main thread
+ */
+async function parseKHL(source) {
+  // Extract manifest_ast from KHL source
+  const manifestMatch = source.match(/⟁Wo⟁\s+manifest_ast\s+(\{[\s\S]*?\n  \})\s*\n/);
+  let manifest = null;
+  if (manifestMatch) {
+    try {
+      manifest = JSON.parse(manifestMatch[1]);
+    } catch (e) {
+      console.warn('[K\'uhul π Kernel] Failed to parse manifest_ast');
+    }
+  }
+
+  // Extract C@@L BLOCKS
+  const handlers = {};
+  const blockPattern = /C@@L\s+BLOCK\s+(\w+)[\s\S]*?@handler:\s*"?(\w+)"?/g;
+  let match;
+  while ((match = blockPattern.exec(source)) !== null) {
+    handlers[match[2]] = {
+      name: match[1],
+      handler: match[2],
+      execute: createKernelHandler(match[2])
+    };
+  }
+
+  // Extract C@@L ATOMIC_VARIABLEs
+  const variables = {};
+  const varPattern = /C@@L\s+ATOMIC_VARIABLE\s+(@\w+)/g;
+  while ((match = varPattern.exec(source)) !== null) {
+    variables[match[1]] = { name: match[1], value: null };
+  }
+
+  return {
+    manifest,
+    handlers,
+    variables,
+    version: '1.0.0'
+  };
+}
+
+/**
+ * Create kernel handler for C@@L BLOCK
+ */
+function createKernelHandler(handlerName) {
+  return async (context) => {
+    switch (handlerName) {
+      case 'kernel_boot':
+        return bootKernel(context.khlSource);
+
+      case 'basher_run':
+        return executeBasherCommand(context.command);
+
+      case 'xjson_infer':
+        return handleXJSONRequest(context.request);
+
+      case 'scxq2_generate':
+        return generateSCXQ2(context.request, context.response);
+
+      default:
+        return {
+          ok: true,
+          handler: handlerName,
+          context,
+          message: 'Handler executed'
+        };
+    }
+  };
+}
+
+/**
+ * Execute Basher command in kernel context
+ * Implements: ⟁Xul⟁ basher -> parse_command -> execute -> return_result
+ */
+async function executeBasherCommand(command) {
+  if (!command) {
+    return { ok: false, error: 'No command provided' };
+  }
+
+  const parts = command.trim().split(' ');
+  const cmd = parts[0];
+  const args = parts.slice(1);
+
+  switch (cmd) {
+    case 'kernel.status':
+      return {
+        ok: true,
+        booted: KernelState.booted,
+        bootSteps: KernelState.bootSteps,
+        handlers: Array.from(KernelState.handlers.keys()),
+        variables: Array.from(KernelState.variables.keys()),
+        asxRam: Object.fromEntries(KernelState.asxRam)
+      };
+
+    case 'kernel.boot':
+      return bootKernel(null);
+
+    case 'ram.get':
+      return {
+        ok: true,
+        key: args[0],
+        value: KernelState.asxRam.get(args[0])
+      };
+
+    case 'ram.set':
+      KernelState.asxRam.set(args[0], args.slice(1).join(' '));
+      return { ok: true, key: args[0] };
+
+    case 'ram.list':
+      return {
+        ok: true,
+        keys: Array.from(KernelState.asxRam.keys()),
+        count: KernelState.asxRam.size
+      };
+
+    case 'handlers.list':
+      return {
+        ok: true,
+        handlers: Array.from(KernelState.handlers.keys())
+      };
+
+    case 'health':
+      return {
+        ok: true,
+        kernel: 'sw.khl Ω.∞.Ω',
+        booted: KernelState.booted,
+        scxq2_version: SCXQ2_VERSION,
+        ram_keys: KernelState.asxRam.size,
+        handlers: KernelState.handlers.size,
+        cache_version: CACHE_NAME
+      };
+
+    case 'scxq2.info':
+      return {
+        ok: true,
+        version: SCXQ2_VERSION,
+        law: 'ASX = XCFE = XJSON = KUHUL = AST = ATOMIC_BLOCK'
+      };
+
+    default:
+      return { ok: false, error: `Unknown command: ${cmd}` };
+  }
+}
+
+/**
+ * Dispatch to KHL handler by name
+ */
+async function dispatchKHLHandler(handlerName, context) {
+  const handler = KernelState.handlers.get(handlerName);
+  if (handler && handler.execute) {
+    return await handler.execute(context);
+  }
+
+  // Try built-in kernel handlers
+  return await createKernelHandler(handlerName)(context);
+}
+
+/**
+ * Handle KHL-specific requests
+ */
+function isKHLRequest(request) {
+  const url = new URL(request.url);
+  return (
+    url.pathname.startsWith('/khl/') ||
+    url.pathname.endsWith('.khl') ||
+    request.headers.get('X-KHL-Request') === 'true'
+  );
+}
+
+/**
+ * Handle KHL API requests
+ */
+async function handleKHLRequest(request) {
+  const url = new URL(request.url);
+
+  try {
+    // KHL command dispatch
+    if (url.pathname === '/khl/dispatch') {
+      const body = await request.json();
+      const result = await dispatchKHLHandler(body.handler, body.context || {});
+      return new Response(JSON.stringify(result), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json', 'X-KHL-Response': 'true' }
+      });
+    }
+
+    // Basher command
+    if (url.pathname === '/khl/basher') {
+      const body = await request.json();
+      const result = await executeBasherCommand(body.command);
+      return new Response(JSON.stringify(result), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Kernel status
+    if (url.pathname === '/khl/status') {
+      return new Response(JSON.stringify({
+        ok: true,
+        kernel: 'sw.khl Ω.∞.Ω',
+        booted: KernelState.booted,
+        bootSteps: KernelState.bootSteps,
+        handlers: Array.from(KernelState.handlers.keys()),
+        law: 'ASX = XCFE = XJSON = KUHUL = AST = ATOMIC_BLOCK'
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Boot kernel
+    if (url.pathname === '/khl/boot') {
+      let khlSource = null;
+      if (request.method === 'POST') {
+        const body = await request.json();
+        khlSource = body.source;
+      }
+      const result = await bootKernel(khlSource);
+      return new Response(JSON.stringify(result), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Serve KHL file
+    if (url.pathname.endsWith('.khl')) {
+      return cacheFirst(request);
+    }
+
+    return new Response(JSON.stringify({ ok: false, error: 'Unknown KHL endpoint' }), {
+      status: 404,
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    return new Response(JSON.stringify({
+      '@error': {
+        '@runner': 'khl_kernel',
+        '@message': error.message,
+        '@code': 500
+      }
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Update fetch handler to include KHL requests
+const originalFetchHandler = self.onfetch;
+
 console.log('[K\'uhul SW] Service worker loaded - lam.o ready');
+console.log('[K\'uhul π Kernel] KHL integration active - The law: ASX = XCFE = XJSON = KUHUL = AST = ATOMIC_BLOCK');
