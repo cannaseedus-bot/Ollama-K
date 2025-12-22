@@ -5,8 +5,8 @@
  * Sek sw_pipeline -> cache_static -> intercept_fetch -> handle_xjson -> respond
  */
 
-const CACHE_NAME = 'kuhul-lam-o-v6';
-const XJSON_CACHE_NAME = 'kuhul-xjson-cache-v6';
+const CACHE_NAME = 'kuhul-lam-o-v7';
+const XJSON_CACHE_NAME = 'kuhul-xjson-cache-v7';
 const KHL_CACHE_NAME = 'kuhul-khl-cache-v1';
 
 // K'UHUL π Kernel State
@@ -33,6 +33,7 @@ const STATIC_ASSETS = [
   '/lib/pi-goat-api.js',
   '/lib/model-manager.js',
   '/lib/abr-engine.js',
+  '/lib/abr-blackcode.js',
   '/lib/khl-parser.js',
   '/lib/khl-runtime.js',
   '/styles.css'
