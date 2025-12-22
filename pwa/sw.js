@@ -5,8 +5,8 @@
  * Sek sw_pipeline -> cache_static -> intercept_fetch -> handle_xjson -> respond
  */
 
-const CACHE_NAME = 'kuhul-lam-o-v4';
-const XJSON_CACHE_NAME = 'kuhul-xjson-cache-v4';
+const CACHE_NAME = 'kuhul-lam-o-v5';
+const XJSON_CACHE_NAME = 'kuhul-xjson-cache-v5';
 
 // Static assets to cache for offline support
 const STATIC_ASSETS = [
@@ -21,6 +21,8 @@ const STATIC_ASSETS = [
   '/lib/pi-goat-api.js',
   '/lib/model-manager.js',
   '/lib/abr-engine.js',
+  '/lib/khl-parser.js',
+  '/lib/khl-runtime.js',
   '/styles.css'
 ];
 
