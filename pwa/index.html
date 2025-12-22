@@ -55,9 +55,14 @@
             <option value="qwen2.5">qwen2.5</option>
             <option value="janus">janus</option>
           </select>
-          <button class="btn btn-secondary btn-sm" id="refresh-models" data-kuhul-pop="refresh_models">
-            Refresh Models
-          </button>
+          <div class="model-buttons">
+            <button class="btn btn-secondary btn-sm" id="refresh-models" data-kuhul-pop="refresh_models">
+              Refresh
+            </button>
+            <button class="btn btn-primary btn-sm" id="manage-models" data-kuhul-pop="manage_models">
+              Manage
+            </button>
+          </div>
         </div>
 
         <div class="sidebar-section">
@@ -260,6 +265,53 @@ Examples:
       </div>
     </div>
 
+    <!-- Model Manager Modal -->
+    <div class="modal hidden" id="model-modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content modal-large" data-kuhul-glyph="C" data-kuhul-semantic="MODEL_MANAGER">
+        <div class="modal-header">
+          <h2>Model Manager</h2>
+          <button class="icon-btn modal-close" id="close-model-modal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-description">
+            KUHUL includes Ollama - no separate installation needed. Pi-GOAT provides virtual runtimes for code execution.
+          </p>
+
+          <div class="model-section">
+            <h3>Installed Models</h3>
+            <div id="installed-models" class="model-grid">
+              <div class="loading-text">Loading models...</div>
+            </div>
+          </div>
+
+          <div class="model-section">
+            <h3>Recommended Models</h3>
+            <div id="recommended-models" class="model-grid">
+              <div class="loading-text">Loading...</div>
+            </div>
+          </div>
+
+          <div class="model-section">
+            <h3>Install Custom Model</h3>
+            <div class="custom-model-form">
+              <input type="text" id="custom-model-name" placeholder="Model name (e.g., deepseek-r1:7b)" class="model-input">
+              <button class="btn btn-primary" id="pull-custom-model">Pull Model</button>
+            </div>
+            <div id="pull-progress" class="pull-progress hidden">
+              <div class="progress-bar"><div class="progress-fill"></div></div>
+              <span class="progress-text">Downloading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast Notifications -->
     <div class="toast-container" id="toast-container"></div>
 
@@ -278,6 +330,7 @@ Examples:
   <script src="lib/kuhul-packs.js"></script>
   <script src="lib/pi-goat.js"></script>
   <script src="lib/pi-goat-api.js"></script>
+  <script src="lib/model-manager.js"></script>
 
   <!-- Main Application -->
   <script>
@@ -352,6 +405,16 @@ Examples:
         elements.toastContainer = document.getElementById('toast-container');
         elements.modeButtons = document.querySelectorAll('.mode-btn');
         elements.tabButtons = document.querySelectorAll('.tab-btn');
+
+        // Model Manager elements
+        elements.manageModels = document.getElementById('manage-models');
+        elements.modelModal = document.getElementById('model-modal');
+        elements.closeModelModal = document.getElementById('close-model-modal');
+        elements.installedModels = document.getElementById('installed-models');
+        elements.recommendedModels = document.getElementById('recommended-models');
+        elements.customModelName = document.getElementById('custom-model-name');
+        elements.pullCustomModel = document.getElementById('pull-custom-model');
+        elements.pullProgress = document.getElementById('pull-progress');
       }
 
       // Bind event listeners
@@ -394,6 +457,12 @@ Examples:
         // Install
         elements.installBtn.addEventListener('click', installApp);
         elements.dismissInstall.addEventListener('click', dismissInstall);
+
+        // Model Manager
+        elements.manageModels.addEventListener('click', openModelManager);
+        elements.closeModelModal.addEventListener('click', closeModelManager);
+        elements.modelModal.querySelector('.modal-backdrop').addEventListener('click', closeModelManager);
+        elements.pullCustomModel.addEventListener('click', pullCustomModel);
 
         // Service worker messages
         navigator.serviceWorker?.addEventListener('message', handleSWMessage);
@@ -736,6 +805,160 @@ Examples:
 
       function closeSettings() {
         elements.settingsModal.classList.add('hidden');
+      }
+
+      // ============================================
+      // Model Manager
+      // ============================================
+
+      function openModelManager() {
+        elements.modelModal.classList.remove('hidden');
+        // Initialize ModelManager with Ollama URL
+        const ollamaUrl = document.getElementById('ollama-url')?.value || 'http://localhost:11434';
+        window.ModelManager.init(ollamaUrl.replace('/api/generate', ''));
+        loadModelManagerData();
+      }
+
+      function closeModelManager() {
+        elements.modelModal.classList.add('hidden');
+      }
+
+      async function loadModelManagerData() {
+        try {
+          const allModels = await window.ModelManager.getAllModels();
+
+          // Render installed models
+          renderInstalledModels(allModels.installed, allModels.other);
+
+          // Render recommended models
+          renderRecommendedModels(allModels.recommended);
+
+        } catch (error) {
+          console.error('Failed to load models:', error);
+          elements.installedModels.innerHTML = '<div class="empty-state">Failed to load models</div>';
+        }
+      }
+
+      function renderInstalledModels(installed, other) {
+        if (!installed || installed.length === 0) {
+          elements.installedModels.innerHTML = '<div class="empty-state">No models installed. Pull a model below to get started.</div>';
+          return;
+        }
+
+        const allInstalled = [...installed, ...other];
+        elements.installedModels.innerHTML = allInstalled.map(model => `
+          <div class="model-card installed" data-model="${model.name}">
+            <div class="model-card-header">
+              <span class="model-name">${model.name}</span>
+              <span class="model-size">${window.ModelManager.formatSize(model.size)}</span>
+            </div>
+            <div class="model-description">Modified: ${new Date(model.modified_at).toLocaleDateString()}</div>
+            <div class="model-card-actions">
+              <button class="btn btn-secondary btn-sm" onclick="selectModel('${model.name}')">Select</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteModel('${model.name}')">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function renderRecommendedModels(recommended) {
+        elements.recommendedModels.innerHTML = recommended.map(model => `
+          <div class="model-card ${model.installed ? 'installed' : ''}" data-model="${model.name}">
+            <div class="model-card-header">
+              <span class="model-name">${model.displayName}</span>
+              <span class="model-size">${model.size}</span>
+            </div>
+            <div class="model-description">${model.description}</div>
+            <div class="model-tags">
+              ${model.tags.map(tag => `<span class="model-tag">${tag}</span>`).join('')}
+              <span class="model-category ${model.category}">${model.category}</span>
+            </div>
+            <div class="model-card-actions">
+              ${model.installed
+                ? `<button class="btn btn-secondary btn-sm" onclick="selectModel('${model.name}')">Select</button>`
+                : `<button class="btn btn-primary btn-sm" onclick="pullModel('${model.name}')">Install</button>`
+              }
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Global functions for onclick handlers
+      window.selectModel = function(name) {
+        state.selected_model = name;
+        elements.modelSelect.value = name;
+
+        // Add option if not exists
+        if (!elements.modelSelect.querySelector(`option[value="${name}"]`)) {
+          const option = document.createElement('option');
+          option.value = name;
+          option.textContent = name;
+          elements.modelSelect.appendChild(option);
+          elements.modelSelect.value = name;
+        }
+
+        updateXJSONPreview();
+        closeModelManager();
+        showToast(`Selected model: ${name}`, 'success');
+      };
+
+      window.pullModel = async function(name) {
+        showToast(`Pulling ${name}...`, 'info');
+        elements.pullProgress.classList.remove('hidden');
+        const progressFill = elements.pullProgress.querySelector('.progress-fill');
+        const progressText = elements.pullProgress.querySelector('.progress-text');
+
+        try {
+          const result = await window.ModelManager.pullModel(name, (progress) => {
+            if (progress.total && progress.completed) {
+              const percent = Math.round((progress.completed / progress.total) * 100);
+              progressFill.style.width = percent + '%';
+              progressText.textContent = `${progress.status}: ${percent}%`;
+            } else {
+              progressText.textContent = progress.status || 'Downloading...';
+            }
+          });
+
+          if (result.success) {
+            showToast(`Model ${name} installed successfully!`, 'success');
+            loadModelManagerData();
+            loadModels(); // Refresh sidebar model list
+          } else {
+            showToast(`Failed to install ${name}: ${result.error}`, 'error');
+          }
+        } catch (error) {
+          showToast(`Error: ${error.message}`, 'error');
+        } finally {
+          elements.pullProgress.classList.add('hidden');
+          progressFill.style.width = '0%';
+        }
+      };
+
+      window.deleteModel = async function(name) {
+        if (!confirm(`Delete model "${name}"? This cannot be undone.`)) return;
+
+        try {
+          const result = await window.ModelManager.deleteModel(name);
+          if (result.success) {
+            showToast(`Model ${name} deleted`, 'success');
+            loadModelManagerData();
+            loadModels();
+          } else {
+            showToast(`Failed to delete: ${result.error}`, 'error');
+          }
+        } catch (error) {
+          showToast(`Error: ${error.message}`, 'error');
+        }
+      };
+
+      async function pullCustomModel() {
+        const name = elements.customModelName.value.trim();
+        if (!name) {
+          showToast('Please enter a model name', 'error');
+          return;
+        }
+        await window.pullModel(name);
+        elements.customModelName.value = '';
       }
 
       // Show toast notification

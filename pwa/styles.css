@@ -932,3 +932,213 @@ body {
     display: none;
   }
 }
+
+/* ============================================
+   Model Manager Styles
+   ============================================ */
+
+.modal-large {
+  max-width: 800px;
+}
+
+.modal-description {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: rgba(0, 255, 136, 0.05);
+  border: 1px solid var(--accent-tertiary);
+  border-radius: var(--radius-md);
+}
+
+.model-section {
+  margin-bottom: 24px;
+}
+
+.model-section h3 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.model-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  transition: var(--transition-fast);
+}
+
+.model-card:hover {
+  border-color: var(--accent-primary);
+}
+
+.model-card.installed {
+  border-color: var(--accent-tertiary);
+  background: rgba(0, 255, 136, 0.05);
+}
+
+.model-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.model-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.model-size {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  color: var(--accent-primary);
+}
+
+.model-description {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.model-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.model-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+
+.model-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.model-card-actions .btn {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 11px;
+}
+
+/* Model Buttons in Sidebar */
+.model-buttons {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.model-buttons .btn {
+  flex: 1;
+}
+
+/* Custom Model Form */
+.custom-model-form {
+  display: flex;
+  gap: 10px;
+}
+
+.model-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+
+.model-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.model-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Pull Progress */
+.pull-progress {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Loading State */
+.loading-text {
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Empty State */
+.empty-state {
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 20px;
+  text-align: center;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* Category Badge */
+.model-category {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  margin-left: 8px;
+}
+
+.model-category.reasoning { background: rgba(255, 136, 0, 0.2); color: #ff8800; }
+.model-category.code { background: rgba(0, 136, 255, 0.2); color: #0088ff; }
+.model-category.multimodal { background: rgba(136, 0, 255, 0.2); color: #8800ff; }
+.model-category.general { background: rgba(0, 255, 136, 0.2); color: var(--accent-primary); }
+.model-category.installed { background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); }
