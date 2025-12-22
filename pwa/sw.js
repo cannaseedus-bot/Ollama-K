@@ -25,6 +25,9 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/manifest.boot.json',
+  '/manifest.canonical.json',
+  '/manifest.schema.json',
   '/lib/kuhul-xjson.js',
   '/lib/scxq2.js',
   '/lib/kuhul-client.js',
@@ -36,6 +39,9 @@ const STATIC_ASSETS = [
   '/lib/abr-blackcode.js',
   '/lib/khl-parser.js',
   '/lib/khl-runtime.js',
+  '/lib/apsxb.js',
+  '/lib/apf.js',
+  '/lib/gas-shards.js',
   '/styles.css'
 ];
 

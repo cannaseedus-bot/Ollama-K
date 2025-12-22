@@ -1,0 +1,90 @@
+{
+  "@version": {
+    "epoch": 1,
+    "policy_hash": "abr:v1:xcfe:lattice_gate",
+    "compat": "ASX/MX2LM/v1"
+  },
+
+  "@law": {
+    "axioms": [
+      "ALL_EXECUTION_IS_DETERMINISTIC",
+      "NO_BRANCH_WITHOUT_PROOF",
+      "FOLDS_ARE_TOKENIZERS"
+    ]
+  },
+
+  "@codex": {
+    "glyphs": "DICT_HASH_PENDING",
+    "pi_kernels": "PI_KERNEL_SET_28"
+  },
+
+  "@boot": {
+    "initial_tick": 0,
+    "entropy_seed": 0.314159
+  },
+
+  "@identity": {
+    "cluster_id": 1
+  },
+
+  "@pi": {
+    "state": {
+      "entropy": 0.32,
+      "tick": 0,
+      "cluster_count": 1
+    },
+    "tokens": [
+      { "glyph": "@", "w": 1.0 },
+      { "glyph": "@@", "w": 2.0 },
+      { "glyph": "@@@", "w": 3.0 },
+      { "glyph": "@@@@", "w": 4.0 }
+    ]
+  },
+
+  "@pi_kernels": {
+    "layout": "7x4",
+    "kernels": [
+      "M.I", "M.U", "M.G", "M.M",
+      "T.T", "T.C", "T.A", "T.R",
+      "O.R", "O.X", "O.C", "O.M",
+      "G.S", "G.G", "G.C", "G.K",
+      "L.P", "L.S", "L.Y", "L.F",
+      "E.T", "E.S", "E.P", "E.M",
+      "I.S", "I.F", "I.P", "I.H"
+    ]
+  },
+
+  "@control": {
+    "xcfe": true,
+    "branch_gate": {
+      "requires": "proof_hash"
+    }
+  },
+
+  "@flow": {
+    "sek": [
+      "tick",
+      "entropy_scan",
+      "dispatch",
+      "execute",
+      "scx_fold",
+      "collapse"
+    ]
+  },
+
+  "@scx": {
+    "version": "SCXQ2",
+    "container": "SCX2",
+    "dict_mode": "LOCAL"
+  },
+
+  "@dict": {
+    "format": "SCX2_DICT_V1",
+    "hash": "DICT_HASH_PENDING"
+  },
+
+  "@runtime": {
+    "kernel": "sw.js",
+    "target": "BROWSER"
+  }
+}
