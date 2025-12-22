@@ -1,4 +1,4 @@
-<img src="28-brains.svg" style="width:100px;" />
+<img src="28-brains.svg" />
 
 # K'uhul Model Runner PWA (lam.o)
 
