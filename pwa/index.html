@@ -480,13 +480,13 @@ Examples:
 
         try {
           let response;
+          let xjsonRequest = state.xjson_request; // Always available for history
 
           // Route to Pi-GOAT for code/api modes
           if (state.inference_mode === 'code' || state.inference_mode === 'api') {
             response = await runPiGoat();
           } else {
             // Chat mode: use KuhulClient
-            const xjsonRequest = state.xjson_request;
             response = await window.KuhulClient.infer(xjsonRequest);
           }
 
