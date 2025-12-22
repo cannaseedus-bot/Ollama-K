@@ -1,3 +1,5 @@
+<img src="https://github.com/cannaseedus-bot/KUHUL/blob/main/pwa/28-brains.svg" style="width:100px;">
+
 # K'uhul Model Runner PWA (lam.o)
 
 Progressive Web App for K'uhul Model Runner with Ollama integration and XJSON contract.
