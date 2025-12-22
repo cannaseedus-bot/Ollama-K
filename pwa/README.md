@@ -1,4 +1,4 @@
-<img src="pwa/12-node-brain.svg" />
+<img src="12-node-brain.svg" />
 
 # K'uhul Model Runner PWA (lam.o)
 
