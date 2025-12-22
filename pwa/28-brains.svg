@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <title>K'UHUL Complete Brain Cluster - 28 Nodes + RLHF Storage</title>
+  <title>K'UHUL Brain Cluster - RLHF + IndexedDB Runtime</title>
   
   <defs>
     <!-- CSS Styles -->
@@ -11,514 +11,292 @@
       .active { stroke: #ff3366; stroke-width: 3; }
       .learning { animation: pulse 2s infinite; }
       .storing { animation: glow 1.5s infinite; }
-      .meta-layer { stroke: #a78bfa; }
-      .core-layer { stroke: #00ffd0; }
-      .op-layer { stroke: #f5c451; }
-      .safety-layer { stroke: #ff3366; }
-      .learn-layer { stroke: #16f2aa; }
-      .exec-layer { stroke: #9966ff; }
-      .id-layer { stroke: #00e0ff; }
       @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
       @keyframes glow { 0%, 100% { filter: drop-shadow(0 0 5px #00ffd0); } 50% { filter: drop-shadow(0 0 15px #00ffd0); } }
-      .brain-text { font-family: monospace; font-size: 7px; fill: #00ffd0; }
-      .stats-text { font-family: monospace; font-size: 6px; fill: #ff3366; }
-      .log-text { font-family: monospace; font-size: 6px; fill: #f5c451; }
-      .layer-text { font-family: monospace; font-size: 8px; fill: #ffffff; font-weight: bold; }
+      .brain-text { font-family: monospace; font-size: 9px; fill: #00ffd0; }
+      .stats-text { font-family: monospace; font-size: 8px; fill: #ff3366; }
+      .log-text { font-family: monospace; font-size: 7px; fill: #f5c451; }
     ]]></style>
     
-    <!-- Gradients -->
+    <!-- Gradient for storage visualization -->
     <linearGradient id="storageGradient" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#00ffd0" stop-opacity="0.8"/>
       <stop offset="1" stop-color="#00aaff" stop-opacity="0.4"/>
     </linearGradient>
     
-    <!-- Database icon -->
+    <!-- Database icon for RLHF storage -->
     <g id="icon-db">
       <rect x="-12" y="-8" width="24" height="16" rx="3" fill="#00ffd0" opacity="0.2" stroke="#00ffd0" stroke-width="1"/>
       <rect x="-10" y="-6" width="20" height="4" rx="1" fill="#00ffd0" opacity="0.5"/>
       <rect x="-8" y="2" width="16" height="4" rx="1" fill="#00ffd0" opacity="0.3"/>
+    </g>
+    
+    <!-- RLHF feedback icon -->
+    <g id="icon-rlhf">
+      <circle cx="0" cy="0" r="8" fill="none" stroke="#ff3366" stroke-width="1.5"/>
+      <path d="M-4,-2 L4,-2 L4,2 L-4,2 Z" fill="#ff3366" opacity="0.7"/>
+      <path d="M-3,4 L0,8 L3,4" fill="#ff3366"/>
     </g>
   </defs>
   
   <!-- Background -->
   <rect width="512" height="512" fill="#05070b"/>
   
-  <!-- Complete Brain Cluster Grid (4 columns x 7 rows) -->
-  <g transform="translate(32, 20)">
+  <!-- Main Brain Cluster Grid (4x3) -->
+  <g transform="translate(64, 40)">
+    <!-- ROW 0: Tokenization, Context, Attention, Reasoning -->
     
-    <!-- LAYER LABELS -->
-    <text x="-10" y="20" text-anchor="end" class="layer-text" transform="rotate(-90,-10,20)">META-COGNITION</text>
-    <text x="-10" y="84" text-anchor="end" class="layer-text" transform="rotate(-90,-10,84)">CORE TRANSFORMER</text>
-    <text x="-10" y="148" text-anchor="end" class="layer-text" transform="rotate(-90,-10,148)">OPERATIONAL</text>
-    <text x="-10" y="212" text-anchor="end" class="layer-text" transform="rotate(-90,-10,212)">SAFETY & GENERATIVE</text>
-    <text x="-10" y="276" text-anchor="end" class="layer-text" transform="rotate(-90,-10,276)">LEARNING & ADAPTATION</text>
-    <text x="-10" y="340" text-anchor="end" class="layer-text" transform="rotate(-90,-10,340)">EXECUTION ENVIRONMENT</text>
-    <text x="-10" y="404" text-anchor="end" class="layer-text" transform="rotate(-90,-10,404)">IDENTITY & RITUAL</text>
-    
-    <!-- ROW 0: Meta-Cognition Layer -->
-    <g transform="translate(20, 0)">
-      <!-- 0,0 INTROSPECTION -->
-      <g id="brain-introspect" transform="translate(0,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring meta-layer" id="introspect-ring"/>
-        <circle cx="32" cy="32" r="8" class="brain-fill" opacity="0.7"/>
-        <path d="M20 20c6-6 18-6 24 0" class="brain-line" opacity="0.6"/>
-        <path d="M20 44c6 6 18 6 24 0" class="brain-line" opacity="0.6"/>
-        <circle cx="32" cy="32" r="3" class="brain-fill"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Introspect</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="introspect-stats">0</text>
-      </g>
-      
-      <!-- 1,0 UNCERTAINTY -->
-      <g id="brain-uncertainty" transform="translate(96,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring meta-layer" id="uncertainty-ring"/>
-        <path d="M22 28c2-6 10-6 12 0 2 6-4 8-4 12" class="brain-line"/>
-        <circle cx="30" cy="46" r="3" class="brain-fill"/>
-        <path d="M18 20h28" class="brain-line" stroke-dasharray="3 2"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Uncertainty</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="uncertainty-stats">0</text>
-      </g>
-      
-      <!-- 2,0 GOAL ALIGNMENT -->
-      <g id="brain-goal" transform="translate(192,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring meta-layer" id="goal-ring"/>
-        <polygon points="32,18 42,32 32,46 22,32" class="brain-line"/>
-        <circle cx="32" cy="32" r="6" class="brain-fill"/>
-        <line x1="32" y1="18" x2="32" y2="10" class="brain-line"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Goal Align</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="goal-stats">0</text>
-      </g>
-      
-      <!-- 3,0 MODE SWITCHING -->
-      <g id="brain-mode" transform="translate(288,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring meta-layer" id="mode-ring"/>
-        <rect x="20" y="20" width="24" height="24" rx="4" class="brain-line"/>
-        <circle cx="26" cy="26" r="4" class="brain-fill"/>
-        <circle cx="38" cy="26" r="4" class="brain-fill" opacity="0.6"/>
-        <circle cx="32" cy="38" r="4" class="brain-fill" opacity="0.4"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Mode Switch</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="mode-stats">0</text>
-      </g>
+    <!-- 0,0 TOKENIZATION -->
+    <g id="brain-tokenize" transform="translate(0,0)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="tokenize-ring"/>
+      <rect x="14" y="20" width="14" height="9" rx="2" class="brain-fill"/>
+      <rect x="32" y="16" width="15" height="10" rx="2" class="brain-ring"/>
+      <rect x="49" y="20" width="12" height="9" rx="2" class="brain-ring"/>
+      <rect x="20" y="34" width="16" height="9" rx="2" class="brain-fill"/>
+      <rect x="42" y="36" width="15" height="9" rx="2" class="brain-ring"/>
+      <circle cx="32" cy="32" r="3" class="brain-fill"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Tokenize</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="tokenize-stats">0</text>
     </g>
     
-    <!-- ROW 1: Core Transformer Layer -->
-    <g transform="translate(20, 64)">
-      <!-- 0,1 TOKENIZATION -->
-      <g id="brain-tokenize" transform="translate(0,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring core-layer" id="tokenize-ring"/>
-        <rect x="14" y="20" width="14" height="9" rx="2" class="brain-fill"/>
-        <rect x="32" y="16" width="15" height="10" rx="2" class="brain-ring"/>
-        <rect x="49" y="20" width="12" height="9" rx="2" class="brain-ring"/>
-        <rect x="20" y="34" width="16" height="9" rx="2" class="brain-fill"/>
-        <rect x="42" y="36" width="15" height="9" rx="2" class="brain-ring"/>
-        <circle cx="32" cy="32" r="3" class="brain-fill"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Tokenization</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="tokenize-stats">0</text>
-      </g>
-      
-      <!-- 1,1 CONTEXT -->
-      <g id="brain-context" transform="translate(96,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring core-layer" id="context-ring"/>
-        <rect x="16" y="20" width="32" height="24" rx="4" class="brain-ring"/>
-        <rect x="20" y="22" width="16" height="6" rx="2" class="brain-fill"/>
-        <rect x="20" y="30" width="22" height="4" rx="2" class="brain-fill" opacity="0.7"/>
-        <rect x="20" y="37" width="18" height="4" rx="2" class="brain-fill" opacity="0.5"/>
-        <rect x="20" y="44" width="14" height="4" rx="2" class="brain-fill" opacity="0.3"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Context</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="context-stats">0</text>
-      </g>
-      
-      <!-- 2,1 ATTENTION -->
-      <g id="brain-attention" transform="translate(192,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring core-layer" id="attention-ring"/>
-        <path d="M14 32c4-5 11-11 18-11s14 6 18 11c-4 5-11 11-18 11S18 37 14 32z" class="brain-line"/>
-        <circle cx="32" cy="32" r="5" class="brain-fill"/>
-        <circle cx="32" cy="32" r="10" class="brain-ring" opacity="0.5"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Attention</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="attention-stats">0</text>
-      </g>
-      
-      <!-- 3,1 REASONING -->
-      <g id="brain-reason" transform="translate(288,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring core-layer" id="reason-ring"/>
-        <path d="M18 40c3-7 6-11 11-11 7 0 5 10 12 10 4 0 7-3 10-8" class="brain-line"/>
-        <circle cx="20" cy="22" r="3" class="brain-fill"/>
-        <circle cx="30" cy="27" r="3" class="brain-fill"/>
-        <circle cx="40" cy="24" r="3" class="brain-fill"/>
-        <line x1="20" y1="22" x2="30" y2="27" class="brain-line" stroke-width="1.5"/>
-        <line x1="30" y1="27" x2="40" y2="24" class="brain-line" stroke-width="1.5"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Reasoning</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="reason-stats">0</text>
-      </g>
+    <!-- 1,0 CONTEXT -->
+    <g id="brain-context" transform="translate(96,0)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="context-ring"/>
+      <rect x="16" y="20" width="32" height="24" rx="4" class="brain-ring"/>
+      <rect x="20" y="22" width="16" height="6" rx="2" class="brain-fill"/>
+      <rect x="20" y="30" width="22" height="4" rx="2" class="brain-fill" opacity="0.7"/>
+      <rect x="20" y="37" width="18" height="4" rx="2" class="brain-fill" opacity="0.5"/>
+      <rect x="20" y="44" width="14" height="4" rx="2" class="brain-fill" opacity="0.3"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Context</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="context-stats">0</text>
     </g>
     
-    <!-- ROW 2: Operational Layer -->
-    <g transform="translate(20, 128)">
-      <!-- 0,2 ROUTING -->
-      <g id="brain-routing" transform="translate(0,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring op-layer" id="routing-ring"/>
-        <circle cx="32" cy="32" r="5" class="brain-fill"/>
-        <path d="M32 32L18 18M32 32L46 18M32 32L18 46M32 32L46 46" class="brain-line"/>
-        <circle cx="18" cy="18" r="3.5" class="brain-ring"/>
-        <circle cx="46" cy="18" r="3.5" class="brain-ring"/>
-        <circle cx="18" cy="46" r="3.5" class="brain-ring"/>
-        <circle cx="46" cy="46" r="3.5" class="brain-ring"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Routing</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="routing-stats">0</text>
-      </g>
-      
-      <!-- 1,2 EXECUTION -->
-      <g id="brain-exec" transform="translate(96,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring op-layer" id="exec-ring"/>
-        <rect x="18" y="22" width="28" height="20" rx="3" class="brain-ring"/>
-        <polygon points="24,24 38,32 24,40" class="brain-fill"/>
-        <rect x="20" y="44" width="24" height="3" rx="1.5" class="brain-fill"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Execution</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="exec-stats">0</text>
-      </g>
-      
-      <!-- 2,2 COMPRESSION -->
-      <g id="brain-compress" transform="translate(192,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring op-layer" id="compress-ring"/>
-        <rect x="14" y="20" width="14" height="10" rx="2" class="brain-ring"/>
-        <rect x="40" y="34" width="14" height="10" rx="2" class="brain-fill"/>
-        <path d="M28 25h6l2.5 5 2.5-5h6" class="brain-line"/>
-        <path d="M34 38h-5" class="brain-line"/>
-        <path d="M40 26L48 32" class="brain-line" stroke-dasharray="3 2"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Compression</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="compress-stats">0</text>
-      </g>
-      
-      <!-- 3,2 MEMORY -->
-      <g id="brain-memory" transform="translate(288,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring op-layer" id="memory-ring"/>
-        <rect x="18" y="20" width="18" height="24" rx="3" class="brain-ring"/>
-        <rect x="32" y="20" width="18" height="24" rx="3" class="brain-ring" opacity="0.6"/>
-        <line x1="20" y1="25" x2="34" y2="25" class="brain-line"/>
-        <line x1="20" y1="31" x2="34" y2="31" class="brain-line"/>
-        <line x1="34" y1="25" x2="46" y2="25" class="brain-line" opacity="0.7"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Memory</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="memory-stats">0</text>
-      </g>
+    <!-- 2,0 ATTENTION -->
+    <g id="brain-attention" transform="translate(192,0)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="attention-ring"/>
+      <path d="M14 32c4-5 11-11 18-11s14 6 18 11c-4 5-11 11-18 11S18 37 14 32z" class="brain-line"/>
+      <circle cx="32" cy="32" r="5" class="brain-fill"/>
+      <circle cx="32" cy="32" r="10" class="brain-ring" opacity="0.5"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Attention</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="attention-stats">0</text>
     </g>
     
-    <!-- ROW 3: Safety & Generative Layer -->
-    <g transform="translate(20, 192)">
-      <!-- 0,3 SAFETY -->
-      <g id="brain-safety" transform="translate(0,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring safety-layer" id="safety-ring"/>
-        <path d="M32 16l12 7v10c0 8-6 14-12 16-6-2-12-8-12-16V23z" class="brain-line"/>
-        <circle cx="32" cy="29" r="4" class="brain-fill"/>
-        <rect x="28" y="35" width="8" height="9" class="brain-fill"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Safety</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="safety-stats">0</text>
-      </g>
-      
-      <!-- 1,3 GENERATION -->
-      <g id="brain-generate" transform="translate(96,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring safety-layer" id="generate-ring"/>
-        <path d="M20 40c3-6 7-9 11-9 5 0 8 3 12 3 4 0 8-3 11-7" class="brain-line"/>
-        <circle cx="22" cy="24" r="3" class="brain-fill"/>
-        <circle cx="32" cy="23" r="3" class="brain-fill"/>
-        <circle cx="42" cy="26" r="3" class="brain-fill"/>
-        <path d="M38 16l3 4 4 1.5-4 1.5-3 4-1.5-4-4-1.5 4-1.5z" class="brain-fill"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Generation</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="generate-stats">0</text>
-      </g>
-      
-      <!-- 2,3 SELF-CORRECTION -->
-      <g id="brain-correct" transform="translate(192,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring safety-layer" id="correct-ring"/>
-        <path d="M20 38c3-7 7-11 12-11 6 0 10 4 13 11" class="brain-line"/>
-        <path d="M22 24l8 6 14-14" class="brain-line" stroke-width="2.5"/>
-        <circle cx="22" cy="24" r="3" class="brain-fill"/>
-        <circle cx="44" cy="16" r="3" class="brain-fill"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Correction</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="correct-stats">0</text>
-      </g>
-      
-      <!-- 3,3 KNOWLEDGE -->
-      <g id="brain-knowledge" transform="translate(288,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring safety-layer" id="knowledge-ring"/>
-        <path d="M18 40V26l8-3 8 3 8-3 8 3v14" class="brain-line"/>
-        <line x1="26" y1="23" x2="26" y2="42" class="brain-line" stroke-width="1.5"/>
-        <line x1="38" y1="20" x2="38" y2="42" class="brain-line" stroke-width="1.5"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Knowledge</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="knowledge-stats">0</text>
-      </g>
+    <!-- 3,0 REASONING -->
+    <g id="brain-reason" transform="translate(288,0)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="reason-ring"/>
+      <path d="M18 40c3-7 6-11 11-11 7 0 5 10 12 10 4 0 7-3 10-8" class="brain-line"/>
+      <circle cx="20" cy="22" r="3" class="brain-fill"/>
+      <circle cx="30" cy="27" r="3" class="brain-fill"/>
+      <circle cx="40" cy="24" r="3" class="brain-fill"/>
+      <line x1="20" y1="22" x2="30" y2="27" class="brain-line" stroke-width="1.5"/>
+      <line x1="30" y1="27" x2="40" y2="24" class="brain-line" stroke-width="1.5"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Reasoning</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="reason-stats">0</text>
     </g>
     
-    <!-- ROW 4: Learning & Adaptation Layer -->
-    <g transform="translate(20, 256)">
-      <!-- 0,4 CURRICULUM PHASES -->
-      <g id="brain-curriculum" transform="translate(0,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring learn-layer" id="curriculum-ring"/>
-        <rect x="18" y="20" width="10" height="8" rx="2" class="brain-fill" opacity="0.4"/>
-        <rect x="24" y="28" width="10" height="8" rx="2" class="brain-fill" opacity="0.7"/>
-        <rect x="30" y="36" width="10" height="8" rx="2" class="brain-fill"/>
-        <path d="M18 22h-4M24 30h-4M30 38h-4" class="brain-line" opacity="0.6"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Curriculum</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="curriculum-stats">0</text>
-      </g>
-      
-      <!-- 1,4 SKILL ACQUISITION -->
-      <g id="brain-skill" transform="translate(96,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring learn-layer" id="skill-ring"/>
-        <circle cx="22" cy="28" r="4" class="brain-fill"/>
-        <circle cx="42" cy="28" r="4" class="brain-fill" opacity="0.7"/>
-        <circle cx="32" cy="40" r="4" class="brain-fill"/>
-        <path d="M22 28L32 40L42 28" class="brain-line"/>
-        <path d="M42 18v6M39 21h6" class="brain-line"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Skill Acquire</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="skill-stats">0</text>
-      </g>
-      
-      <!-- 2,4 SYMBOLIC COMPRESSION -->
-      <g id="brain-symbolic" transform="translate(192,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring learn-layer" id="symbolic-ring"/>
-        <rect x="16" y="20" width="12" height="8" rx="2" class="brain-ring"/>
-        <rect x="36" y="38" width="12" height="8" rx="2" class="brain-fill"/>
-        <path d="M28 24l4 4 4-4" class="brain-line"/>
-        <path d="M32 28v5" class="brain-line"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Symbolic</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="symbolic-stats">0</text>
-      </g>
-      
-      <!-- 3,4 FEEDBACK INTEGRATION -->
-      <g id="brain-feedback" transform="translate(288,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring learn-layer" id="feedback-ring"/>
-        <path d="M22 24c4-4 16-4 20 2" class="brain-line"/>
-        <polygon points="42,26 44,18 48,22" class="brain-fill"/>
-        <path d="M42 40c-4 4-16 4-20-2" class="brain-line"/>
-        <polygon points="22,38 20,46 16,42" class="brain-fill"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Feedback</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="feedback-stats">0</text>
-      </g>
+    <!-- ROW 1: Routing, Execution, Compression, Memory -->
+    
+    <!-- 0,1 ROUTING -->
+    <g id="brain-routing" transform="translate(0,96)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="routing-ring"/>
+      <circle cx="32" cy="32" r="5" class="brain-fill"/>
+      <path d="M32 32L18 18M32 32L46 18M32 32L18 46M32 32L46 46" class="brain-line"/>
+      <circle cx="18" cy="18" r="3.5" class="brain-ring"/>
+      <circle cx="46" cy="18" r="3.5" class="brain-ring"/>
+      <circle cx="18" cy="46" r="3.5" class="brain-ring"/>
+      <circle cx="46" cy="46" r="3.5" class="brain-ring"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Routing</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="routing-stats">0</text>
     </g>
     
-    <!-- ROW 5: Execution-Environment Layer -->
-    <g transform="translate(20, 320)">
-      <!-- 0,5 TOOL INTERFACES -->
-      <g id="brain-tools" transform="translate(0,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring exec-layer" id="tools-ring"/>
-        <rect x="18" y="22" width="10" height="20" rx="2" class="brain-ring"/>
-        <rect x="34" y="22" width="10" height="8" rx="2" class="brain-fill"/>
-        <rect x="34" y="34" width="10" height="8" rx="2" class="brain-fill" opacity="0.7"/>
-        <path d="M28 32h6" class="brain-line"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Tool Interfaces</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="tools-stats">0</text>
-      </g>
-      
-      <!-- 1,5 SANDBOXED SIMULATION -->
-      <g id="brain-sandbox" transform="translate(96,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring exec-layer" id="sandbox-ring"/>
-        <rect x="18" y="22" width="28" height="20" rx="4" class="brain-line"/>
-        <circle cx="26" cy="32" r="4" class="brain-fill" opacity="0.7"/>
-        <circle cx="38" cy="32" r="4" class="brain-fill" opacity="0.4"/>
-        <path d="M22 26h20" class="brain-line" opacity="0.5"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Sandbox</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="sandbox-stats">0</text>
-      </g>
-      
-      <!-- 2,5 STATE PERSISTENCE -->
-      <g id="brain-state" transform="translate(192,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring exec-layer" id="state-ring"/>
-        <ellipse cx="32" cy="24" rx="10" ry="5" class="brain-line"/>
-        <path d="M22 24v12c0 3 4 5 10 5s10-2 10-5V24" class="brain-line"/>
-        <line x1="32" y1="24" x2="32" y2="30" class="brain-line"/>
-        <line x1="32" y1="30" x2="38" y2="30" class="brain-line"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">State Persist</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="state-stats">0</text>
-      </g>
-      
-      <!-- 3,5 MESH AWARENESS -->
-      <g id="brain-mesh" transform="translate(288,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring exec-layer" id="mesh-ring"/>
-        <circle cx="32" cy="32" r="5" class="brain-fill"/>
-        <circle cx="18" cy="24" r="3" class="brain-ring"/>
-        <circle cx="46" cy="24" r="3" class="brain-ring"/>
-        <circle cx="22" cy="42" r="3" class="brain-ring"/>
-        <circle cx="42" cy="42" r="3" class="brain-ring"/>
-        <path d="M32 32L18 24L22 42L32 32L46 24L42 42Z" class="brain-line" opacity="0.7"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Mesh Aware</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="mesh-stats">0</text>
-      </g>
+    <!-- 1,1 EXECUTION -->
+    <g id="brain-exec" transform="translate(96,96)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="exec-ring"/>
+      <rect x="18" y="22" width="28" height="20" rx="3" class="brain-ring"/>
+      <polygon points="24,24 38,32 24,40" class="brain-fill"/>
+      <rect x="20" y="44" width="24" height="3" rx="1.5" class="brain-fill"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Execution</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="exec-stats">0</text>
     </g>
     
-    <!-- ROW 6: Identity & Ritual Layer -->
-    <g transform="translate(20, 384)">
-      <!-- 0,6 SPLASH BOOT RITUAL -->
-      <g id="brain-splash" transform="translate(0,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring id-layer" id="splash-ring"/>
-        <circle cx="32" cy="32" r="4" class="brain-fill"/>
-        <path d="M32 16v6M32 42v6M16 32h6M42 32h6" class="brain-line"/>
-        <path d="M22 20l4 4M42 20l-4 4M22 44l4-4M42 44l-4-4" class="brain-line"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Splash Boot</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="splash-stats">0</text>
-      </g>
-      
-      <!-- 1,6 COGNITIVE FINGERPRINT -->
-      <g id="brain-fingerprint" transform="translate(96,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring id-layer" id="fingerprint-ring"/>
-        <circle cx="32" cy="32" r="4" class="brain-fill"/>
-        <path d="M24 32c0-4 3-7 8-7 5 0 8 3 8 7 0 6-4 9-8 9-3 0-5-2-6-4" class="brain-line" opacity="0.7"/>
-        <path d="M26 28c0-3 2-5 6-5 4 0 6 2 6 5" class="brain-line" opacity="0.5"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Cog Fingerprint</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="fingerprint-stats">0</text>
-      </g>
-      
-      <!-- 2,6 RUNTIME PERSONA -->
-      <g id="brain-persona" transform="translate(192,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring id-layer" id="persona-ring"/>
-        <path d="M20 24h24v12c0 6-5 10-12 10s-12-4-12-10V24z" class="brain-line"/>
-        <circle cx="26" cy="30" r="2.5" class="brain-fill"/>
-        <circle cx="38" cy="30" r="2.5" class="brain-fill"/>
-        <path d="M28 36c2 2 4 2 6 0" class="brain-line" opacity="0.8"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Runtime Persona</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="persona-stats">0</text>
-      </g>
-      
-      <!-- 3,6 NODE HERALDRY -->
-      <g id="brain-heraldry" transform="translate(288,0)">
-        <circle cx="32" cy="32" r="22" class="brain-ring id-layer" id="heraldry-ring"/>
-        <path d="M24 18h16v12c0 8-5 12-8 14-3-2-8-6-8-14V18z" class="brain-line"/>
-        <path d="M24 24h16" class="brain-line"/>
-        <path d="M32 18v26" class="brain-line" opacity="0.7"/>
-        <path d="M28 30l4 4 4-4" class="brain-fill"/>
-        <text x="32" y="56" text-anchor="middle" class="brain-text">Node Heraldry</text>
-        <text x="32" y="62" text-anchor="middle" class="stats-text" id="heraldry-stats">0</text>
-      </g>
+    <!-- 2,1 COMPRESSION -->
+    <g id="brain-compress" transform="translate(192,96)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="compress-ring"/>
+      <rect x="14" y="20" width="14" height="10" rx="2" class="brain-ring"/>
+      <rect x="40" y="34" width="14" height="10" rx="2" class="brain-fill"/>
+      <path d="M28 25h6l2.5 5 2.5-5h6" class="brain-line"/>
+      <path d="M34 38h-5" class="brain-line"/>
+      <path d="M40 26L48 32" class="brain-line" stroke-dasharray="3 2"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Compression</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="compress-stats">0</text>
+    </g>
+    
+    <!-- 3,1 MEMORY -->
+    <g id="brain-memory" transform="translate(288,96)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="memory-ring"/>
+      <rect x="18" y="20" width="18" height="24" rx="3" class="brain-ring"/>
+      <rect x="32" y="20" width="18" height="24" rx="3" class="brain-ring" opacity="0.6"/>
+      <line x1="20" y1="25" x2="34" y2="25" class="brain-line"/>
+      <line x1="20" y1="31" x2="34" y2="31" class="brain-line"/>
+      <line x1="34" y1="25" x2="46" y2="25" class="brain-line" opacity="0.7"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Memory</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="memory-stats">0</text>
+    </g>
+    
+    <!-- ROW 2: Safety, Generation, Self-correction, Knowledge -->
+    
+    <!-- 0,2 SAFETY -->
+    <g id="brain-safety" transform="translate(0,192)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="safety-ring"/>
+      <path d="M32 16l12 7v10c0 8-6 14-12 16-6-2-12-8-12-16V23z" class="brain-line"/>
+      <circle cx="32" cy="29" r="4" class="brain-fill"/>
+      <rect x="28" y="35" width="8" height="9" class="brain-fill"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Safety</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="safety-stats">0</text>
+    </g>
+    
+    <!-- 1,2 GENERATION -->
+    <g id="brain-generate" transform="translate(96,192)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="generate-ring"/>
+      <path d="M20 40c3-6 7-9 11-9 5 0 8 3 12 3 4 0 8-3 11-7" class="brain-line"/>
+      <circle cx="22" cy="24" r="3" class="brain-fill"/>
+      <circle cx="32" cy="23" r="3" class="brain-fill"/>
+      <circle cx="42" cy="26" r="3" class="brain-fill"/>
+      <path d="M38 16l3 4 4 1.5-4 1.5-3 4-1.5-4-4-1.5 4-1.5z" class="brain-fill"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Generation</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="generate-stats">0</text>
+    </g>
+    
+    <!-- 2,2 SELF-CORRECTION -->
+    <g id="brain-correct" transform="translate(192,192)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="correct-ring"/>
+      <path d="M20 38c3-7 7-11 12-11 6 0 10 4 13 11" class="brain-line"/>
+      <path d="M22 24l8 6 14-14" class="brain-line" stroke-width="2.5"/>
+      <circle cx="22" cy="24" r="3" class="brain-fill"/>
+      <circle cx="44" cy="16" r="3" class="brain-fill"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Correction</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="correct-stats">0</text>
+    </g>
+    
+    <!-- 3,2 KNOWLEDGE -->
+    <g id="brain-knowledge" transform="translate(288,192)">
+      <circle cx="32" cy="32" r="22" class="brain-ring" id="knowledge-ring"/>
+      <path d="M18 40V26l8-3 8 3 8-3 8 3v14" class="brain-line"/>
+      <line x1="26" y1="23" x2="26" y2="42" class="brain-line" stroke-width="1.5"/>
+      <line x1="38" y1="20" x2="38" y2="42" class="brain-line" stroke-width="1.5"/>
+      <text x="32" y="68" text-anchor="middle" class="brain-text">Knowledge</text>
+      <text x="32" y="76" text-anchor="middle" class="stats-text" id="knowledge-stats">0</text>
     </g>
   </g>
   
-  <!-- RLHF Storage & Control Panel -->
-  <g transform="translate(400, 256)">
+  <!-- RLHF Storage Visualization -->
+  <g transform="translate(256, 320)">
     <!-- Storage Hub -->
     <circle cx="0" cy="0" r="40" fill="none" stroke="url(#storageGradient)" stroke-width="4" opacity="0.3"/>
     <use xlink:href="#icon-db" x="0" y="0"/>
     
     <!-- Storage Stats -->
-    <text x="0" y="-50" text-anchor="middle" class="brain-text" font-size="9">RLHF Storage</text>
-    <text x="0" y="-40" text-anchor="middle" class="stats-text" id="storage-status">IndexedDB: Ready</text>
-    <text x="0" y="40" text-anchor="middle" class="brain-text" font-size="8" id="total-activity">0 total events</text>
-    <text x="0" y="50" text-anchor="middle" class="stats-text" id="active-nodes">0 active nodes</text>
-    <text x="0" y="60" text-anchor="middle" class="log-text" id="last-event">Ready</text>
+    <text x="0" y="-50" text-anchor="middle" class="brain-text" font-size="10">RLHF Storage</text>
+    <text x="0" y="-35" text-anchor="middle" class="stats-text" id="storage-status">IndexedDB: Ready</text>
+    <text x="0" y="40" text-anchor="middle" class="brain-text" font-size="9" id="rlhf-count">0 RLHF events</text>
+    <text x="0" y="50" text-anchor="middle" class="stats-text" id="feedback-count">0 feedback items</text>
+    <text x="0" y="60" text-anchor="middle" class="log-text" id="last-rlhf">No RLHF data yet</text>
   </g>
   
   <!-- Control Panel -->
-  <g transform="translate(400, 350)">
-    <rect x="-80" y="-15" width="160" height="30" rx="6" fill="rgba(5,7,11,0.8)" stroke="#00ffd0" stroke-width="1"/>
+  <g transform="translate(256, 400)">
+    <rect x="-100" y="-15" width="200" height="30" rx="6" fill="rgba(5,7,11,0.8)" stroke="#00ffd0" stroke-width="1"/>
     
-    <!-- Save RLHF -->
-    <g transform="translate(-45, 0)" style="cursor: pointer">
-      <circle cx="0" cy="0" r="6" fill="#00ffd0" opacity="0.7"/>
-      <rect x="-2" y="-3" width="4" height="6" fill="#05070b" rx="1"/>
-      <text x="0" y="15" text-anchor="middle" class="log-text">Save</text>
+    <!-- Save RLHF Button -->
+    <g transform="translate(-60, 0)" style="cursor: pointer">
+      <circle cx="0" cy="0" r="8" fill="#00ffd0" opacity="0.7"/>
+      <rect x="-3" y="-4" width="6" height="8" fill="#05070b" rx="1"/>
+      <text x="0" y="20" text-anchor="middle" class="log-text">Save RLHF</text>
     </g>
     
-    <!-- Simulate Activity -->
-    <g transform="translate(-15, 0)" style="cursor: pointer">
-      <circle cx="0" cy="0" r="6" fill="#ff3366" opacity="0.7"/>
-      <polygon points="-3,2 3,2 0,-2" fill="#05070b"/>
-      <text x="0" y="15" text-anchor="middle" class="log-text">Simulate</text>
+    <!-- Load Training Data -->
+    <g transform="translate(-20, 0)" style="cursor: pointer">
+      <circle cx="0" cy="0" r="8" fill="#ff3366" opacity="0.7"/>
+      <path d="M-5,3 L5,3 L0,-4 Z" fill="#05070b"/>
+      <text x="0" y="20" text-anchor="middle" class="log-text">Load Data</text>
     </g>
     
     <!-- Clear Data -->
-    <g transform="translate(15, 0)" style="cursor: pointer">
-      <circle cx="0" cy="0" r="6" fill="#f5c451" opacity="0.7"/>
-      <path d="M-3,-3 L3,3 M3,-3 L-3,3" stroke="#05070b" stroke-width="1.5"/>
-      <text x="0" y="15" text-anchor="middle" class="log-text">Clear</text>
+    <g transform="translate(20, 0)" style="cursor: pointer">
+      <circle cx="0" cy="0" r="8" fill="#f5c451" opacity="0.7"/>
+      <path d="M-4,-4 L4,4 M4,-4 L-4,4" stroke="#05070b" stroke-width="2"/>
+      <text x="0" y="20" text-anchor="middle" class="log-text">Clear</text>
     </g>
     
     <!-- Export Data -->
-    <g transform="translate(45, 0)" style="cursor: pointer">
-      <circle cx="0" cy="0" r="6" fill="#a78bfa" opacity="0.7"/>
-      <rect x="-2" y="-2" width="4" height="4" fill="#05070b"/>
-      <path d="M0,-4 L0,-1" stroke="#05070b" stroke-width="1.5"/>
-      <text x="0" y="15" text-anchor="middle" class="log-text">Export</text>
+    <g transform="translate(60, 0)" style="cursor: pointer">
+      <circle cx="0" cy="0" r="8" fill="#a78bfa" opacity="0.7"/>
+      <rect x="-3" y="-3" width="6" height="6" fill="#05070b"/>
+      <path d="M0,-5 L0,-2" stroke="#05070b" stroke-width="2"/>
+      <text x="0" y="20" text-anchor="middle" class="log-text">Export</text>
     </g>
   </g>
   
   <!-- Activity Log -->
   <g transform="translate(256, 450)">
-    <rect x="-200" y="-15" width="400" height="30" rx="6" fill="rgba(5,7,11,0.7)" stroke="#f5c451" stroke-width="1"/>
-    <text x="-190" y="-2" text-anchor="start" class="log-text">Activity:</text>
-    <text x="-160" y="-2" text-anchor="start" class="log-text" id="current-activity">Complete brain cluster ready</text>
-    <text x="190" y="-2" text-anchor="end" class="log-text" id="activity-time">-</text>
+    <rect x="-180" y="-15" width="360" height="30" rx="6" fill="rgba(5,7,11,0.7)" stroke="#f5c451" stroke-width="1"/>
+    <text x="-170" y="-2" text-anchor="start" class="log-text">Activity:</text>
+    <text x="-140" y="-2" text-anchor="start" class="log-text" id="current-activity">Brain cluster idle</text>
+    <text x="170" y="-2" text-anchor="end" class="log-text" id="activity-time">-</text>
   </g>
   
-  <!-- Embedded RLHF Brain Cluster Runtime -->
+  <!-- RLHF Embedded Runtime -->
   <script type="application/javascript">
 <![CDATA[
-    // K'UHUL Complete Brain Cluster - 28 Nodes + RLHF Storage
-    class CompleteBrainCluster {
+    // K'UHUL Brain Cluster RLHF Runtime
+    // IndexedDB for RLHF data storage and event logging
+    
+    class RLHFBrainCluster {
       constructor() {
-        // All 28 brain nodes organized by layer
+        // Brain node activity tracking
         this.brainNodes = {
-          // Meta-Cognition Layer
-          'introspect': { count: 0, lastActive: 0, layer: 'meta' },
-          'uncertainty': { count: 0, lastActive: 0, layer: 'meta' },
-          'goal': { count: 0, lastActive: 0, layer: 'meta' },
-          'mode': { count: 0, lastActive: 0, layer: 'meta' },
-          
-          // Core Transformer Layer
-          'tokenize': { count: 0, lastActive: 0, layer: 'core' },
-          'context': { count: 0, lastActive: 0, layer: 'core' },
-          'attention': { count: 0, lastActive: 0, layer: 'core' },
-          'reason': { count: 0, lastActive: 0, layer: 'core' },
-          
-          // Operational Layer
-          'routing': { count: 0, lastActive: 0, layer: 'op' },
-          'exec': { count: 0, lastActive: 0, layer: 'op' },
-          'compress': { count: 0, lastActive: 0, layer: 'op' },
-          'memory': { count: 0, lastActive: 0, layer: 'op' },
-          
-          // Safety & Generative Layer
-          'safety': { count: 0, lastActive: 0, layer: 'safety' },
-          'generate': { count: 0, lastActive: 0, layer: 'safety' },
-          'correct': { count: 0, lastActive: 0, layer: 'safety' },
-          'knowledge': { count: 0, lastActive: 0, layer: 'safety' },
-          
-          // Learning & Adaptation Layer
-          'curriculum': { count: 0, lastActive: 0, layer: 'learn' },
-          'skill': { count: 0, lastActive: 0, layer: 'learn' },
-          'symbolic': { count: 0, lastActive: 0, layer: 'learn' },
-          'feedback': { count: 0, lastActive: 0, layer: 'learn' },
-          
-          // Execution Environment Layer
-          'tools': { count: 0, lastActive: 0, layer: 'exec' },
-          'sandbox': { count: 0, lastActive: 0, layer: 'exec' },
-          'state': { count: 0, lastActive: 0, layer: 'exec' },
-          'mesh': { count: 0, lastActive: 0, layer: 'exec' },
-          
-          // Identity & Ritual Layer
-          'splash': { count: 0, lastActive: 0, layer: 'id' },
-          'fingerprint': { count: 0, lastActive: 0, layer: 'id' },
-          'persona': { count: 0, lastActive: 0, layer: 'id' },
-          'heraldry': { count: 0, lastActive: 0, layer: 'id' }
+          'tokenize': { count: 0, lastActive: 0 },
+          'context': { count: 0, lastActive: 0 },
+          'attention': { count: 0, lastActive: 0 },
+          'reason': { count: 0, lastActive: 0 },
+          'routing': { count: 0, lastActive: 0 },
+          'exec': { count: 0, lastActive: 0 },
+          'compress': { count: 0, lastActive: 0 },
+          'memory': { count: 0, lastActive: 0 },
+          'safety': { count: 0, lastActive: 0 },
+          'generate': { count: 0, lastActive: 0 },
+          'correct': { count: 0, lastActive: 0 },
+          'knowledge': { count: 0, lastActive: 0 }
         };
         
-        // RLHF Storage
+        // RLHF data storage
         this.storage = {
           db: null,
           ready: false,
           stats: {
-            totalEvents: 0,
-            activeNodes: 0,
-            lastUpdate: null,
-            sessionId: this.generateSessionId()
+            rlhfEvents: 0,
+            feedbackItems: 0,
+            trainingSessions: 0,
+            lastUpdated: null
           }
         };
         
-        // Initialize
+        // Initialize IndexedDB for RLHF storage
         this.initRLHFStorage();
+        
+        // Setup click handlers
         this.setupEventHandlers();
+        
+        // Start activity simulation
         this.startBrainActivity();
+        
+        // Update display
         this.updateAllDisplays();
         
-        console.log('🧠 Complete Brain Cluster (28 nodes) initialized');
+        console.log('🧠 RLHF Brain Cluster initialized');
       }
       
-      // Initialize IndexedDB
+      // Initialize IndexedDB for RLHF data
       async initRLHFStorage() {
         try {
           if (!window.indexedDB) {
@@ -526,36 +304,39 @@
             return;
           }
           
-          const request = indexedDB.open('kuhul-complete-brain', 4);
+          const request = indexedDB.open('kuhul-brain-rlhf', 3);
           
           request.onupgradeneeded = (event) => {
             const db = event.target.result;
             
-            // Brain Activity Events
-            if (!db.objectStoreNames.contains('brain_events')) {
-              const eventsStore = db.createObjectStore('brain_events', { keyPath: 'id' });
+            // RLHF Events Store
+            if (!db.objectStoreNames.contains('rlhf_events')) {
+              const eventsStore = db.createObjectStore('rlhf_events', { keyPath: 'id' });
               eventsStore.createIndex('timestamp', 'timestamp', { unique: false });
-              eventsStore.createIndex('node', 'node', { unique: false });
-              eventsStore.createIndex('layer', 'layer', { unique: false });
+              eventsStore.createIndex('brainNode', 'brainNode', { unique: false });
+              eventsStore.createIndex('feedbackScore', 'feedbackScore', { unique: false });
             }
             
-            // RLHF Feedback
-            if (!db.objectStoreNames.contains('rlhf_feedback')) {
-              const feedbackStore = db.createObjectStore('rlhf_feedback', { keyPath: 'id' });
-              feedbackStore.createIndex('node', 'node', { unique: false });
-              feedbackStore.createIndex('score', 'score', { unique: false });
+            // Feedback Training Store
+            if (!db.objectStoreNames.contains('feedback_data')) {
+              const feedbackStore = db.createObjectStore('feedback_data', { keyPath: 'id' });
+              feedbackStore.createIndex('sessionId', 'sessionId', { unique: false });
+              feedbackStore.createIndex('quality', 'quality', { unique: false });
+              feedbackStore.createIndex('tags', 'tags', { unique: false, multiEntry: true });
             }
             
-            // Layer Performance
-            if (!db.objectStoreNames.contains('layer_performance')) {
-              const layerStore = db.createObjectStore('layer_performance', { keyPath: 'layer' });
-              layerStore.createIndex('timestamp', 'timestamp', { unique: false });
-            }
-            
-            // Training Sessions
+            // Training Sessions Store
             if (!db.objectStoreNames.contains('training_sessions')) {
               const trainingStore = db.createObjectStore('training_sessions', { keyPath: 'id' });
-              trainingStore.createIndex('start', 'start', { unique: false });
+              trainingStore.createIndex('startTime', 'startTime', { unique: false });
+              trainingStore.createIndex('status', 'status', { unique: false });
+            }
+            
+            // Model Snapshots Store
+            if (!db.objectStoreNames.contains('model_snapshots')) {
+              const snapshotsStore = db.createObjectStore('model_snapshots', { keyPath: 'version' });
+              snapshotsStore.createIndex('created', 'created', { unique: false });
+              snapshotsStore.createIndex('performance', 'performance', { unique: false });
             }
           };
           
@@ -563,25 +344,30 @@
             this.storage.db = event.target.result;
             this.storage.ready = true;
             
+            // Load stats from storage
             this.loadStorageStats();
+            
             this.updateStorageStatus('IndexedDB: Ready');
-            this.logActivity('Complete brain storage initialized');
+            this.logActivity('RLHF storage initialized');
+            
+            // Setup button handlers after storage is ready
             this.setupButtonHandlers();
           };
           
           request.onerror = (event) => {
-            console.error('IndexedDB error:', event.target.error);
+            console.error('RLHF IndexedDB error:', event.target.error);
             this.updateStorageStatus('IndexedDB: Error');
           };
           
         } catch (error) {
-          console.error('Storage init error:', error);
+          console.error('RLHF storage init error:', error);
           this.updateStorageStatus('Storage error');
         }
       }
       
-      // Setup event handlers
+      // Setup event handlers for brain nodes
       setupEventHandlers() {
+        // Add click handlers to each brain node for manual triggering
         Object.keys(this.brainNodes).forEach(nodeId => {
           const element = document.getElementById(`brain-${nodeId}`);
           if (element) {
@@ -594,176 +380,152 @@
       setupButtonHandlers() {
         const buttons = document.querySelectorAll('g[style*="cursor: pointer"]');
         
-        if (buttons[0]) buttons[0].onclick = () => this.saveBrainEvent();
-        if (buttons[1]) buttons[1].onclick = () => this.simulateActivity();
-        if (buttons[2]) buttons[2].onclick = () => this.clearAllData();
-        if (buttons[3]) buttons[3].onclick = () => this.exportAllData();
+        if (buttons[0]) buttons[0].onclick = () => this.saveRLHFEvent();
+        if (buttons[1]) buttons[1].onclick = () => this.loadTrainingData();
+        if (buttons[2]) buttons[2].onclick = () => this.clearRLHFData();
+        if (buttons[3]) buttons[3].onclick = () => this.exportRLHFData();
       }
       
-      // Trigger brain node activity
-      triggerBrainNode(nodeId, feedbackScore = null) {
-        if (!this.brainNodes[nodeId]) return;
-        
-        this.brainNodes[nodeId].count++;
-        this.brainNodes[nodeId].lastActive = Date.now();
-        
-        this.highlightBrainNode(nodeId);
-        this.updateNodeDisplay(nodeId);
-        this.updateGlobalStats();
-        
-        this.logActivity(`${nodeId} activated`);
-        
-        // Save to IndexedDB
-        if (this.storage.ready) {
-          this.saveToStorage(nodeId, feedbackScore);
+      // Save RLHF event
+      async saveRLHFEvent(brainNode = null, feedbackScore = null, data = null) {
+        if (!this.storage.ready) {
+          this.logActivity('Storage not ready for RLHF save');
+          return null;
         }
-      }
-      
-      // Save brain event to IndexedDB
-      async saveToStorage(nodeId, feedbackScore = null) {
+        
         try {
-          const event = {
-            id: `brain_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+          const node = brainNode || this.getRandomBrainNode();
+          const score = feedbackScore || this.generateFeedbackScore();
+          const eventData = data || {
+            input: this.generateRandomInput(),
+            response: this.generateRandomResponse(),
+            context: { timestamp: Date.now(), session: this.generateSessionId() }
+          };
+          
+          const rlhfEvent = {
+            id: `rlhf_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             timestamp: Date.now(),
-            node: nodeId,
-            layer: this.brainNodes[nodeId].layer,
-            count: this.brainNodes[nodeId].count,
-            feedbackScore: feedbackScore || this.generateFeedbackScore(),
-            sessionId: this.storage.stats.sessionId,
+            brainNode: node,
+            feedbackScore: score,
+            data: eventData,
+            sessionId: this.generateSessionId(),
             metadata: {
-              version: '2.0',
-              type: 'brain_activity'
+              version: '1.0',
+              source: 'brain-cluster',
+              tags: ['rlhf', node, score > 0.7 ? 'positive' : 'neutral']
             }
           };
           
-          const transaction = this.storage.db.transaction(['brain_events'], 'readwrite');
-          const store = transaction.objectStore('brain_events');
+          const transaction = this.storage.db.transaction(['rlhf_events'], 'readwrite');
+          const store = transaction.objectStore('rlhf_events');
           
-          await store.add(event);
+          await store.add(rlhfEvent);
           
-          // Update layer performance
-          await this.updateLayerPerformance(event.layer);
+          // Update brain node stats
+          this.brainNodes[node].count++;
+          this.brainNodes[node].lastActive = Date.now();
           
-          this.storage.stats.totalEvents++;
-          this.storage.stats.lastUpdate = Date.now();
+          // Update storage stats
+          this.storage.stats.rlhfEvents++;
+          this.storage.stats.lastUpdated = Date.now();
           
+          // Highlight the brain node
+          this.highlightBrainNode(node);
+          
+          // Update displays
+          this.updateNodeDisplay(node);
           this.updateStorageDisplay();
           
-          return event;
+          this.logActivity(`RLHF saved: ${node} (score: ${score.toFixed(2)})`);
+          
+          return rlhfEvent;
           
         } catch (error) {
-          console.error('Save to storage error:', error);
+          console.error('RLHF save error:', error);
+          this.logActivity('RLHF save failed');
           return null;
         }
       }
       
-      // Save RLHF feedback
-      async saveRLHFFeedback(nodeId, score, notes = '') {
+      // Save feedback training data
+      async saveFeedbackTraining(feedbackData) {
         if (!this.storage.ready) return null;
         
         try {
           const feedback = {
             id: `feedback_${Date.now()}`,
             timestamp: Date.now(),
-            node: nodeId,
-            score: score,
-            notes: notes,
-            sessionId: this.storage.stats.sessionId
+            sessionId: this.generateSessionId(),
+            quality: feedbackData.quality || this.generateQualityScore(),
+            categories: feedbackData.categories || ['helpfulness', 'accuracy', 'safety'],
+            tags: feedbackData.tags || [],
+            notes: feedbackData.notes || '',
+            improvements: feedbackData.improvements || [],
+            rating: feedbackData.rating || Math.floor(Math.random() * 5) + 1,
+            metadata: {
+              type: 'human_feedback',
+              version: '1.0',
+              source: 'brain-cluster-rlhf'
+            }
           };
           
-          const transaction = this.storage.db.transaction(['rlhf_feedback'], 'readwrite');
-          const store = transaction.objectStore('rlhf_feedback');
+          const transaction = this.storage.db.transaction(['feedback_data'], 'readwrite');
+          const store = transaction.objectStore('feedback_data');
           
           await store.add(feedback);
           
-          this.logActivity(`RLHF feedback saved for ${nodeId}: ${score.toFixed(2)}`);
+          this.storage.stats.feedbackItems++;
+          this.updateStorageDisplay();
+          
+          this.logActivity(`Feedback saved (quality: ${feedback.quality.toFixed(2)})`);
           
           return feedback;
           
         } catch (error) {
-          console.error('RLHF feedback error:', error);
+          console.error('Feedback save error:', error);
           return null;
         }
       }
       
-      // Update layer performance
-      async updateLayerPerformance(layer) {
-        if (!this.storage.ready) return;
+      // Load training data from storage
+      async loadTrainingData(limit = 50) {
+        if (!this.storage.ready) return [];
         
         try {
-          const transaction = this.storage.db.transaction(['layer_performance'], 'readwrite');
-          const store = transaction.objectStore('layer_performance');
+          const transaction = this.storage.db.transaction(['rlhf_events'], 'readonly');
+          const store = transaction.objectStore('rlhf_events');
+          const index = store.index('timestamp');
           
-          const request = store.get(layer);
+          const request = index.openCursor(null, 'prev');
+          const results = [];
           
-          request.onsuccess = () => {
-            const existing = request.result || { layer: layer, count: 0, lastUpdated: 0 };
-            const updated = {
-              ...existing,
-              count: existing.count + 1,
-              lastUpdated: Date.now(),
-              timestamp: Date.now()
+          return new Promise((resolve, reject) => {
+            request.onsuccess = (event) => {
+              const cursor = event.target.result;
+              if (cursor && results.length < limit) {
+                results.push(cursor.value);
+                cursor.continue();
+              } else {
+                this.logActivity(`Loaded ${results.length} RLHF events`);
+                resolve(results);
+              }
             };
             
-            store.put(updated);
-          };
+            request.onerror = reject;
+          });
           
         } catch (error) {
-          console.error('Layer performance update error:', error);
+          console.error('Load training data error:', error);
+          return [];
         }
       }
       
-      // Load storage stats
-      async loadStorageStats() {
+      // Clear RLHF data
+      async clearRLHFData() {
         if (!this.storage.ready) return;
         
         try {
-          // Count brain events
-          const eventsTransaction = this.storage.db.transaction(['brain_events'], 'readonly');
-          const eventsStore = eventsTransaction.objectStore('brain_events');
-          const eventsCount = await eventsStore.count();
-          
-          this.storage.stats.totalEvents = eventsCount.result || 0;
-          this.updateStorageDisplay();
-          
-        } catch (error) {
-          console.error('Load stats error:', error);
-        }
-      }
-      
-      // Save brain event (public API)
-      async saveBrainEvent() {
-        const randomNode = this.getRandomBrainNode();
-        this.triggerBrainNode(randomNode);
-        
-        // Also save RLHF feedback 30% of the time
-        if (Math.random() > 0.7) {
-          const score = this.generateFeedbackScore();
-          await this.saveRLHFFeedback(randomNode, score, 'Automated feedback');
-        }
-      }
-      
-      // Simulate activity
-      simulateActivity() {
-        // Trigger 3-5 random nodes
-        const count = 3 + Math.floor(Math.random() * 3);
-        
-        for (let i = 0; i < count; i++) {
-          setTimeout(() => {
-            const node = this.getRandomBrainNode();
-            this.triggerBrainNode(node);
-          }, i * 300);
-        }
-        
-        this.logActivity(`Simulating ${count} node activations`);
-      }
-      
-      // Clear all data
-      async clearAllData() {
-        if (!this.storage.ready) return;
-        
-        try {
-          const stores = ['brain_events', 'rlhf_feedback', 'layer_performance', 'training_sessions'];
+          const stores = ['rlhf_events', 'feedback_data', 'training_sessions', 'model_snapshots'];
           
           for (const storeName of stores) {
             const transaction = this.storage.db.transaction([storeName], 'readwrite');
@@ -771,45 +533,43 @@
             await store.clear();
           }
           
-          // Reset brain nodes
-          Object.keys(this.brainNodes).forEach(node => {
-            this.brainNodes[node].count = 0;
-            this.brainNodes[node].lastActive = 0;
-          });
-          
           // Reset stats
           this.storage.stats = {
-            totalEvents: 0,
-            activeNodes: 0,
-            lastUpdate: null,
-            sessionId: this.generateSessionId()
+            rlhfEvents: 0,
+            feedbackItems: 0,
+            trainingSessions: 0,
+            lastUpdated: null
           };
           
+          // Reset brain node counts
+          Object.keys(this.brainNodes).forEach(node => {
+            this.brainNodes[node].count = 0;
+          });
+          
           this.updateAllDisplays();
-          this.logActivity('All data cleared');
+          this.logActivity('RLHF data cleared');
           
         } catch (error) {
-          console.error('Clear data error:', error);
+          console.error('Clear RLHF data error:', error);
         }
       }
       
-      // Export all data
-      async exportAllData() {
+      // Export RLHF data
+      async exportRLHFData() {
         try {
           const exportData = {
             metadata: {
               exportDate: new Date().toISOString(),
-              version: '3.0',
-              system: 'KUHUL Complete Brain Cluster',
-              sessionId: this.storage.stats.sessionId
+              version: '2.0',
+              source: 'KUHUL Brain Cluster RLHF'
             },
-            brainNodes: this.brainNodes,
-            storageStats: this.storage.stats,
+            stats: this.storage.stats,
+            brainNodeActivity: this.brainNodes,
+            recentRLHFEvents: await this.loadTrainingData(100),
             summary: {
-              totalNodes: 28,
-              activeNodes: Object.keys(this.brainNodes).filter(k => this.brainNodes[k].count > 0).length,
-              totalEvents: this.storage.stats.totalEvents,
-              layers: ['meta', 'core', 'op', 'safety', 'learn', 'exec', 'id']
+              totalEvents: this.storage.stats.rlhfEvents,
+              totalFeedback: this.storage.stats.feedbackItems,
+              activeNodes: Object.keys(this.brainNodes).filter(k => this.brainNodes[k].count > 0).length
             }
           };
           
@@ -818,12 +578,12 @@
           
           const link = document.createElement('a');
           link.setAttribute('href', dataUri);
-          link.setAttribute('download', `kuhul-brain-complete-${Date.now()}.json`);
+          link.setAttribute('download', `kuhul-brain-rlhf-${Date.now()}.json`);
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
           
-          this.logActivity('All data exported');
+          this.logActivity('RLHF data exported');
           
         } catch (error) {
           console.error('Export error:', error);
@@ -831,20 +591,63 @@
         }
       }
       
+      // Load storage stats
+      async loadStorageStats() {
+        if (!this.storage.ready) return;
+        
+        try {
+          // Count RLHF events
+          const eventsTransaction = this.storage.db.transaction(['rlhf_events'], 'readonly');
+          const eventsStore = eventsTransaction.objectStore('rlhf_events');
+          const eventsCount = await eventsStore.count();
+          
+          // Count feedback items
+          const feedbackTransaction = this.storage.db.transaction(['feedback_data'], 'readonly');
+          const feedbackStore = feedbackTransaction.objectStore('feedback_data');
+          const feedbackCount = await feedbackStore.count();
+          
+          this.storage.stats.rlhfEvents = eventsCount.result || 0;
+          this.storage.stats.feedbackItems = feedbackCount.result || 0;
+          
+          this.updateStorageDisplay();
+          
+        } catch (error) {
+          console.error('Load stats error:', error);
+        }
+      }
+      
       // Start brain activity simulation
       startBrainActivity() {
-        // Random activity every 2-5 seconds
+        // Simulate random brain node activity
         setInterval(() => {
-          if (Math.random() > 0.6) {
+          if (Math.random() > 0.7) { // 30% chance of activity
             const node = this.getRandomBrainNode();
             this.triggerBrainNode(node);
+            
+            // Occasionally save as RLHF event
+            if (Math.random() > 0.8) { // 20% chance
+              this.saveRLHFEvent(node);
+            }
           }
-        }, 2000 + Math.random() * 3000);
+        }, 3000);
         
-        // Periodic display updates
+        // Periodic storage sync
         setInterval(() => {
           this.updateAllDisplays();
-        }, 3000);
+        }, 5000);
+      }
+      
+      // Trigger brain node activity
+      triggerBrainNode(nodeId) {
+        if (!this.brainNodes[nodeId]) return;
+        
+        this.brainNodes[nodeId].count++;
+        this.brainNodes[nodeId].lastActive = Date.now();
+        
+        this.highlightBrainNode(nodeId);
+        this.updateNodeDisplay(nodeId);
+        
+        this.logActivity(`Brain node active: ${nodeId}`);
       }
       
       // Highlight brain node
@@ -852,14 +655,13 @@
         const ring = document.getElementById(`${nodeId}-ring`);
         if (ring) {
           ring.classList.add('active');
-          setTimeout(() => ring.classList.remove('active'), 800);
+          setTimeout(() => ring.classList.remove('active'), 1000);
         }
       }
       
       // Update all displays
       updateAllDisplays() {
         this.updateNodeDisplays();
-        this.updateGlobalStats();
         this.updateStorageDisplay();
       }
       
@@ -876,41 +678,33 @@
         if (statsElement) {
           statsElement.textContent = this.brainNodes[nodeId].count;
           
-          // Visual feedback for recent activity
-          if (Date.now() - this.brainNodes[nodeId].lastActive < 1500) {
+          // Add animation for new activity
+          if (Date.now() - this.brainNodes[nodeId].lastActive < 1000) {
             statsElement.style.transform = 'scale(1.3)';
             setTimeout(() => {
-              if (statsElement) statsElement.style.transform = 'scale(1)';
+              statsElement.style.transform = 'scale(1)';
             }, 300);
           }
         }
       }
       
-      // Update global stats
-      updateGlobalStats() {
-        const activeNodes = Object.keys(this.brainNodes).filter(k => this.brainNodes[k].count > 0).length;
-        const totalActivity = Object.values(this.brainNodes).reduce((sum, node) => sum + node.count, 0);
-        
-        const activeElement = document.getElementById('active-nodes');
-        const totalElement = document.getElementById('total-activity');
-        
-        if (activeElement) activeElement.textContent = `${activeNodes}/28 active nodes`;
-        if (totalElement) totalElement.textContent = `${totalActivity} total events`;
-        
-        this.storage.stats.activeNodes = activeNodes;
-      }
-      
       // Update storage display
       updateStorageDisplay() {
-        const lastEventElement = document.getElementById('last-event');
+        const rlhfElement = document.getElementById('rlhf-count');
+        const feedbackElement = document.getElementById('feedback-count');
+        const lastRLHFElement = document.getElementById('last-rlhf');
         
-        if (lastEventElement) {
-          if (this.storage.stats.lastUpdate) {
-            const timeAgo = Math.floor((Date.now() - this.storage.stats.lastUpdate) / 1000);
-            lastEventElement.textContent = `Last: ${timeAgo}s ago`;
-          } else {
-            lastEventElement.textContent = 'No events yet';
-          }
+        if (rlhfElement) {
+          rlhfElement.textContent = `${this.storage.stats.rlhfEvents} RLHF events`;
+        }
+        
+        if (feedbackElement) {
+          feedbackElement.textContent = `${this.storage.stats.feedbackItems} feedback items`;
+        }
+        
+        if (lastRLHFElement && this.storage.stats.lastUpdated) {
+          const timeAgo = Math.floor((Date.now() - this.storage.stats.lastUpdated) / 1000);
+          lastRLHFElement.textContent = `Last: ${timeAgo}s ago`;
         }
       }
       
@@ -945,8 +739,41 @@
       }
       
       generateFeedbackScore() {
-        // Generate somewhat positive scores (0.5-0.95)
-        return 0.5 + Math.random() * 0.45;
+        // Generate somewhat positive scores (0.4-0.9)
+        return 0.4 + Math.random() * 0.5;
+      }
+      
+      generateQualityScore() {
+        // Quality score 0-1
+        return Math.random();
+      }
+      
+      generateRandomInput() {
+        const inputs = [
+          "Explain quantum computing",
+          "Write a poem about AI",
+          "Help debug this code",
+          "Summarize this article",
+          "Translate to Spanish",
+          "Generate creative ideas",
+          "Analyze this data",
+          "Create a story"
+        ];
+        return inputs[Math.floor(Math.random() * inputs.length)];
+      }
+      
+      generateRandomResponse() {
+        const responses = [
+          "Quantum computing uses qubits...",
+          "Here's a poem about artificial intelligence...",
+          "I found the bug in your code...",
+          "The article discusses...",
+          "La traducción al español es...",
+          "Here are some creative ideas...",
+          "The data shows a trend of...",
+          "Once upon a time in a digital world..."
+        ];
+        return responses[Math.floor(Math.random() * responses.length)];
       }
       
       generateSessionId() {
@@ -956,59 +783,59 @@
       // Public API
       getAPI() {
         return {
-          triggerNode: (nodeId) => this.triggerBrainNode(nodeId),
-          saveFeedback: (nodeId, score, notes) => this.saveRLHFFeedback(nodeId, score, notes),
-          simulate: () => this.simulateActivity(),
-          clear: () => this.clearAllData(),
-          export: () => this.exportAllData(),
+          saveRLHF: (node, score, data) => this.saveRLHFEvent(node, score, data),
+          saveFeedback: (data) => this.saveFeedbackTraining(data),
+          loadData: (limit) => this.loadTrainingData(limit),
+          clearData: () => this.clearRLHFData(),
+          exportData: () => this.exportRLHFData(),
           getStats: () => ({
             brainNodes: this.brainNodes,
             storageStats: this.storage.stats,
             totalActivity: Object.values(this.brainNodes).reduce((sum, node) => sum + node.count, 0)
-          })
+          }),
+          triggerNode: (nodeId) => this.triggerBrainNode(nodeId)
         };
       }
     }
     
-    // Initialize Complete Brain Cluster
-    let completeBrainCluster;
+    // Initialize RLHF Brain Cluster
+    let rlhfBrainCluster;
     
-    function initCompleteBrainCluster() {
+    function initRLHFBrainCluster() {
       try {
-        completeBrainCluster = new CompleteBrainCluster();
-        window.completeBrainCluster = completeBrainCluster;
+        rlhfBrainCluster = new RLHFBrainCluster();
+        window.rlhfBrainCluster = rlhfBrainCluster;
         
-        console.log('🧠 Complete Brain Cluster (28 nodes) with RLHF storage initialized');
+        console.log('🧠 RLHF Brain Cluster with IndexedDB initialized');
         
-        // Initial activity
+        // Test RLHF save after initialization
         setTimeout(() => {
-          if (completeBrainCluster) {
-            // Trigger splash boot ritual
-            completeBrainCluster.triggerBrainNode('splash');
-            
-            // Trigger a few more nodes
-            ['introspect', 'attention', 'generate'].forEach((node, i) => {
-              setTimeout(() => completeBrainCluster.triggerBrainNode(node), i * 500);
+          if (rlhfBrainCluster) {
+            rlhfBrainCluster.saveRLHFEvent();
+            rlhfBrainCluster.saveFeedbackTraining({
+              quality: 0.85,
+              categories: ['accuracy', 'helpfulness'],
+              notes: 'Good response, could be more concise'
             });
           }
-        }, 1000);
+        }, 2000);
         
       } catch (error) {
-        console.error('Failed to initialize Complete Brain Cluster:', error);
+        console.error('Failed to initialize RLHF Brain Cluster:', error);
       }
     }
     
     // Initialize when ready
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCompleteBrainCluster);
+      document.addEventListener('DOMContentLoaded', initRLHFBrainCluster);
     } else {
-      initCompleteBrainCluster();
+      initRLHFBrainCluster();
     }
     
     // Global access
-    window.KuhulCompleteBrain = {
-      getInstance: () => completeBrainCluster,
-      getAPI: () => completeBrainCluster?.getAPI()
+    window.KuhulBrainRLHF = {
+      getInstance: () => rlhfBrainCluster,
+      getAPI: () => rlhfBrainCluster?.getAPI()
     };
 ]]>
   </script>
