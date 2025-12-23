@@ -1,0 +1,167 @@
+{
+  "$id": "https://kuhul.mx2lm/schemas/apsx.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "APSX-1: APF-SCXQ2 Binary Encoding v1",
+  "description": "Compiler-grade binary encoding for Atomic Prompt Folds",
+  "version": "1.0.0",
+  "status": "frozen",
+
+  "file_envelope": {
+    "structure": [
+      { "field": "MAGIC", "size": 4, "value": "APSX" },
+      { "field": "VERSION", "size": 2, "type": "u16", "value": 1 },
+      { "field": "FLAGS", "size": 2, "type": "u16", "description": "bitfield" },
+      { "field": "HEADER_LEN", "size": 4, "type": "u32" },
+      { "field": "BODY_LEN", "size": 4, "type": "u32" },
+      { "field": "HEADER_BLOCK", "size": "variable" },
+      { "field": "BODY_BLOCK", "size": "variable" },
+      { "field": "FOOTER_BLOCK", "size": "variable" }
+    ]
+  },
+
+  "flags": {
+    "bit0": { "name": "has_dict", "description": "Dictionary present" },
+    "bit1": { "name": "has_symbol_lane", "description": "Symbol lane present" },
+    "bit2": { "name": "has_raw_lane", "description": "Raw lane present" },
+    "bit3": { "name": "has_schema_hash", "description": "Schema hash present" },
+    "bit4": { "name": "has_proof_chain", "description": "Proof chain present" },
+    "bit5": { "name": "epoch_in_hash", "description": "Epoch included in policy hash" }
+  },
+
+  "integer_encoding": {
+    "method": "ULEB128",
+    "description": "Variable-length unsigned integer encoding. Always minimal-length varints.",
+    "types": {
+      "varu": "ULEB128 unsigned",
+      "vari": "zigzag + ULEB128 signed (rare)"
+    }
+  },
+
+  "field_ids": {
+    "fold_id": { "id": 1, "type": "STR_REF" },
+    "intent": { "id": 2, "type": "ENUM8" },
+    "role": { "id": 3, "type": "ENUM8" },
+    "scope": { "id": 4, "type": "ENUM8" },
+    "symbols": { "id": 5, "type": "VEC(U16_REF)" },
+    "constraints": { "id": 6, "type": "VEC(U16_REF)" },
+    "input": { "id": 7, "type": "OBJ" },
+    "output_spec": { "id": 8, "type": "OBJ" },
+    "policy_hash": { "id": 9, "type": "BYTES(32)" },
+    "epoch": { "id": 10, "type": "VARU" },
+    "schema_hash": { "id": 11, "type": "BYTES(32)", "optional": true },
+    "meta": { "id": 12, "type": "OBJ", "optional": true }
+  },
+
+  "wire_types": {
+    "0x01": "ENUM8",
+    "0x02": "VARU",
+    "0x03": "BYTES",
+    "0x04": "STR_REF",
+    "0x05": "BYTES_REF",
+    "0x06": "VEC_U16_REF",
+    "0x07": "OBJ",
+    "0x08": "RAW_JSON (escape hatch, discouraged)"
+  },
+
+  "enums": {
+    "intent": {
+      "0": "EXPLAIN",
+      "1": "REASON",
+      "2": "DECIDE",
+      "3": "GENERATE",
+      "4": "TRANSFORM",
+      "5": "VERIFY",
+      "6": "SUMMARIZE",
+      "7": "SIMULATE",
+      "8": "EXECUTE"
+    },
+    "role": {
+      "0": "SYSTEM",
+      "1": "CONTROL",
+      "2": "REASON",
+      "3": "TASK",
+      "4": "CONTEXT",
+      "5": "DATA",
+      "6": "OUTPUT",
+      "7": "EVAL"
+    },
+    "scope": {
+      "0": "LOCAL",
+      "1": "SESSION",
+      "2": "EPOCH",
+      "3": "GLOBAL"
+    },
+    "output_type": {
+      "0": "structured_text",
+      "1": "json",
+      "2": "xml",
+      "3": "bytes",
+      "4": "code",
+      "5": "svg"
+    },
+    "output_format": {
+      "0": "plain",
+      "1": "markdown",
+      "2": "json_min",
+      "3": "json_pretty",
+      "4": "xml_pretty"
+    }
+  },
+
+  "dictionary_block": {
+    "magic": "DICT",
+    "version": 1,
+    "structure": [
+      { "field": "STR_COUNT", "type": "varu" },
+      { "field": "BYTES_COUNT", "type": "varu" },
+      { "field": "STR_TABLE", "type": "array", "items": "length-prefixed UTF-8" },
+      { "field": "BYTES_TABLE", "type": "array", "items": "length-prefixed bytes" }
+    ],
+    "rule": "Any repeated string MUST be in STR_TABLE"
+  },
+
+  "lane_block": {
+    "magic": "LANE",
+    "structure": [
+      { "field": "SYM_LEN", "type": "varu" },
+      { "field": "SYM_BYTES", "type": "bytes", "description": "Symbol lane - compact opcode stream" },
+      { "field": "RAW_LEN", "type": "varu" },
+      { "field": "RAW_BYTES", "type": "bytes", "description": "Raw lane - large payloads" }
+    ]
+  },
+
+  "symbol_opcodes": {
+    "0x10": { "name": "SYM_PUSH_STRREF", "operands": ["varu str_ref"] },
+    "0x11": { "name": "SYM_PUSH_U16REF", "operands": ["varu u16ref"] },
+    "0x12": { "name": "SYM_SET_FIELD", "operands": ["varu field_id"] },
+    "0x13": { "name": "SYM_EMIT_ENUM8", "operands": ["u8"] },
+    "0x14": { "name": "SYM_EMIT_VARU", "operands": ["varu"] },
+    "0x15": { "name": "SYM_EMIT_VECREF", "operands": ["varu count", "varu refs..."] },
+    "0x16": { "name": "SYM_BEGIN_OBJ", "operands": ["varu field_id"] },
+    "0x17": { "name": "SYM_END_OBJ", "operands": [] },
+    "0x18": { "name": "SYM_BIND_POLICY", "operands": ["bytes32"] },
+    "0x19": { "name": "SYM_END", "operands": [] }
+  },
+
+  "footer_block": {
+    "magic": "FTR0",
+    "structure": [
+      { "field": "CANON_HASH", "size": 32, "description": "Hash of canonicalized APF fields" },
+      { "field": "BYTE_HASH", "size": 32, "description": "Hash of entire file excluding footer" },
+      { "field": "POLICY_HASH", "size": 32, "description": "Must match APF.policy_hash" },
+      { "field": "PROOF_CHAIN_LEN", "type": "varu", "optional": true },
+      { "field": "PROOF_CHAIN", "type": "bytes", "optional": true }
+    ]
+  },
+
+  "determinism_rules": [
+    "Dictionary ordering is canonical: STR_TABLE sorted by first occurrence order",
+    "Field order in TLV is canonical by field ID (ascending)",
+    "OBJ fields are canonical by field ID",
+    "No duplicate fields (except allowed repeated vectors)",
+    "Varints must be minimal encoding",
+    "Hashes computed over canonical model"
+  ],
+
+  "canonical_hash_formula": "policy_hash = HASH(fold_id || intent || role || scope || symbols[] || constraints[] || output_spec || epoch?)"
+}

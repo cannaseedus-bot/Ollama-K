@@ -1,0 +1,165 @@
+{
+  "$id": "https://kuhul.mx2lm/schemas/micronaut-idb.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Micronaut IDB Schema v1.0",
+  "description": "Portable cognitive ledger format - turns intelligence into a ledger, not a model",
+  "version": "1.0.0",
+  "status": "frozen",
+
+  "database": {
+    "name": "mx2lm_micronaut",
+    "version": 1
+  },
+
+  "invariants": [
+    "No hidden state",
+    "No derived values stored",
+    "Everything is replayable",
+    "No external policy dependency",
+    "SCXQ2-friendly (high repetition, small alphabets)"
+  ],
+
+  "stores": {
+    "meta": {
+      "keyPath": "key",
+      "description": "Micronaut identity & compatibility",
+      "schema": {
+        "type": "object",
+        "required": ["key", "value"],
+        "properties": {
+          "key": { "const": "micronaut.meta" },
+          "value": {
+            "type": "object",
+            "required": ["schema", "created", "micronaut_id", "cluster_id", "glyph_pack", "pi_kernel_set"],
+            "properties": {
+              "schema": { "const": "MX2LM-IDB-1.0" },
+              "created": { "type": "integer" },
+              "micronaut_id": { "type": "string", "pattern": "^μ-[a-f0-9]{6}$" },
+              "cluster_id": { "type": "integer" },
+              "glyph_pack": { "type": "string" },
+              "pi_kernel_set": { "type": "string" },
+              "scx_dict": { "type": "string" },
+              "epoch": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+
+    "events": {
+      "keyPath": "eid",
+      "indexes": ["by_tick", "by_glyph", "by_time"],
+      "description": "Cognitive ledger (core) - THIS IS THE MICRONAUT",
+      "schema": {
+        "type": "object",
+        "required": ["eid", "t", "tick", "g", "b"],
+        "properties": {
+          "eid": { "type": "string", "pattern": "^e:[0-9]+$", "description": "Event ID" },
+          "t": { "type": "integer", "description": "Wallclock ms" },
+          "tick": { "type": "integer", "description": "Deterministic step" },
+          "g": { "type": "string", "pattern": "^[A-Z]\\.[A-Z]$", "description": "Glyph symbol" },
+          "b": { "type": "integer", "minimum": 1, "maximum": 4, "description": "Basis level (@=1, @@=2, @@@=3, @@@@=4)" },
+          "w": { "type": "number", "description": "Scalar weight" },
+          "c": { "type": ["string", "null"], "pattern": "^#[0-9a-fA-F]{6}$", "description": "Color (reward lane)" },
+          "o": { "type": "number", "description": "Opacity (confidence)" },
+          "d": { "type": "number", "description": "Delta (reward change)" },
+          "p": { "type": ["string", "null"], "pattern": "^⚡:[a-f0-9]+$", "description": "Proof ref" }
+        }
+      }
+    },
+
+    "state": {
+      "keyPath": "key",
+      "description": "Minimal persistent state (derived but cached for fast boot)",
+      "schema": {
+        "type": "object",
+        "required": ["key", "value"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^node\\.[A-Z]\\.[A-Z]$" },
+          "value": {
+            "type": "object",
+            "properties": {
+              "activation": { "type": "number" },
+              "state": { "type": "number" },
+              "last_tick": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+
+    "policy": {
+      "keyPath": "policy_id",
+      "description": "Epoch-pinned execution law",
+      "schema": {
+        "type": "object",
+        "required": ["policy_id", "epoch", "basis_rules", "branch_gate", "hash"],
+        "properties": {
+          "policy_id": { "type": "string", "pattern": "^epoch-[0-9]+$" },
+          "epoch": { "type": "integer" },
+          "basis_rules": {
+            "type": "object",
+            "properties": {
+              "1": { "const": "observe" },
+              "2": { "const": "evaluate" },
+              "3": { "const": "adapt" },
+              "4": { "const": "commit" }
+            }
+          },
+          "branch_gate": {
+            "type": "object",
+            "properties": {
+              "requires_proof": { "type": "boolean" },
+              "proof_type": { "type": "string" }
+            }
+          },
+          "hash": { "type": "string", "pattern": "^pol:[a-f0-9]+$" }
+        }
+      }
+    },
+
+    "proofs": {
+      "keyPath": "proof_id",
+      "indexes": ["by_tick"],
+      "description": "⚡ verification artifacts",
+      "schema": {
+        "type": "object",
+        "required": ["proof_id", "type", "tick", "epoch", "policy_hash", "hash"],
+        "properties": {
+          "proof_id": { "type": "string", "pattern": "^⚡:[a-f0-9]+$" },
+          "type": { "type": "string" },
+          "input": { "type": "array", "items": { "type": "string" } },
+          "result": { "type": ["string", "null"] },
+          "tick": { "type": "integer" },
+          "epoch": { "type": "integer" },
+          "policy_hash": { "type": "string" },
+          "hash": { "type": "string" }
+        }
+      }
+    }
+  },
+
+  "portability_contract": {
+    "requirements": [
+      "All 5 stores exist",
+      "meta.schema === MX2LM-IDB-1.0",
+      "All glyphs ∈ glyph pack",
+      "All proofs reference known policy hashes",
+      "Event ticks are monotonic"
+    ],
+    "guarantee": "If true → load is guaranteed deterministic"
+  },
+
+  "import_export": {
+    "export": "raw IDB dump, nothing transformed",
+    "import": [
+      "Validate meta",
+      "Validate policy",
+      "Validate monotonic events.tick",
+      "Replay events",
+      "Recompute state (optional)",
+      "Compare proof hashes",
+      "If mismatch → reject or sandbox"
+    ]
+  }
+}

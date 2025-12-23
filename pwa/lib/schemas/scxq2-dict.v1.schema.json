@@ -1,0 +1,96 @@
+{
+  "$id": "https://kuhul.mx2lm/schemas/scxq2-dict.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SCXQ2 Dictionary v1",
+  "description": "Compression dictionary for SCXQ2 encoding - extracts glyphgrams from SVG paths",
+  "version": "1.0.0",
+
+  "type": "object",
+  "required": ["scxq2", "schema", "glyph_count", "dict", "glyphs"],
+
+  "properties": {
+    "scxq2": {
+      "const": "SCXQ2_DICT_v1"
+    },
+    "schema": {
+      "type": "string",
+      "default": "MX2LM-SCXQ2-DICT-v1.0"
+    },
+    "generated_at": {
+      "type": "integer",
+      "description": "Unix timestamp of generation"
+    },
+    "glyph_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of glyphs in dictionary"
+    },
+    "dict": {
+      "type": "object",
+      "required": ["paths", "tokens"],
+      "properties": {
+        "paths": {
+          "type": "array",
+          "description": "Unique SVG path strings",
+          "items": {
+            "type": "object",
+            "required": ["id", "d"],
+            "properties": {
+              "id": { "type": "integer", "description": "Path index" },
+              "d": { "type": "string", "description": "SVG path d attribute" }
+            }
+          }
+        },
+        "tokens": {
+          "type": "array",
+          "description": "Frequent path tokens for compression",
+          "items": {
+            "type": "object",
+            "required": ["id", "tok"],
+            "properties": {
+              "id": { "type": "integer", "description": "Token index" },
+              "tok": { "type": "string", "description": "Token value (command or number)" }
+            }
+          }
+        }
+      }
+    },
+    "glyphs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gid", "sym", "kernel", "path_id", "proof"],
+        "properties": {
+          "gid": { "type": "string", "pattern": "^g-[A-Z]{2}$", "description": "SVG symbol ID" },
+          "sym": { "type": "string", "pattern": "^[A-Z]\\.[A-Z]$", "description": "Cognitive symbol" },
+          "kernel": { "type": "string", "pattern": "^pi\\.[a-z_]+$", "description": "π-kernel binding" },
+          "layer": { "type": "integer", "minimum": 1, "maximum": 7, "description": "Layer number" },
+          "domain": { "type": "string", "description": "Semantic domain" },
+          "fold": { "type": "string", "description": "Fold name from data-fold attribute" },
+          "path_id": { "type": "integer", "description": "Reference to paths[] by index" },
+          "proof": { "type": "string", "description": "SHA-256 proof hash of glyph definition" },
+          "tok_ids": { "type": "array", "items": { "type": "integer" }, "description": "Token IDs for path reconstruction" }
+        }
+      }
+    }
+  },
+
+  "generation_algorithm": {
+    "steps": [
+      "Extract all <symbol id='g-...'> from SVG",
+      "For each symbol: extract data-symbol, data-kernel, viewBox, path d",
+      "Compute proof hash: SHA-256(JSON.stringify({id, sym, kernel, viewBox, d}))",
+      "Build PATH dictionary: unique path strings → id",
+      "Build TOKEN dictionary: tokenize paths, keep tokens appearing >= 3 times",
+      "Map each glyph to path_id and tok_ids"
+    ]
+  },
+
+  "tokenization": {
+    "method": "Split d attribute on whitespace/commas, then split letters from numbers",
+    "example": {
+      "input": "M12 32h40",
+      "output": ["M", "12", "32", "h", "40"]
+    }
+  }
+}

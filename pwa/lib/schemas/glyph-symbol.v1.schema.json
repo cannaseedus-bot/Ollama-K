@@ -1,0 +1,85 @@
+{
+  "$id": "https://kuhul.mx2lm/schemas/glyph-symbol.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Glyph Symbol v1",
+  "description": "Single glyph in the 28-symbol cognitive alphabet",
+  "version": "1.0.0",
+  "frozen": true,
+
+  "type": "object",
+  "required": ["sym", "name", "kernel", "domain", "layer", "gid"],
+
+  "properties": {
+    "sym": {
+      "type": "string",
+      "pattern": "^[A-Z]\\.[A-Z]$",
+      "description": "Symbol identifier (e.g., M.I, T.R, G.S)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name (e.g., introspect, reason, safety)"
+    },
+    "kernel": {
+      "type": "string",
+      "pattern": "^pi\\.[a-z_]+$",
+      "description": "π-kernel binding (e.g., pi.entropy_scan)"
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["META", "CORE", "OPS", "SAFE", "LEARN", "ENV", "ID"],
+      "description": "Semantic domain"
+    },
+    "layer": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 7,
+      "description": "Layer number (1-7)"
+    },
+    "gid": {
+      "type": "string",
+      "pattern": "^g-[A-Z]{2}$",
+      "description": "SVG symbol ID reference (e.g., g-MI)"
+    }
+  },
+
+  "canonical_alphabet": {
+    "layer_1_meta": ["M.I", "M.U", "M.G", "M.M"],
+    "layer_2_transform": ["T.T", "T.C", "T.A", "T.R"],
+    "layer_3_operations": ["O.R", "O.X", "O.C", "O.M"],
+    "layer_4_guard": ["G.S", "G.G", "G.C", "G.K"],
+    "layer_5_learn": ["L.P", "L.S", "L.Y", "L.F"],
+    "layer_6_environment": ["E.T", "E.S", "E.P", "E.M"],
+    "layer_7_identity": ["I.S", "I.F", "I.P", "I.H"]
+  },
+
+  "kernel_bindings": {
+    "M.I": "pi.entropy_scan",
+    "M.U": "pi.variance_estimate",
+    "M.G": "pi.vector_align",
+    "M.M": "pi.state_switch",
+    "T.T": "pi.symbol_slice",
+    "T.C": "pi.window_merge",
+    "T.A": "pi.weight_focus",
+    "T.R": "pi.graph_walk",
+    "O.R": "pi.dispatch",
+    "O.X": "pi.execute",
+    "O.C": "pi.scx_fold",
+    "O.M": "pi.state_store",
+    "G.S": "pi.constraint_gate",
+    "G.G": "pi.sequence_emit",
+    "G.C": "pi.error_reduce",
+    "G.K": "pi.lookup",
+    "L.P": "pi.phase_step",
+    "L.S": "pi.capability_gain",
+    "L.Y": "pi.symbol_pack",
+    "L.F": "pi.reward_integrate",
+    "E.T": "pi.io_bridge",
+    "E.S": "pi.simulate",
+    "E.P": "pi.persist",
+    "E.M": "pi.broadcast",
+    "I.S": "pi.boot_mark",
+    "I.F": "pi.hash_identity",
+    "I.P": "pi.bias_apply",
+    "I.H": "pi.signature_emit"
+  }
+}

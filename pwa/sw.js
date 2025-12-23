@@ -46,6 +46,14 @@ const STATIC_ASSETS = [
   '/lib/gas-shards.js',
   '/lib/pi-kernel-engine.js',
   '/lib/micronaut-idb.js',
+  '/lib/xjson-schemas.js',
+  '/lib/schemas/apf.v1.schema.json',
+  '/lib/schemas/glyph-symbol.v1.schema.json',
+  '/lib/schemas/basis-contract.v1.schema.json',
+  '/lib/schemas/micronaut-idb.v1.schema.json',
+  '/lib/schemas/micronaut-merge.v1.schema.json',
+  '/lib/schemas/apsx.v1.schema.json',
+  '/lib/schemas/scxq2-dict.v1.schema.json',
   '/assets/glyphs-28.svg',
   '/styles.css'
 ];
