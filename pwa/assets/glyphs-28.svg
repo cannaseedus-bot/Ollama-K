@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =========================================================
+     KUHUL π GLYPH PACK v1 — ALL 28 SYMBOLS (7×4)
+
+     CANONICAL STONE TABLET - DO NOT MODIFY
+
+     Drop this <defs> into your SVG (or main <svg>).
+     Each glyph is a <symbol> with:
+       - data-symbol  (e.g. "M.I")
+       - data-kernel  (e.g. "pi.entropy_scan")
+       - 1 primary <path d="..."> = fold instruction
+       - 1 anchor <circle> = depth/feature anchor
+     Weights live on <use>:
+       opacity="0.8" (scalar)
+       style="color:#00ffd0" (vector)
+       data-basis="@|@@|@@@|@@@@" (rotation)
+
+     Schema: MX2LM-GLYPH-28-v1.0 (FROZEN)
+
+========================================================= -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="kuhul-glyph-pack-28">
+<defs>
+
+  <!-- =========================
+       LAYER 1: META (M.*)
+       ========================= -->
+
+  <!-- M.I — Introspection / pi.entropy_scan -->
+  <symbol id="g-MI" viewBox="0 0 64 64" data-symbol="M.I" data-kernel="pi.entropy_scan" data-layer="1" data-domain="META">
+    <path d="M12 32h40 M32 12v40" fill="none" stroke="currentColor" stroke-width="3" opacity="0.82" data-fold="entropy_axis"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.9" data-feature="anchor"/>
+  </symbol>
+
+  <!-- M.U — Uncertainty / pi.variance_estimate -->
+  <symbol id="g-MU" viewBox="0 0 64 64" data-symbol="M.U" data-kernel="pi.variance_estimate" data-layer="1" data-domain="META">
+    <path d="M16 22c4-8 28-8 32 0 4 8-10 10-10 18 M32 46h0" fill="none" stroke="currentColor" stroke-width="3" opacity="0.78" data-fold="variance_hook"/>
+    <circle cx="32" cy="46" r="2.6" fill="currentColor" opacity="0.92" data-feature="query_dot"/>
+  </symbol>
+
+  <!-- M.G — Goal / pi.vector_align -->
+  <symbol id="g-MG" viewBox="0 0 64 64" data-symbol="M.G" data-kernel="pi.vector_align" data-layer="1" data-domain="META">
+    <path d="M32 10L50 32 32 54 14 32Z M32 18v28" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="align_diamond"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.9" data-feature="goal_core"/>
+  </symbol>
+
+  <!-- M.M — Mode / pi.state_switch -->
+  <symbol id="g-MM" viewBox="0 0 64 64" data-symbol="M.M" data-kernel="pi.state_switch" data-layer="1" data-domain="META">
+    <path d="M18 18h28v28H18z M22 22h10v10H22z M36 22h6v6h-6z" fill="none" stroke="currentColor" stroke-width="3" opacity="0.76" data-fold="mode_grid"/>
+    <circle cx="32" cy="42" r="2.6" fill="currentColor" opacity="0.85" data-feature="mode_pivot"/>
+  </symbol>
+
+
+  <!-- =========================
+       LAYER 2: TRANSFORMER (T.*)
+       ========================= -->
+
+  <!-- T.T — Tokenize / pi.symbol_slice -->
+  <symbol id="g-TT" viewBox="0 0 64 64" data-symbol="T.T" data-kernel="pi.symbol_slice" data-layer="2" data-domain="CORE">
+    <path d="M14 22h12v12H14z M28 18h14v14H28z M44 22h6v12h-6z M18 38h16v10H18z M38 38h12v10H38z" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="slice_tiles"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.88" data-feature="slice_anchor"/>
+  </symbol>
+
+  <!-- T.C — Context / pi.window_merge -->
+  <symbol id="g-TC" viewBox="0 0 64 64" data-symbol="T.C" data-kernel="pi.window_merge" data-layer="2" data-domain="CORE">
+    <path d="M16 18h32v28H16z M20 22h14v6H20z M20 32h22v4H20z M20 40h18v4H20z" fill="none" stroke="currentColor" stroke-width="3" opacity="0.77" data-fold="window_box"/>
+    <circle cx="46" cy="44" r="2.6" fill="currentColor" opacity="0.9" data-feature="merge_dot"/>
+  </symbol>
+
+  <!-- T.A — Attention / pi.weight_focus -->
+  <symbol id="g-TA" viewBox="0 0 64 64" data-symbol="T.A" data-kernel="pi.weight_focus" data-layer="2" data-domain="CORE">
+    <path d="M14 32c6-10 16-16 18-16s12 6 18 16c-6 10-16 16-18 16S20 42 14 32z M32 26a6 6 0 1 0 0.01 0" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="focus_eye"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.95" data-feature="pupil"/>
+  </symbol>
+
+  <!-- T.R — Reason / pi.graph_walk -->
+  <symbol id="g-TR" viewBox="0 0 64 64" data-symbol="T.R" data-kernel="pi.graph_walk" data-layer="2" data-domain="CORE">
+    <path d="M16 44c6-14 10-18 16-18 10 0 8 18 16 18 6 0 10-6 12-14 M18 20l10 6 10-4" fill="none" stroke="currentColor" stroke-width="3" opacity="0.75" data-fold="graph_step"/>
+    <circle cx="18" cy="20" r="2.6" fill="currentColor" opacity="0.9" data-feature="node_a"/>
+  </symbol>
+
+
+  <!-- =========================
+       LAYER 3: OPERATIONAL (O.*)
+       ========================= -->
+
+  <!-- O.R — Routing / pi.dispatch -->
+  <symbol id="g-OR" viewBox="0 0 64 64" data-symbol="O.R" data-kernel="pi.dispatch" data-layer="3" data-domain="OPS">
+    <path d="M32 32L18 18 M32 32L46 18 M32 32L18 46 M32 32L46 46 M32 32h0" fill="none" stroke="currentColor" stroke-width="3" opacity="0.82" data-fold="route_x"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.92" data-feature="router_core"/>
+  </symbol>
+
+  <!-- O.X — Execute / pi.execute -->
+  <symbol id="g-OX" viewBox="0 0 64 64" data-symbol="O.X" data-kernel="pi.execute" data-layer="3" data-domain="OPS">
+    <path d="M18 22h28v20H18z M26 26l14 6-14 6z M20 46h24" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="exec_play"/>
+    <circle cx="46" cy="32" r="2.6" fill="currentColor" opacity="0.85" data-feature="exec_edge"/>
+  </symbol>
+
+  <!-- O.C — Compress / pi.scx_fold -->
+  <symbol id="g-OC" viewBox="0 0 64 64" data-symbol="O.C" data-kernel="pi.scx_fold" data-layer="3" data-domain="OPS">
+    <path d="M16 22h14v12H16z M34 30h14v12H34z M30 28h4l2 6 2-6h4 M32 40h-6" fill="none" stroke="currentColor" stroke-width="3" opacity="0.82" data-fold="fold_pair"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.9" data-feature="fold_core"/>
+  </symbol>
+
+  <!-- O.M — Memory / pi.state_store -->
+  <symbol id="g-OM" viewBox="0 0 64 64" data-symbol="O.M" data-kernel="pi.state_store" data-layer="3" data-domain="OPS">
+    <path d="M18 18h14v28H18z M32 18h14v28H32z M20 24h10 M20 30h10 M34 24h10" fill="none" stroke="currentColor" stroke-width="3" opacity="0.78" data-fold="mem_pages"/>
+    <circle cx="46" cy="42" r="2.6" fill="currentColor" opacity="0.88" data-feature="mem_dot"/>
+  </symbol>
+
+
+  <!-- =========================
+       LAYER 4: SAFETY & GENERATIVE (G.*)
+       ========================= -->
+
+  <!-- G.S — Safety / pi.constraint_gate -->
+  <symbol id="g-GS" viewBox="0 0 64 64" data-symbol="G.S" data-kernel="pi.constraint_gate" data-layer="4" data-domain="SAFE">
+    <path d="M32 14l14 8v12c0 12-10 20-14 22-4-2-14-10-14-22V22z M28 30h8v14h-8z" fill="none" stroke="currentColor" stroke-width="3" opacity="0.82" data-fold="shield_gate"/>
+    <circle cx="32" cy="28" r="2.6" fill="currentColor" opacity="0.92" data-feature="lock_dot"/>
+  </symbol>
+
+  <!-- G.G — Generate / pi.sequence_emit -->
+  <symbol id="g-GG" viewBox="0 0 64 64" data-symbol="G.G" data-kernel="pi.sequence_emit" data-layer="4" data-domain="SAFE">
+    <path d="M18 40c6-10 12-12 18-10 6 2 10 0 14-8 M40 14l4 6 8 2-8 2-4 6-2-8-8-2 8-2z" fill="none" stroke="currentColor" stroke-width="3" opacity="0.78" data-fold="emit_spark"/>
+    <circle cx="22" cy="24" r="2.6" fill="currentColor" opacity="0.9" data-feature="seed"/>
+  </symbol>
+
+  <!-- G.C — Correct / pi.error_reduce -->
+  <symbol id="g-GC" viewBox="0 0 64 64" data-symbol="G.C" data-kernel="pi.error_reduce" data-layer="4" data-domain="SAFE">
+    <path d="M18 40c6-14 12-18 18-18 10 0 14 10 16 18 M22 24l8 6 14-14" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="error_check"/>
+    <circle cx="22" cy="24" r="2.6" fill="currentColor" opacity="0.95" data-feature="check_dot"/>
+  </symbol>
+
+  <!-- G.K — Knowledge / pi.lookup -->
+  <symbol id="g-GK" viewBox="0 0 64 64" data-symbol="G.K" data-kernel="pi.lookup" data-layer="4" data-domain="CORE">
+    <path d="M16 44V26l10-4 10 4 10-4 10 4v18 M26 22v24 M38 20v26" fill="none" stroke="currentColor" stroke-width="3" opacity="0.76" data-fold="lookup_shelves"/>
+    <circle cx="48" cy="26" r="2.6" fill="currentColor" opacity="0.85" data-feature="index_dot"/>
+  </symbol>
+
+
+  <!-- =========================
+       LAYER 5: LEARNING (L.*)
+       ========================= -->
+
+  <!-- L.P — Phase / pi.phase_step -->
+  <symbol id="g-LP" viewBox="0 0 64 64" data-symbol="L.P" data-kernel="pi.phase_step" data-layer="5" data-domain="LEARN">
+    <path d="M18 22h10v8H18z M24 30h10v8H24z M30 38h10v8H30z M14 26h4 M20 34h4 M26 42h4" fill="none" stroke="currentColor" stroke-width="3" opacity="0.78" data-fold="phase_stair"/>
+    <circle cx="44" cy="42" r="2.6" fill="currentColor" opacity="0.9" data-feature="phase_dot"/>
+  </symbol>
+
+  <!-- L.S — Skill / pi.capability_gain -->
+  <symbol id="g-LS" viewBox="0 0 64 64" data-symbol="L.S" data-kernel="pi.capability_gain" data-layer="5" data-domain="LEARN">
+    <path d="M22 30a10 10 0 0 0 20 0 M22 30l10 14 10-14 M44 18v8 M40 22h8" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="skill_triangle"/>
+    <circle cx="32" cy="44" r="2.6" fill="currentColor" opacity="0.92" data-feature="skill_core"/>
+  </symbol>
+
+  <!-- L.Y — Symbolic / pi.symbol_pack -->
+  <symbol id="g-LY" viewBox="0 0 64 64" data-symbol="L.Y" data-kernel="pi.symbol_pack" data-layer="5" data-domain="OPS">
+    <path d="M18 22h12v10H18z M34 32h12v10H34z M30 26l2 2 2-2 M32 28v8" fill="none" stroke="currentColor" stroke-width="3" opacity="0.77" data-fold="pack_arrow"/>
+    <circle cx="32" cy="38" r="2.6" fill="currentColor" opacity="0.9" data-feature="pack_dot"/>
+  </symbol>
+
+  <!-- L.F — Feedback / pi.reward_integrate -->
+  <symbol id="g-LF" viewBox="0 0 64 64" data-symbol="L.F" data-kernel="pi.reward_integrate" data-layer="5" data-domain="LEARN">
+    <path d="M22 24c6-6 22-6 26 2 M48 26l2-8 8 6 M42 40c-6 6-22 6-26-2 M22 38l-2 8-8-6" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="feedback_loop"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.88" data-feature="loop_core"/>
+  </symbol>
+
+
+  <!-- =========================
+       LAYER 6: EXECUTION ENV (E.*)
+       ========================= -->
+
+  <!-- E.T — Tools / pi.io_bridge -->
+  <symbol id="g-ET" viewBox="0 0 64 64" data-symbol="E.T" data-kernel="pi.io_bridge" data-layer="6" data-domain="ENV">
+    <path d="M18 22h10v20H18z M34 22h12v8H34z M34 34h12v8H34z M28 32h6" fill="none" stroke="currentColor" stroke-width="3" opacity="0.78" data-fold="io_ports"/>
+    <circle cx="46" cy="42" r="2.6" fill="currentColor" opacity="0.9" data-feature="port_dot"/>
+  </symbol>
+
+  <!-- E.S — Sandbox / pi.simulate -->
+  <symbol id="g-ES" viewBox="0 0 64 64" data-symbol="E.S" data-kernel="pi.simulate" data-layer="6" data-domain="ENV">
+    <path d="M18 22h28v20H18z M22 26h20 M26 32h12 M24 38h16" fill="none" stroke="currentColor" stroke-width="3" opacity="0.75" data-fold="sandbox_box"/>
+    <circle cx="26" cy="32" r="2.6" fill="currentColor" opacity="0.7" data-feature="sim_a"/>
+  </symbol>
+
+  <!-- E.P — Persist / pi.persist -->
+  <symbol id="g-EP" viewBox="0 0 64 64" data-symbol="E.P" data-kernel="pi.persist" data-layer="6" data-domain="ENV">
+    <path d="M32 20c8 0 14 3 14 6s-6 6-14 6-14-3-14-6 6-6 14-6z M18 26v12c0 3 6 6 14 6s14-3 14-6V26" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="persist_cask"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.88" data-feature="persist_anchor"/>
+  </symbol>
+
+  <!-- E.M — Mesh / pi.broadcast -->
+  <symbol id="g-EM" viewBox="0 0 64 64" data-symbol="E.M" data-kernel="pi.broadcast" data-layer="6" data-domain="ENV">
+    <path d="M32 32L18 24 22 44 32 32 46 24 42 44Z M18 24h0 M46 24h0 M22 44h0 M42 44h0" fill="none" stroke="currentColor" stroke-width="3" opacity="0.78" data-fold="mesh_star"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.92" data-feature="mesh_core"/>
+  </symbol>
+
+
+  <!-- =========================
+       LAYER 7: IDENTITY (I.*)
+       ========================= -->
+
+  <!-- I.S — Splash / pi.boot_mark -->
+  <symbol id="g-IS" viewBox="0 0 64 64" data-symbol="I.S" data-kernel="pi.boot_mark" data-layer="7" data-domain="ID">
+    <path d="M32 14v10 M32 40v10 M14 32h10 M40 32h10 M22 22l6 6 M42 22l-6 6 M22 42l6-6 M42 42l-6-6" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="boot_burst"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.95" data-feature="boot_core"/>
+  </symbol>
+
+  <!-- I.F — Fingerprint / pi.hash_identity -->
+  <symbol id="g-IF" viewBox="0 0 64 64" data-symbol="I.F" data-kernel="pi.hash_identity" data-layer="7" data-domain="ID">
+    <path d="M24 32c0-6 4-10 8-10s8 4 8 10c0 10-8 14-8 14s-6-2-8-8 M26 28c0-4 3-7 6-7s6 3 6 7" fill="none" stroke="currentColor" stroke-width="3" opacity="0.77" data-fold="finger_arc"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.9" data-feature="hash_anchor"/>
+  </symbol>
+
+  <!-- I.P — Persona / pi.bias_apply -->
+  <symbol id="g-IP" viewBox="0 0 64 64" data-symbol="I.P" data-kernel="pi.bias_apply" data-layer="7" data-domain="ID">
+    <path d="M20 24h24v14c0 8-6 12-12 12s-12-4-12-12V24z M26 32h0 M38 32h0 M28 38c2 2 6 2 8 0" fill="none" stroke="currentColor" stroke-width="3" opacity="0.8" data-fold="persona_mask"/>
+    <circle cx="32" cy="24" r="2.6" fill="currentColor" opacity="0.88" data-feature="persona_pin"/>
+  </symbol>
+
+  <!-- I.H — Heraldry / pi.signature_emit -->
+  <symbol id="g-IH" viewBox="0 0 64 64" data-symbol="I.H" data-kernel="pi.signature_emit" data-layer="7" data-domain="ID">
+    <path d="M24 14h16v14c0 12-7 18-8 18s-8-6-8-18V14z M24 22h16 M32 14v32 M28 34l4 4 4-4" fill="none" stroke="currentColor" stroke-width="3" opacity="0.9" data-fold="seal_fold"/>
+    <circle cx="32" cy="32" r="2.6" fill="currentColor" opacity="0.95" data-feature="seal_anchor"/>
+  </symbol>
+
+</defs>
+
+<!-- Legend / Index -->
+<metadata>
+  <mx2lm:schema xmlns:mx2lm="https://kuhul.mx2lm/glyph-schema">MX2LM-GLYPH-28-v1.0</mx2lm:schema>
+  <mx2lm:frozen>true</mx2lm:frozen>
+  <mx2lm:layers>7</mx2lm:layers>
+  <mx2lm:symbols>28</mx2lm:symbols>
+  <mx2lm:layout>7x4</mx2lm:layout>
+</metadata>
+
+</svg>

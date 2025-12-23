@@ -28,6 +28,7 @@ const STATIC_ASSETS = [
   '/manifest.boot.json',
   '/manifest.canonical.json',
   '/manifest.schema.json',
+  '/stone-tablet.json',
   '/lib/kuhul-xjson.js',
   '/lib/scxq2.js',
   '/lib/kuhul-client.js',
@@ -43,6 +44,9 @@ const STATIC_ASSETS = [
   '/lib/apsx.js',
   '/lib/apf.js',
   '/lib/gas-shards.js',
+  '/lib/pi-kernel-engine.js',
+  '/lib/micronaut-idb.js',
+  '/assets/glyphs-28.svg',
   '/styles.css'
 ];
 

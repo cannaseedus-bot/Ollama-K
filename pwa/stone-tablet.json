@@ -1,0 +1,238 @@
+{
+  "$schema": "https://kuhul.mx2lm/stone-tablet.schema.json",
+  "@type": "mx2lm.stone_tablet",
+  "@version": "1.0.0",
+  "@frozen": true,
+  "@date": "2024-12-22",
+  "@law": "Structure is meaning. Meaning survives compression.",
+
+  "title": "MX2LM STONE TABLET v1.0",
+  "subtitle": "Canonical Cognitive Alphabet & Execution Law",
+
+  "invariants": {
+    "count": 5,
+    "laws": [
+      "No hidden state",
+      "No derived values stored",
+      "Everything is replayable",
+      "No external policy dependency",
+      "SCXQ2-friendly (high repetition, small alphabets)"
+    ]
+  },
+
+  "cognitive_alphabet": {
+    "schema": "MX2LM-GLYPH-28-v1.0",
+    "layout": "7x4",
+    "total_symbols": 28,
+    "layers": [
+      {
+        "id": 1,
+        "name": "META",
+        "prefix": "M",
+        "symbols": [
+          { "sym": "M.I", "name": "introspect", "kernel": "pi.entropy_scan", "gid": "g-MI" },
+          { "sym": "M.U", "name": "uncertainty", "kernel": "pi.variance_estimate", "gid": "g-MU" },
+          { "sym": "M.G", "name": "goal", "kernel": "pi.vector_align", "gid": "g-MG" },
+          { "sym": "M.M", "name": "mode", "kernel": "pi.state_switch", "gid": "g-MM" }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "TRANSFORM",
+        "prefix": "T",
+        "symbols": [
+          { "sym": "T.T", "name": "tokenize", "kernel": "pi.symbol_slice", "gid": "g-TT" },
+          { "sym": "T.C", "name": "context", "kernel": "pi.window_merge", "gid": "g-TC" },
+          { "sym": "T.A", "name": "attention", "kernel": "pi.weight_focus", "gid": "g-TA" },
+          { "sym": "T.R", "name": "reason", "kernel": "pi.graph_walk", "gid": "g-TR" }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "OPERATIONS",
+        "prefix": "O",
+        "symbols": [
+          { "sym": "O.R", "name": "routing", "kernel": "pi.dispatch", "gid": "g-OR" },
+          { "sym": "O.X", "name": "execute", "kernel": "pi.execute", "gid": "g-OX" },
+          { "sym": "O.C", "name": "compress", "kernel": "pi.scx_fold", "gid": "g-OC" },
+          { "sym": "O.M", "name": "memory", "kernel": "pi.state_store", "gid": "g-OM" }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "GUARD",
+        "prefix": "G",
+        "symbols": [
+          { "sym": "G.S", "name": "safety", "kernel": "pi.constraint_gate", "gid": "g-GS" },
+          { "sym": "G.G", "name": "generate", "kernel": "pi.sequence_emit", "gid": "g-GG" },
+          { "sym": "G.C", "name": "correct", "kernel": "pi.error_reduce", "gid": "g-GC" },
+          { "sym": "G.K", "name": "knowledge", "kernel": "pi.lookup", "gid": "g-GK" }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "LEARN",
+        "prefix": "L",
+        "symbols": [
+          { "sym": "L.P", "name": "phase", "kernel": "pi.phase_step", "gid": "g-LP" },
+          { "sym": "L.S", "name": "skill", "kernel": "pi.capability_gain", "gid": "g-LS" },
+          { "sym": "L.Y", "name": "symbolic", "kernel": "pi.symbol_pack", "gid": "g-LY" },
+          { "sym": "L.F", "name": "feedback", "kernel": "pi.reward_integrate", "gid": "g-LF" }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "ENVIRONMENT",
+        "prefix": "E",
+        "symbols": [
+          { "sym": "E.T", "name": "tools", "kernel": "pi.io_bridge", "gid": "g-ET" },
+          { "sym": "E.S", "name": "sandbox", "kernel": "pi.simulate", "gid": "g-ES" },
+          { "sym": "E.P", "name": "persist", "kernel": "pi.persist", "gid": "g-EP" },
+          { "sym": "E.M", "name": "mesh", "kernel": "pi.broadcast", "gid": "g-EM" }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "IDENTITY",
+        "prefix": "I",
+        "symbols": [
+          { "sym": "I.S", "name": "splash", "kernel": "pi.boot_mark", "gid": "g-IS" },
+          { "sym": "I.F", "name": "fingerprint", "kernel": "pi.hash_identity", "gid": "g-IF" },
+          { "sym": "I.P", "name": "persona", "kernel": "pi.bias_apply", "gid": "g-IP" },
+          { "sym": "I.H", "name": "heraldry", "kernel": "pi.signature_emit", "gid": "g-IH" }
+        ]
+      }
+    ]
+  },
+
+  "basis_contracts": {
+    "schema": "MX2LM-BASIS-v1.0",
+    "levels": [
+      {
+        "symbol": "@",
+        "level": 1,
+        "mode": "observe",
+        "write_state": false,
+        "persist": false,
+        "emit_proof": false,
+        "epoch_lock": false
+      },
+      {
+        "symbol": "@@",
+        "level": 2,
+        "mode": "evaluate",
+        "write_state": false,
+        "persist": false,
+        "emit_proof": true,
+        "epoch_lock": false
+      },
+      {
+        "symbol": "@@@",
+        "level": 3,
+        "mode": "adapt",
+        "write_state": true,
+        "persist": false,
+        "emit_proof": true,
+        "epoch_lock": false
+      },
+      {
+        "symbol": "@@@@",
+        "level": 4,
+        "mode": "commit",
+        "write_state": true,
+        "persist": true,
+        "emit_proof": true,
+        "epoch_lock": true
+      }
+    ]
+  },
+
+  "idb_schema": {
+    "schema": "MX2LM-IDB-1.0",
+    "database": "mx2lm_micronaut",
+    "version": 1,
+    "stores": {
+      "meta": {
+        "keyPath": "key",
+        "description": "Micronaut identity & compatibility"
+      },
+      "events": {
+        "keyPath": "eid",
+        "indexes": ["by_tick", "by_glyph", "by_time"],
+        "description": "Cognitive ledger (core)"
+      },
+      "state": {
+        "keyPath": "key",
+        "description": "Minimal persistent state"
+      },
+      "policy": {
+        "keyPath": "policy_id",
+        "description": "Epoch-pinned execution law"
+      },
+      "proofs": {
+        "keyPath": "proof_id",
+        "indexes": ["by_tick"],
+        "description": "⚡ verification artifacts"
+      }
+    }
+  },
+
+  "merge_semantics": {
+    "schema": "MX2LM-MERGE-v1.0",
+    "modes": ["overlay", "union", "weighted", "fork", "strict"],
+    "conflict_types": {
+      "C0": "Identical (safe)",
+      "C1": "Weight differs",
+      "C2": "Color/reward differs",
+      "C3": "Proof mismatch",
+      "C4": "Basis mismatch",
+      "C5": "Epoch mismatch"
+    },
+    "resolution_rules": {
+      "basis_dominance": "@@@@ > @@@ > @@ > @",
+      "proof_supremacy": "Valid proof wins. Both valid → fork. Neither valid → drop.",
+      "epoch_preservation": "Newer does not overwrite. Older does not block."
+    }
+  },
+
+  "apf_encoding": {
+    "schema": "APF-SCXQ2-v1.0",
+    "intents": ["EXPLAIN", "REASON", "DECIDE", "GENERATE", "TRANSFORM", "VERIFY", "SUMMARIZE", "SIMULATE", "EXECUTE"],
+    "roles": ["SYSTEM", "CONTROL", "REASON", "TASK", "CONTEXT", "DATA", "OUTPUT", "EVAL"],
+    "scopes": ["LOCAL", "SESSION", "EPOCH", "GLOBAL"],
+    "output_types": ["structured_text", "json", "xml", "bytes", "code", "svg"],
+    "shortform_prefix": "⟁"
+  },
+
+  "system_law": {
+    "primary": "Prompting is programming without a compiler. Atomic prompts are prompting with a compiler.",
+    "corollary": "Intelligence is not merged by averaging beliefs, but by reconciling symbolic commitments under proof.",
+    "glyph_law": "If a system can be executed deterministically, it can be represented as a finite glyph alphabet plus composition rules."
+  },
+
+  "portability_contract": {
+    "requirements": [
+      "All 5 stores exist",
+      "meta.schema === MX2LM-IDB-1.0",
+      "All glyphs ∈ glyph pack",
+      "All proofs reference known policy hashes",
+      "Event ticks are monotonic"
+    ],
+    "guarantee": "If all requirements met → load is deterministic"
+  },
+
+  "file_references": {
+    "glyph_pack": "assets/glyphs-28.svg",
+    "pi_kernel_engine": "lib/pi-kernel-engine.js",
+    "micronaut_idb": "lib/micronaut-idb.js",
+    "apsx_encoder": "lib/apsx.js",
+    "apf_language": "lib/apf.js"
+  },
+
+  "signature": {
+    "type": "stone_tablet",
+    "frozen": true,
+    "hash_algorithm": "SHA-256",
+    "note": "This document may not be modified. Extensions must be additive only."
+  }
+}
