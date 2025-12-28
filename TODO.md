@@ -14,34 +14,34 @@
 
 ## Phase 1: Foundation Bridge
 
-### 1.1 K'UHUL Go Lexer (`cmd/parser/kuhul_lexer.go`)
+### 1.1 K'UHUL Go Lexer (`kuhul/lexer/`)
 
 | Status | Task | Priority | Notes |
 |--------|------|----------|-------|
-| [ ] | Create `cmd/parser/` directory structure | HIGH | Foundation |
-| [ ] | Define token types enum in Go | HIGH | Match JS tokens |
-| [ ] | Implement glyph recognition (`⟁Pop⟁`, etc.) | HIGH | Unicode handling |
-| [ ] | Implement keyword recognition | HIGH | Pop, Wo, Sek, Xul, Ch'en |
-| [ ] | Implement C@@L block markers | HIGH | COOL_BLOCK, COOL_VECTOR |
-| [ ] | Implement string/number literals | MEDIUM | JSON compatibility |
-| [ ] | Implement comment handling | MEDIUM | `//` and `/* */` |
-| [ ] | Add line/column tracking | MEDIUM | Error reporting |
-| [ ] | Write lexer unit tests | HIGH | 90%+ coverage |
+| [x] | Create `kuhul/lexer/` directory structure | HIGH | ✅ Done |
+| [x] | Define token types enum in Go | HIGH | ✅ `token.go` |
+| [x] | Implement glyph recognition (`⟁Pop⟁`, etc.) | HIGH | ✅ Unicode handling |
+| [x] | Implement keyword recognition | HIGH | ✅ All Mayan keywords |
+| [x] | Implement C@@L block markers | HIGH | ✅ COOL_BLOCK, COOL_VECTOR |
+| [x] | Implement string/number literals | MEDIUM | ✅ JSON compatible |
+| [x] | Implement comment handling | MEDIUM | ✅ `//`, `/* */`, `#` |
+| [x] | Add line/column tracking | MEDIUM | ✅ Error reporting |
+| [x] | Write lexer unit tests | HIGH | ✅ In `kuhul_test.go` |
 
-### 1.2 K'UHUL Go Parser (`cmd/parser/kuhul_parser.go`)
+### 1.2 K'UHUL Go Parser (`kuhul/parser/`)
 
 | Status | Task | Priority | Notes |
 |--------|------|----------|-------|
-| [ ] | Create `types/kuhul/ast.go` AST structs | HIGH | Foundation |
-| [ ] | Implement Program node parsing | HIGH | Root node |
-| [ ] | Implement Pop (function) parsing | HIGH | Core construct |
-| [ ] | Implement Wo (variable) parsing | HIGH | Core construct |
-| [ ] | Implement Sek (control flow) parsing | HIGH | Core construct |
-| [ ] | Implement Xul (block) parsing | HIGH | Core construct |
-| [ ] | Implement Ch'en (return) parsing | HIGH | Core construct |
-| [ ] | Implement pack declarations | MEDIUM | Pack integration |
-| [ ] | Implement nested block parsing | MEDIUM | Complex programs |
-| [ ] | Write parser unit tests | HIGH | 90%+ coverage |
+| [x] | Create `kuhul/ast/ast.go` AST structs | HIGH | ✅ Complete |
+| [x] | Implement Program node parsing | HIGH | ✅ Root node |
+| [x] | Implement Pop (function) parsing | HIGH | ✅ Declarations |
+| [x] | Implement Wo (variable) parsing | HIGH | ✅ Assignments |
+| [x] | Implement Sek (control flow) parsing | HIGH | ✅ Control vectors |
+| [x] | Implement Xul (block) parsing | HIGH | ✅ Block definitions |
+| [x] | Implement Ch'en (return) parsing | HIGH | ✅ Return statements |
+| [x] | Implement pack declarations | MEDIUM | ✅ Pack integration |
+| [x] | Implement nested block parsing | MEDIUM | ✅ Complex programs |
+| [x] | Write parser unit tests | HIGH | ✅ In `kuhul_test.go` |
 
 ### 1.3 XJSON Go Integration (`api/xjson/`)
 
@@ -69,18 +69,18 @@
 
 ## Phase 2: Unified Runtime
 
-### 2.1 K'UHUL Interpreter (`runtime/kuhul/`)
+### 2.1 K'UHUL Interpreter (`kuhul/runtime/`)
 
 | Status | Task | Priority | Notes |
 |--------|------|----------|-------|
-| [ ] | Create `runtime/kuhul/` directory | HIGH | Structure |
-| [ ] | Implement environment/scope system | HIGH | Variable lookup |
-| [ ] | Implement Pop execution | HIGH | Function calls |
-| [ ] | Implement Wo assignment | HIGH | Variable binding |
-| [ ] | Implement Sek control flow | HIGH | Conditionals |
-| [ ] | Implement loops (`K'ayab`) | MEDIUM | Iteration |
-| [ ] | Implement SCXQ2 fingerprinting | HIGH | Every operation |
-| [ ] | Write interpreter tests | HIGH | Core logic |
+| [x] | Create `kuhul/runtime/` directory | HIGH | ✅ Complete |
+| [x] | Implement environment/scope system | HIGH | ✅ `environment.go` |
+| [x] | Implement Pop execution | HIGH | ✅ Function calls |
+| [x] | Implement Wo assignment | HIGH | ✅ Variable binding |
+| [x] | Implement Sek control flow | HIGH | ✅ Conditionals |
+| [x] | Implement loops (`K'ayab`) | MEDIUM | ✅ In builtins |
+| [x] | Implement SCXQ2 fingerprinting | HIGH | ✅ `scxq2/scxq2.go` |
+| [x] | Write interpreter tests | HIGH | ✅ In `kuhul_test.go` |
 
 ### 2.2 Pack System (`packs/`)
 
