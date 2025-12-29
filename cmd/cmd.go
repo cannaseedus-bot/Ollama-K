@@ -1905,6 +1905,7 @@ func NewCLI() *cobra.Command {
 		copyCmd,
 		deleteCmd,
 		runnerCmd,
+		kuhulCmd, // K'UHUL language runtime
 	)
 
 	return rootCmd
