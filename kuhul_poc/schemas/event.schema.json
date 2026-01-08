@@ -1,0 +1,26 @@
+{
+  "$schema": "xjson://schema/core/v1",
+  "$id": "kuhul://schema/event/v1",
+  "@type": "xjson.schema",
+  "@status": "frozen",
+
+  "title": "KUHUL Event Schema v1",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": ["@type", "@v", "id", "ts_ms", "topic", "data"],
+
+  "properties": {
+    "@type": { "const": "kuhul.event" },
+    "@v": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "id": { "type": "string", "minLength": 8, "maxLength": 64 },
+    "ts_ms": { "type": "integer", "minimum": 0 },
+
+    "caused_by": { "type": "string" },
+
+    "topic": { "type": "string", "minLength": 3, "maxLength": 128 },
+
+    "data": { "type": "object", "additionalProperties": true }
+  }
+}

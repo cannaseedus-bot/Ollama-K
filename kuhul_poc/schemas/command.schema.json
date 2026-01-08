@@ -1,0 +1,37 @@
+{
+  "$schema": "xjson://schema/core/v1",
+  "$id": "kuhul://schema/command/v1",
+  "@type": "xjson.schema",
+  "@status": "frozen",
+
+  "title": "KUHUL Command Schema v1",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": ["@type", "@v", "id", "ts_ms", "source", "op", "args"],
+
+  "properties": {
+    "@type": { "const": "kuhul.command" },
+    "@v": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "id": { "type": "string", "minLength": 8, "maxLength": 64 },
+    "ts_ms": { "type": "integer", "minimum": 0 },
+
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "session"],
+      "properties": {
+        "kind": { "enum": ["cli", "gui", "ai", "api", "test"] },
+        "who": { "type": "string" },
+        "session": { "type": "string", "minLength": 3, "maxLength": 128 }
+      }
+    },
+
+    "op": { "type": "string", "minLength": 3, "maxLength": 128 },
+
+    "args": { "type": "object", "additionalProperties": true },
+
+    "meta": { "type": "object", "additionalProperties": true }
+  }
+}
