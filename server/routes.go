@@ -1524,6 +1524,21 @@ func (s *Server) GenerateRoutes(rc *ollama.Registry) (http.Handler, error) {
 	r.GET("/v1/models", middleware.ListMiddleware(), s.ListHandler)
 	r.GET("/v1/models/:model", middleware.RetrieveMiddleware(), s.ShowHandler)
 
+	// K'UHUL Language Runtime
+	r.POST("/api/kuhul/execute", s.KuhulExecuteHandler)
+	r.POST("/api/kuhul/dispatch", s.KuhulDispatchHandler)
+	r.POST("/api/kuhul/load", s.KuhulLoadHandler)
+	r.GET("/api/kuhul/state", s.KuhulStateHandler)
+
+	// XJSON Inference (K'UHUL native)
+	r.POST("/api/xjson/infer", s.XJSONInferHandler)
+
+	// Pack System
+	r.GET("/api/packs", s.PacksListHandler)
+
+	// SCXQ2 Fingerprinting
+	r.POST("/api/scxq2/fingerprint", s.FingerprintHandler)
+
 	if rc != nil {
 		// wrap old with new
 		rs := &registry.Local{
