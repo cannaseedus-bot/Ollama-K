@@ -1,0 +1,116 @@
+{
+  "$id": "https://kuhul.mx2lm/schemas/basis-contract.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Basis Contract v1",
+  "description": "Contract schema for glyph basis rotation (@ → @@@@)",
+  "version": "1.0.0",
+  "frozen": true,
+
+  "type": "object",
+  "required": ["glyph_id", "kernel", "bases", "weight_source", "weight_mapping", "proof_policy"],
+
+  "properties": {
+    "glyph_id": {
+      "type": "string",
+      "pattern": "^[A-Z]\\.[A-Z]$",
+      "description": "Glyph symbol reference"
+    },
+    "kernel": {
+      "type": "string",
+      "pattern": "^pi\\.[a-z_]+$",
+      "description": "π-kernel binding"
+    },
+    "bases": {
+      "type": "object",
+      "description": "Basis rotation semantics",
+      "properties": {
+        "@": {
+          "type": "object",
+          "properties": {
+            "mode": { "const": "observe" },
+            "write_state": { "const": false },
+            "emit_proof": { "const": false }
+          }
+        },
+        "@@": {
+          "type": "object",
+          "properties": {
+            "mode": { "const": "evaluate" },
+            "write_state": { "const": false },
+            "emit_proof": { "const": true }
+          }
+        },
+        "@@@": {
+          "type": "object",
+          "properties": {
+            "mode": { "const": "adapt" },
+            "write_state": { "const": true },
+            "reward_bias": { "const": true },
+            "emit_proof": { "const": true }
+          }
+        },
+        "@@@@": {
+          "type": "object",
+          "properties": {
+            "mode": { "const": "commit" },
+            "write_state": { "const": true },
+            "persist": { "const": true },
+            "emit_proof": { "const": true },
+            "epoch_lock": { "const": true }
+          }
+        }
+      },
+      "required": ["@", "@@", "@@@", "@@@@"]
+    },
+    "weight_source": {
+      "const": "svg",
+      "description": "Weights come from SVG attributes"
+    },
+    "weight_mapping": {
+      "type": "object",
+      "properties": {
+        "opacity": { "const": "scalar" },
+        "color": { "const": "vector_rgba" }
+      }
+    },
+    "proof_policy": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fields to hash for proof"
+        },
+        "gate": {
+          "type": "string",
+          "description": "Gate reference (e.g., xcfe.branch_gate)"
+        }
+      }
+    }
+  },
+
+  "rotation_semantics": {
+    "@": {
+      "level": 1,
+      "meaning": "observation",
+      "effect": "read-only, no state mutation"
+    },
+    "@@": {
+      "level": 2,
+      "meaning": "evaluation",
+      "effect": "local activation update"
+    },
+    "@@@": {
+      "level": 3,
+      "meaning": "adaptation",
+      "effect": "state + reward_bias update"
+    },
+    "@@@@": {
+      "level": 4,
+      "meaning": "commitment",
+      "effect": "persistent state + proof"
+    }
+  },
+
+  "law": "These are orthogonal bases, not magnitudes. Same glyph, same path, same id — different basis = different semantics."
+}

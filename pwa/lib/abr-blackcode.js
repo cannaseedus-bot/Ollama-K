@@ -1,7 +1,8 @@
 /**
- * ABR BLACK CODE SPEC v1.0.0
+ * ABR BLACK CODE SPEC v1.0.1
  *
  * Atomic Block Runtime - Pure K'UHUL π Implementation
+ * COMPLIANCE PATCHSET APPLIED: Replay-correct
  *
  * Laws:
  * - ABR Masking Law: Determines execution eligibility per tick
@@ -11,14 +12,14 @@
  *
  * The law: ASX = XCFE = XJSON = KUHUL = AST = ATOMIC_BLOCK
  *
- * @version 1.0.0
- * @status CANONICAL
+ * @version 1.0.1
+ * @status CANONICAL (replay-correct)
  */
 
 (function(global) {
   'use strict';
 
-  const ABR_VERSION = '1.0.0';
+  const ABR_VERSION = '1.0.1';
   const SCXQ2_VERSION = 'SCXQ2-v1';
 
   // ============================================
@@ -61,6 +62,44 @@
   };
 
   const PHASE_NAMES = ['perceive', 'represent', 'reason', 'decide', 'act', 'reflect'];
+
+  // ============================================
+  // ABR MASK REASON CODES (MANDATORY v1)
+  // ============================================
+
+  const MASK_REASON = Object.freeze({
+    M0_OK:              0,
+    M1_PHASE_MISMATCH:  1,
+    M2_ZERO_INFO_GAIN:  2,
+    M3_DOMAIN_INACTIVE: 3,
+    M4_LANE_BLOCKED:    4,
+    M5_POLICY_DENY:     5,
+    M6_COLLAPSE_LOCKED: 6
+  });
+
+  const MASK_REASON_NAMES = [
+    'M0_OK',
+    'M1_PHASE_MISMATCH',
+    'M2_ZERO_INFO_GAIN',
+    'M3_DOMAIN_INACTIVE',
+    'M4_LANE_BLOCKED',
+    'M5_POLICY_DENY',
+    'M6_COLLAPSE_LOCKED'
+  ];
+
+  // ============================================
+  // ABR FRAME KINDS (SCXQ2 STREAM)
+  // ============================================
+
+  const FRAME_KIND = Object.freeze({
+    HDR:  1,
+    TICK: 2,
+    MASK: 3,
+    ABR:  4,
+    ANS:  5,
+    RWD:  6,
+    END:  7
+  });
 
   // Collapse/Reward constants
   const CONST = {
@@ -263,89 +302,133 @@
   };
 
   // ============================================
-  // ABR MASKING LAW
+  // ABR MASKING LAW (v1 COMPLIANT)
   // ============================================
+
+  /**
+   * Check if domain is allowed after collapse (post-collapse barrier)
+   * After decide.exit: only SAFE domain allowed
+   */
+  function isDomainAllowedAfterCollapse(domain, phase) {
+    if (phase === 'act' || phase === 'reflect') {
+      return domain === 'SAFE';
+    }
+    return true;
+  }
 
   const ABRMasking = {
     /**
      * Evaluate mask for all 28 ABRs
-     * Returns a 28-bit runmask
+     * Returns: { runmask: u32, reasons: Map<abrId, reasonCode> }
+     *
+     * NOTE: Fixpoint detection is verifier-only (not runtime)
+     * This ensures replay-safe masking decisions
      */
     evaluateMasks: function(state) {
       let runmask = 0;
       const phase = state.phase;
       const allow = PHASE_ALLOW[phase];
+      const maskReasons = new Map();
 
       for (let i = 0; i < 28; i++) {
         const node = state.nodes[i];
         const profile = node.profile;
 
-        // Check phase compatibility
+        // POST-COLLAPSE BARRIER (v1 mandatory)
+        // After decide.exit, only SAFE domain executes
+        if (!isDomainAllowedAfterCollapse(profile.domain, phase)) {
+          node.masked = true;
+          node.maskReason = MASK_REASON.M6_COLLAPSE_LOCKED;
+          node.maskReasonName = 'M6_COLLAPSE_LOCKED';
+          maskReasons.set(i, MASK_REASON.M6_COLLAPSE_LOCKED);
+          continue;
+        }
+
+        // Check domain compatibility with phase
         if (!allow.domains.includes(profile.domain)) {
           node.masked = true;
-          node.maskReason = 'M1_PHASE_INCOMPAT';
+          node.maskReason = MASK_REASON.M3_DOMAIN_INACTIVE;
+          node.maskReasonName = 'M3_DOMAIN_INACTIVE';
+          maskReasons.set(i, MASK_REASON.M3_DOMAIN_INACTIVE);
           continue;
         }
 
+        // Check lane compatibility with phase
         if (!allow.lanes.includes(profile.lane)) {
           node.masked = true;
-          node.maskReason = 'M1_PHASE_INCOMPAT';
+          node.maskReason = MASK_REASON.M4_LANE_BLOCKED;
+          node.maskReasonName = 'M4_LANE_BLOCKED';
+          maskReasons.set(i, MASK_REASON.M4_LANE_BLOCKED);
           continue;
         }
 
-        // Check entropy saturation
-        if (Math.abs(node.lastSignal) < CONST.EPSILON) {
+        // Check entropy saturation (zero information gain)
+        if (state.tick > 0 && Math.abs(node.lastSignal) < CONST.EPSILON) {
           node.masked = true;
-          node.maskReason = 'M2_ENTROPY_SAT';
+          node.maskReason = MASK_REASON.M2_ZERO_INFO_GAIN;
+          node.maskReasonName = 'M2_ZERO_INFO_GAIN';
+          maskReasons.set(i, MASK_REASON.M2_ZERO_INFO_GAIN);
           continue;
         }
 
-        // Check fixpoint (for non-first tick)
-        if (state.tick > 0) {
-          const prevAct = node.activation - node.lastSignal;
-          if (node.isFixpoint(prevAct, node.state)) {
-            node.masked = true;
-            node.maskReason = 'M3_FIXPOINT';
-            continue;
-          }
-        }
-
-        // Check collapse preclusion
-        if (state.collapseSet.has(node.lastOutputHash)) {
-          node.masked = true;
-          node.maskReason = 'M4_COLLAPSE_PRECLUDED';
-          continue;
-        }
-
-        // Mandatory masking rules
+        // Mandatory masking rules (policy)
         if (i === 24 && state.tick > 0) {
           // π.boot_mark only on tick 0
           node.masked = true;
-          node.maskReason = 'M5_POLICY_DENY';
+          node.maskReason = MASK_REASON.M5_POLICY_DENY;
+          node.maskReasonName = 'M5_POLICY_DENY';
+          maskReasons.set(i, MASK_REASON.M5_POLICY_DENY);
+          continue;
+        }
+
+        // π.hash_identity only when cluster_id changes
+        if (i === 25 && state.tick > 0 && state.lastClusterId === state.clusterId) {
+          node.masked = true;
+          node.maskReason = MASK_REASON.M5_POLICY_DENY;
+          node.maskReasonName = 'M5_POLICY_DENY';
+          maskReasons.set(i, MASK_REASON.M5_POLICY_DENY);
+          continue;
+        }
+
+        // π.signature_emit only when collapse occurred
+        if (i === 27 && !state.lastAnswer) {
+          node.masked = true;
+          node.maskReason = MASK_REASON.M5_POLICY_DENY;
+          node.maskReasonName = 'M5_POLICY_DENY';
+          maskReasons.set(i, MASK_REASON.M5_POLICY_DENY);
+          continue;
+        }
+
+        // π.scx_fold only when state mutation occurred
+        if (i === 10 && state.tick > 0 && !state.stateMutated) {
+          node.masked = true;
+          node.maskReason = MASK_REASON.M5_POLICY_DENY;
+          node.maskReasonName = 'M5_POLICY_DENY';
+          maskReasons.set(i, MASK_REASON.M5_POLICY_DENY);
           continue;
         }
 
         // Node is unmasked
         node.masked = false;
-        node.maskReason = 'M0_OK';
+        node.maskReason = MASK_REASON.M0_OK;
+        node.maskReasonName = 'M0_OK';
+        maskReasons.set(i, MASK_REASON.M0_OK);
         runmask |= (1 << i);
       }
 
-      return runmask;
+      return { runmask, maskReasons };
     },
 
     /**
-     * Get mask reason codes
+     * Get mask reason name from code
      */
-    REASON_CODES: [
-      'M0_OK',
-      'M1_PHASE_INCOMPAT',
-      'M2_ENTROPY_SAT',
-      'M3_FIXPOINT',
-      'M4_COLLAPSE_PRECLUDED',
-      'M5_POLICY_DENY',
-      'M6_PROOF_PIN_FAIL'
-    ]
+    getReasonName: function(code) {
+      return MASK_REASON_NAMES[code] || 'UNKNOWN';
+    },
+
+    // Expose reason codes
+    REASON: MASK_REASON,
+    REASON_NAMES: MASK_REASON_NAMES
   };
 
   // ============================================
@@ -832,23 +915,43 @@
   };
 
   // ============================================
-  // ABR PROOF EVENTS
+  // ABR PROOF EVENTS (v1 COMPLIANT)
   // ============================================
+
+  /**
+   * LOCKED PROOF HASH CONTRACT (⚡)
+   * The proof hash must be computed over this EXACT minimal payload.
+   * No additional fields may influence proof_hash.
+   */
+  function abrProofContract(inputsHash, outputsHash, policyHash) {
+    return {
+      '@type': '⚡',
+      inputs_hash: inputsHash,
+      outputs_hash: outputsHash,
+      policy_hash: policyHash
+    };
+  }
+
+  /**
+   * Compute proof hash from contract
+   */
+  function abrProofHash(contract) {
+    return h32(JSON.stringify(contract));
+  }
 
   const ABRProof = {
     /**
      * Create ABR execution proof event
+     * Uses locked proof hash contract
      */
     createEvent: function(node, state, inputsHash, outputsHash) {
-      const proofPayload = JSON.stringify({
-        '@type': '⚡',
-        inputs_hash: inputsHash,
-        outputs_hash: outputsHash,
-        policy_hash: state.policyHash
-      });
+      // LOCKED: proof hash computed from minimal contract only
+      const contract = abrProofContract(inputsHash, outputsHash, state.policyHash);
+      const proofHash = abrProofHash(contract);
 
       return {
         '@type': '⚡',
+        '@frame_kind': FRAME_KIND.ABR,
         tick: state.tick,
         phase: state.phase,
         abr_id: node.id,
@@ -865,7 +968,7 @@
         inputs_hash: inputsHash,
         outputs_hash: outputsHash,
         policy_hash: state.policyHash,
-        proof_hash: h32(proofPayload),
+        proof_hash: proofHash,
         verified: true
       };
     },
@@ -876,6 +979,7 @@
     createPhaseEvent: function(state, enter, exit) {
       return {
         '@type': 'abr.phase',
+        '@frame_kind': FRAME_KIND.TICK,
         '@tick': state.tick,
         '@enter': enter,
         '@exit': exit,
@@ -886,18 +990,117 @@
     },
 
     /**
-     * Create mask event
+     * Create mask event with per-ABR reason codes (v1 mandatory)
      */
-    createMaskEvent: function(state, runmask) {
+    createMaskEvent: function(state, runmask, maskReasons) {
+      // Build reason map for masked ABRs
+      const reasonsObj = {};
+      for (const [abrId, reason] of maskReasons) {
+        if (reason !== MASK_REASON.M0_OK) {
+          reasonsObj[abrId] = MASK_REASON_NAMES[reason];
+        }
+      }
+
+      // Density metrics
+      let maskedCount = 0;
+      let unmaskedCount = 0;
+      for (let i = 0; i < 28; i++) {
+        if ((runmask & (1 << i)) !== 0) {
+          unmaskedCount++;
+        } else {
+          maskedCount++;
+        }
+      }
+
       return {
         '@type': 'abr.mask',
+        '@frame_kind': FRAME_KIND.MASK,
         '@tick': state.tick,
         '@phase': state.phase,
         '@runmask_u32': runmask,
+        '@mask_reasons': reasonsObj,
+        '@density': {
+          masked: maskedCount,
+          unmasked: unmaskedCount,
+          rate_q16: Math.floor((maskedCount << 16) / 28)
+        },
         '@policy_hash': state.policyHash,
-        '@proof': h32(`${runmask}:${state.phase}:${state.tick}`)
+        '@proof': h32(`${runmask}:${state.phase}:${state.tick}:${JSON.stringify(reasonsObj)}`)
       };
-    }
+    },
+
+    /**
+     * Create per-ABR mask frame (for detailed audit)
+     */
+    createPerABRMaskFrame: function(tick, abrId, phase, reason) {
+      return {
+        '@type': 'abr.mask.detail',
+        '@frame_kind': FRAME_KIND.MASK,
+        '@tick': tick,
+        '@abr_id': abrId,
+        '@phase': phase,
+        '@reason': reason,
+        '@reason_name': MASK_REASON_NAMES[reason]
+      };
+    },
+
+    /**
+     * Create answer frame
+     */
+    createAnswerFrame: function(tick, answerHash, content) {
+      return {
+        '@type': 'abr.answer.frame',
+        '@frame_kind': FRAME_KIND.ANS,
+        '@tick': tick,
+        '@answer_hash': answerHash,
+        '@content': content
+      };
+    },
+
+    /**
+     * Create reward frame
+     */
+    createRewardFrame: function(tick, rewardHash, reward) {
+      return {
+        '@type': 'abr.reward.frame',
+        '@frame_kind': FRAME_KIND.RWD,
+        '@tick': tick,
+        '@reward_hash': rewardHash,
+        '@reward': reward
+      };
+    },
+
+    /**
+     * Create stream header frame
+     */
+    createHeaderFrame: function(state) {
+      return {
+        '@type': 'abr.header',
+        '@frame_kind': FRAME_KIND.HDR,
+        '@version': ABR_VERSION,
+        '@spec': 'ABR_BLACK_CODE_SPEC_v1.0.1',
+        '@abr_count': 28,
+        '@order': 'fixed',
+        '@policy_hash': state.policyHash,
+        '@stream_hash': 'h:00000000'
+      };
+    },
+
+    /**
+     * Create stream end frame
+     */
+    createEndFrame: function(tick, finalProofHash) {
+      return {
+        '@type': 'abr.end',
+        '@frame_kind': FRAME_KIND.END,
+        '@tick': tick,
+        '@final_proof_hash': finalProofHash
+      };
+    },
+
+    // Expose contract helpers
+    proofContract: abrProofContract,
+    proofHash: abrProofHash
   };
 
   // ============================================
@@ -909,7 +1112,10 @@
       this.options = options;
       this.state = { ...ABRState };
       this.state.nodes = [];
+      this.state.lastClusterId = 1;
+      this.state.stateMutated = false;
       this.frames = [];
+      this.streamStarted = false;
 
       // Initialize 28 ABR nodes
       for (let i = 0; i < 28; i++) {
@@ -933,10 +1139,38 @@
       this.state.evidenceSet.clear();
       this.state.proposalSet = [];
       this.state.constraintSet = [];
+      this.state.lastClusterId = this.state.clusterId;
+      this.state.stateMutated = false;
+      this.state.lastAnswer = null;
       this.frames = [];
+      this.streamStarted = false;
 
       for (const node of this.state.nodes) {
         node.reset();
+      }
+    }
+
+    /**
+     * Start a new frame stream (emit header)
+     */
+    startStream() {
+      if (!this.streamStarted) {
+        const headerFrame = ABRProof.createHeaderFrame(this.state);
+        this.frames.push(headerFrame);
+        this.streamStarted = true;
+      }
+    }
+
+    /**
+     * End the frame stream
+     */
+    endStream() {
+      if (this.streamStarted && this.frames.length > 0) {
+        const lastProof = this.frames
+          .filter(f => f.proof_hash)
+          .pop()?.proof_hash || 'h:00000000';
+        const endFrame = ABRProof.createEndFrame(this.state.tick, lastProof);
+        this.frames.push(endFrame);
       }
     }
 
@@ -947,6 +1181,12 @@
     tick(inputs = {}) {
       const state = this.state;
 
+      // Start stream if not started
+      this.startStream();
+
+      // Track cluster changes for masking
+      state.lastClusterId = state.clusterId;
+
       // Apply inputs
       if (inputs.entropy !== undefined) state.entropy = inputs.entropy;
       if (inputs.rewardBias !== undefined) state.rewardBias = inputs.rewardBias;
@@ -954,14 +1194,17 @@
       if (inputs.clusterId !== undefined) state.clusterId = inputs.clusterId;
       if (inputs.clusterCount !== undefined) state.clusterCount = inputs.clusterCount;
 
+      // Reset state mutation flag
+      state.stateMutated = false;
+
       // Phase enter
       const prevPhase = state.phase;
       const phaseEnterEvt = ABRProof.createPhaseEvent(state, state.phase, null);
       this.frames.push(phaseEnterEvt);
 
-      // Mask evaluation
-      const runmask = ABRMasking.evaluateMasks(state);
-      const maskEvt = ABRProof.createMaskEvent(state, runmask);
+      // Mask evaluation (v1 compliant - returns runmask + reasons)
+      const { runmask, maskReasons } = ABRMasking.evaluateMasks(state);
+      const maskEvt = ABRProof.createMaskEvent(state, runmask, maskReasons);
       this.frames.push(maskEvt);
 
       // Clear per-tick sets
@@ -1109,86 +1352,258 @@
     }
 
     /**
-     * Export to SCXQ2 format (simplified)
+     * Export to SCXQ2 format (full frame stream)
      */
     exportSCXQ2() {
+      // End stream if not ended
+      this.endStream();
+
+      // Count frame kinds
+      const kindCounts = {};
+      for (const f of this.frames) {
+        const kind = f['@frame_kind'] || f['@type'];
+        kindCounts[kind] = (kindCounts[kind] || 0) + 1;
+      }
+
       return {
         '@magic': 'ABR1',
+        '@endianness': 'LE',
         '@version': ABR_VERSION,
-        '@spec': 'ABR_BLACK_CODE_SPEC_v1.0.0',
+        '@spec': 'ABR_BLACK_CODE_SPEC_v1.0.1',
         '@policy_hash': this.state.policyHash,
-        '@frames': this.frames.length,
+        '@frame_count': this.frames.length,
+        '@frame_kinds': kindCounts,
+        '@abr_table': this.state.nodes.map(n => ({
+          id: n.id,
+          key: n.key,
+          kernel: n.kernel,
+          domain: n.profile.domain,
+          lane: n.profile.lane,
+          activation: n.activation,
+          state: n.state,
+          bias: n.bias,
+          lr: n.lr
+        })),
         frames: this.frames
       };
+    }
+
+    /**
+     * Export frames as binary SCXQ2 (simplified encoding)
+     */
+    exportSCXQ2Binary() {
+      const frames = this.frames;
+      const output = [];
+
+      // Frame count (u32)
+      output.push(frames.length & 0xFF);
+      output.push((frames.length >> 8) & 0xFF);
+      output.push((frames.length >> 16) & 0xFF);
+      output.push((frames.length >> 24) & 0xFF);
+
+      for (const f of frames) {
+        // Frame kind (u8)
+        output.push(f['@frame_kind'] || 0);
+
+        // Tick (u32)
+        const tick = f['@tick'] ?? f.tick ?? 0;
+        output.push(tick & 0xFF);
+        output.push((tick >> 8) & 0xFF);
+        output.push((tick >> 16) & 0xFF);
+        output.push((tick >> 24) & 0xFF);
+
+        // ABR ID (u8, 255 if not applicable)
+        output.push(f.abr_id ?? f['@abr_id'] ?? 255);
+
+        // Phase (u8)
+        const phaseIdx = PHASE[f.phase || f['@phase']] ?? 255;
+        output.push(phaseIdx);
+
+        // Reason (u8, for mask frames)
+        output.push(f['@reason'] ?? 255);
+
+        // Proof hash (u32) - extract numeric part
+        if (f.proof_hash || f['@proof']) {
+          const hashStr = f.proof_hash || f['@proof'];
+          const hashNum = parseInt(hashStr.replace('h:', ''), 16) || 0;
+          output.push(hashNum & 0xFF);
+          output.push((hashNum >> 8) & 0xFF);
+          output.push((hashNum >> 16) & 0xFF);
+          output.push((hashNum >> 24) & 0xFF);
+        } else {
+          output.push(0, 0, 0, 0);
+        }
+      }
+
+      return new Uint8Array(output);
     }
   }
 
   // ============================================
-  // ABR REPLAY VERIFIER
+  // ABR REPLAY VERIFIER (v1 COMPLIANT)
   // ============================================
 
   const ABRVerifier = {
     /**
-     * Verify replay frames
+     * Verification stages
+     */
+    STAGES: [
+      'S0_PARSE',
+      'S1_HEADER',
+      'S2_TICK_ORDER',
+      'S3_MASK_VALIDATE',
+      'S4_PROOF_HASH',
+      'S5_PHASE_BARRIER',
+      'S6_COLLAPSE',
+      'S7_REWARD',
+      'S8_OK'
+    ],
+
+    /**
+     * Verify replay frames (v1 compliant)
+     * Includes fixpoint detection (verifier-only responsibility)
      */
     verify: function(frames) {
       if (!frames || frames.length === 0) {
-        return { ok: false, stage: 'S0_PARSE', proof: 'h:00000000' };
+        return { ok: false, stage: 'S0_PARSE', proof: 'h:00000000', errors: ['No frames provided'] };
+      }
+
+      // S1: Header check
+      const header = frames.find(f => f['@type'] === 'abr.header');
+      if (!header) {
+        // Header is optional but recommended
+        console.warn('[ABRVerifier] No header frame found');
       }
 
       let lastTick = -1;
       let lastPhase = 'perceive';
       let finalProof = 'h:00000000';
+      const errors = [];
+
+      // Track ABR history for fixpoint detection (verifier-only)
+      const abrHistory = new Map(); // abrId -> { inputs_hash, outputs_hash }
 
       for (const frame of frames) {
-        // Tick order check
+        // S2: Tick order check
         if (frame['@type'] === 'abr.mask') {
           if (frame['@tick'] !== undefined && frame['@tick'] <= lastTick) {
-            return { ok: false, stage: 'S2_TICK_ORDER', proof: finalProof };
+            return {
+              ok: false,
+              stage: 'S2_TICK_ORDER',
+              proof: finalProof,
+              errors: [`Tick ${frame['@tick']} <= previous tick ${lastTick}`]
+            };
           }
           lastTick = frame['@tick'];
+
+          // S3: Mask validation - check reason codes are valid
+          if (frame['@mask_reasons']) {
+            for (const [abrId, reason] of Object.entries(frame['@mask_reasons'])) {
+              if (!MASK_REASON_NAMES.includes(reason)) {
+                errors.push(`Invalid mask reason for ABR ${abrId}: ${reason}`);
+              }
+            }
+          }
         }
 
-        // Proof hash verification
+        // S4: Proof hash verification (LOCKED CONTRACT)
         if (frame['@type'] === '⚡') {
-          const proofPayload = JSON.stringify({
-            '@type': '⚡',
-            inputs_hash: frame.inputs_hash,
-            outputs_hash: frame.outputs_hash,
-            policy_hash: frame.policy_hash
-          });
-          const computed = h32(proofPayload);
+          // Use locked proof contract
+          const contract = abrProofContract(
+            frame.inputs_hash,
+            frame.outputs_hash,
+            frame.policy_hash
+          );
+          const computed = abrProofHash(contract);
+
           if (computed !== frame.proof_hash) {
-            return { ok: false, stage: 'S4_PROOF_HASH', proof: computed };
+            return {
+              ok: false,
+              stage: 'S4_PROOF_HASH',
+              proof: computed,
+              errors: [`Proof mismatch for ABR ${frame.abr_id}: expected ${frame.proof_hash}, got ${computed}`]
+            };
           }
           finalProof = computed;
 
-          // Phase barrier check
+          // S5: Phase barrier check
           const phase = frame.phase;
           if (ABRPhase.indexOf(phase) < ABRPhase.indexOf(lastPhase)) {
-            return { ok: false, stage: 'S5_PHASE_BARRIER', proof: finalProof };
+            return {
+              ok: false,
+              stage: 'S5_PHASE_BARRIER',
+              proof: finalProof,
+              errors: [`Phase regression: ${phase} < ${lastPhase}`]
+            };
           }
           lastPhase = phase;
+
+          // FIXPOINT DETECTION (verifier-only)
+          // Check if this ABR is at fixpoint based on history
+          const abrId = frame.abr_id;
+          const prevState = abrHistory.get(abrId);
+          if (prevState) {
+            if (prevState.inputs_hash === frame.inputs_hash &&
+                prevState.outputs_hash === frame.outputs_hash) {
+              // ABR is at fixpoint - this should have been masked
+              errors.push(`ABR ${abrId} at fixpoint (should be masked): inputs=${frame.inputs_hash}, outputs=${frame.outputs_hash}`);
+            }
+          }
+
+          // Update history
+          abrHistory.set(abrId, {
+            inputs_hash: frame.inputs_hash,
+            outputs_hash: frame.outputs_hash
+          });
         }
 
-        // Answer verification
+        // S6: Answer verification
         if (frame['@type'] === 'abr.answer') {
           const ansProof = h32(`${frame['@evidence_hash']}:${frame['@proposal_hash']}:${frame['@policy_hash']}`);
           if (ansProof !== frame['@proof']) {
-            return { ok: false, stage: 'S6_COLLAPSE', proof: finalProof };
+            return {
+              ok: false,
+              stage: 'S6_COLLAPSE',
+              proof: finalProof,
+              errors: [`Answer proof mismatch: expected ${frame['@proof']}, got ${ansProof}`]
+            };
           }
         }
 
-        // Reward verification
+        // S7: Reward verification
         if (frame['@type'] === 'abr.reward') {
           const rwdProof = h32(`${frame['@reward']}:${frame['@credits_hash']}:${frame['@policy_hash']}`);
           if (rwdProof !== frame['@proof']) {
-            return { ok: false, stage: 'S7_REWARD', proof: finalProof };
+            return {
+              ok: false,
+              stage: 'S7_REWARD',
+              proof: finalProof,
+              errors: [`Reward proof mismatch: expected ${frame['@proof']}, got ${rwdProof}`]
+            };
           }
         }
       }
 
-      return { ok: true, stage: 'S8_OK', proof: finalProof };
+      // S8: Success (with warnings if any)
+      return {
+        ok: true,
+        stage: 'S8_OK',
+        proof: finalProof,
+        errors: errors.length > 0 ? errors : null,
+        warnings: errors.length > 0 ? errors : null
+      };
+    },
+
+    /**
+     * Infer fixpoint from frame history
+     * This is the verifier's responsibility, not runtime
+     */
+    inferFixpoint: function(currentFrame, previousFrame) {
+      if (!previousFrame) return false;
+      return (
+        currentFrame.inputs_hash === previousFrame.inputs_hash &&
+        currentFrame.outputs_hash === previousFrame.outputs_hash
+      );
     }
   };
 
@@ -1198,7 +1613,7 @@
 
   const ABRBlackCode = {
     version: ABR_VERSION,
-    spec: 'ABR_BLACK_CODE_SPEC_v1.0.0',
+    spec: 'ABR_BLACK_CODE_SPEC_v1.0.1',
     law: 'ASX = XCFE = XJSON = KUHUL = AST = ATOMIC_BLOCK',
 
     // Constants
@@ -1211,6 +1626,13 @@
     ABR_KERNELS,
     ABR_PROFILES,
     PHASE_ALLOW,
+
+    // v1 Compliance: Mask reason codes
+    MASK_REASON,
+    MASK_REASON_NAMES,
+
+    // v1 Compliance: Frame kinds
+    FRAME_KIND,
 
     // Core classes
     ABRNode,
@@ -1228,6 +1650,8 @@
     // Utilities
     fnv1a32,
     h32,
+    proofContract: abrProofContract,
+    proofHash: abrProofHash,
 
     /**
      * Create new ABR engine
@@ -1241,7 +1665,12 @@
      */
     verify: function(frames) {
       return ABRVerifier.verify(frames);
-    }
+    },
+
+    /**
+     * Check if domain is allowed after collapse
+     */
+    isDomainAllowedAfterCollapse: isDomainAllowedAfterCollapse
   };
 
   // ============================================
@@ -1254,7 +1683,8 @@
     module.exports = ABRBlackCode;
   }
 
-  console.log('[ABRBlackCode] Atomic Block Runtime v' + ABR_VERSION + ' loaded');
+  console.log('[ABRBlackCode] Atomic Block Runtime v' + ABR_VERSION + ' loaded (replay-correct)');
+  console.log('[ABRBlackCode] v1 Compliance: Mask reasons, post-collapse barrier, locked proof contract, frame stream');
   console.log('[ABRBlackCode] The law: ASX = XCFE = XJSON = KUHUL = AST = ATOMIC_BLOCK');
 
 })(typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : this);

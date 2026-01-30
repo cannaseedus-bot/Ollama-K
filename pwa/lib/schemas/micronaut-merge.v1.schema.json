@@ -1,0 +1,122 @@
+{
+  "$id": "https://kuhul.mx2lm/schemas/micronaut-merge.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Micronaut Merge Semantics v1.0",
+  "description": "Deterministic conflict resolution for Micronaut IDB ledgers - allows 1000 brains to merge without corruption",
+  "version": "1.0.0",
+  "status": "frozen",
+
+  "invariants": [
+    "No hidden state",
+    "No stochastic resolution",
+    "No external authority",
+    "Replay determinism preserved",
+    "Proof chains remain valid or are explicitly invalidated"
+  ],
+
+  "merge_modes": {
+    "overlay": {
+      "description": "Primary ledger wins all conflicts. Secondary only contributes missing events.",
+      "use_cases": ["upgrades", "inheritance", "master → worker sync"]
+    },
+    "union": {
+      "description": "All non-conflicting events included. Conflicts → fork.",
+      "use_cases": ["collaborative learning", "parallel exploration"]
+    },
+    "weighted": {
+      "description": "Each ledger has a trust weight (0.0-1.0). Resolution: final_weight = Σ(event_weight × ledger_weight)",
+      "use_cases": ["federation", "swarm intelligence"]
+    },
+    "fork": {
+      "description": "No resolution. Conflicts become parallel branches.",
+      "use_cases": ["disagreement preservation", "research divergence"]
+    },
+    "strict": {
+      "description": "Any conflict → merge fails.",
+      "use_cases": ["safety-critical systems", "verified cognition"]
+    }
+  },
+
+  "conflict_types": {
+    "C0": {
+      "name": "Identical",
+      "description": "Events are identical",
+      "resolution": "Keep one (deduplicate)"
+    },
+    "C1": {
+      "name": "Weight differs",
+      "description": "Same event, different weights",
+      "resolution": "Basis dominance: @@@@ > @@@ > @@ > @. If equal basis → higher weight wins. If equal → average."
+    },
+    "C2": {
+      "name": "Color/reward differs",
+      "description": "Different reward lane colors",
+      "resolution": "Colors are derived state. Recompute: color = recompute(weight, reward_ratio)"
+    },
+    "C3": {
+      "name": "Proof mismatch",
+      "description": "Different proofs for same event",
+      "resolution": "NON-NEGOTIABLE: One valid → keep. Both valid different → fork. Neither valid → drop both."
+    },
+    "C4": {
+      "name": "Basis mismatch",
+      "description": "Same event, different basis",
+      "resolution": "Higher basis supersedes ONLY if has valid proof_hash. Otherwise → fork."
+    },
+    "C5": {
+      "name": "Epoch mismatch",
+      "description": "Different epochs",
+      "resolution": "Newer does NOT overwrite. Older does NOT block. Both preserved unless strict mode."
+    }
+  },
+
+  "event_identity": {
+    "formula": "event_id = HASH(glyph_id + basis + epoch + canonicalized_policy_hash)",
+    "note": "Tick is NOT part of identity. Tick is temporal, not semantic."
+  },
+
+  "fork_representation": {
+    "type": "object",
+    "required": ["type", "glyph", "epoch", "variants"],
+    "properties": {
+      "type": { "const": "fork" },
+      "glyph": { "type": "string" },
+      "epoch": { "type": "integer" },
+      "variants": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ledger": { "type": "string" },
+            "event_hash": { "type": "string" }
+          }
+        }
+      }
+    },
+    "note": "Forks can later be resolved, pruned, or promoted"
+  },
+
+  "post_merge_normalization": {
+    "steps": [
+      "deduplicate",
+      "recompute colors",
+      "verify proofs",
+      "seal policy_hash"
+    ],
+    "result": "micronaut_id = HASH(all_event_ids + policy_hash)"
+  },
+
+  "merge_request_schema": {
+    "type": "object",
+    "required": ["mode", "source", "target"],
+    "properties": {
+      "mode": { "enum": ["overlay", "union", "weighted", "fork", "strict"] },
+      "source": { "type": "string", "description": "Source micronaut ID" },
+      "target": { "type": "string", "description": "Target micronaut ID" },
+      "weight": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.5 },
+      "preserve_proofs": { "type": "boolean", "default": true }
+    }
+  },
+
+  "law": "Intelligence is not merged by averaging beliefs, but by reconciling symbolic commitments under proof."
+}

@@ -1,0 +1,255 @@
+{
+  "@version": {
+    "epoch": 1,
+    "policy_hash": "abr:v1:xcfe:lattice_gate",
+    "compat": "ASX/MX2LM/v1"
+  },
+
+  "@law": {
+    "axioms": [
+      "ALL_EXECUTION_IS_DETERMINISTIC",
+      "ALL_STATE_IS_LOCAL",
+      "NO_BRANCH_WITHOUT_PROOF",
+      "GLYPH_IDENTITY_IS_HASHED_PATH",
+      "FOLDS_ARE_TOKENIZERS"
+    ]
+  },
+
+  "@codex": {
+    "glyphs": "DICT_BLOCK_HASH",
+    "atomic_blocks": "ATOMIC_BLOCK_REGISTRY_V1",
+    "pi_kernels": "PI_KERNEL_SET_28",
+    "symbol_index": "COGNITIVE_ALPHABET_V1"
+  },
+
+  "@boot": {
+    "splash": true,
+    "initial_tick": 0,
+    "entropy_seed": 0.314159
+  },
+
+  "@identity": {
+    "cluster_id": 1,
+    "fingerprint": null,
+    "persona_bias": 1.0,
+    "signature": null
+  },
+
+  "@atomic": {
+    "semantics": {
+      "atom": "element_role",
+      "compose": "atomic_composition"
+    },
+    "binding": "ATTRIBUTE_ONLY"
+  },
+
+  "@glyph": {
+    "atlas": "INLINE_SVG_OR_EXTERNAL",
+    "weight_encoding": "COLOR_OPACITY_RADIUS",
+    "path_identity": "SHA256"
+  },
+
+  "@glyph_fold": {
+    "mode": "HORIZONTAL",
+    "maps_to": [
+      "pi_kernels",
+      "atomic_blocks",
+      "apf_symbols"
+    ]
+  },
+
+  "@pi": {
+    "state": {
+      "entropy": 0.32,
+      "tick": 0,
+      "cluster_count": 1
+    },
+    "tokens": [
+      { "glyph": "@", "w": 1.0 },
+      { "glyph": "@@", "w": 2.0 },
+      { "glyph": "@@@", "w": 3.0 },
+      { "glyph": "@@@@", "w": 4.0 }
+    ]
+  },
+
+  "@pi_kernels": {
+    "layout": "7x4",
+    "kernels": [
+      "M.I", "M.U", "M.G", "M.M",
+      "T.T", "T.C", "T.A", "T.R",
+      "O.R", "O.X", "O.C", "O.M",
+      "G.S", "G.G", "G.C", "G.K",
+      "L.P", "L.S", "L.Y", "L.F",
+      "E.T", "E.S", "E.P", "E.M",
+      "I.S", "I.F", "I.P", "I.H"
+    ]
+  },
+
+  "@brain": {
+    "nodes": 28,
+    "replication": "COPY_NOT_SCALE",
+    "communication": "SIGNAL_ONLY"
+  },
+
+  "@clusters": {
+    "index": [],
+    "collapse_rule": "DELTA_ONLY"
+  },
+
+  "@control": {
+    "xcfe": true,
+    "branch_gate": {
+      "requires": "proof_hash"
+    }
+  },
+
+  "@flow": {
+    "sek": [
+      "tick",
+      "entropy_scan",
+      "dispatch",
+      "execute",
+      "reward_integrate",
+      "scx_fold",
+      "collapse"
+    ]
+  },
+
+  "@event": {
+    "hash": "SHA256",
+    "emit": "APPEND_ONLY"
+  },
+
+  "@proof": {
+    "type": "proof",
+    "binds": [
+      "branch",
+      "epoch",
+      "dict_hash"
+    ]
+  },
+
+  "@replay": {
+    "mode": "DETERMINISTIC",
+    "verifier": "STRICT"
+  },
+
+  "@policy": {
+    "mutable": false,
+    "hash_bound": true
+  },
+
+  "@scx": {
+    "version": "SCXQ2",
+    "container": "SCX2",
+    "dict_mode": "LOCAL",
+    "lanes": ["SYM", "RAW"]
+  },
+
+  "@dict": {
+    "format": "SCX2_DICT_V1",
+    "hash": "DICT_HASH",
+    "glyph_to_token": true
+  },
+
+  "@batches": {
+    "frame": "EDGES",
+    "streaming": true
+  },
+
+  "@apf": {
+    "atomic_prompts": true,
+    "symbols": "COGNITIVE_ALPHABET",
+    "deterministic": true
+  },
+
+  "@apsx": {
+    "bundle": "APSXB_V1",
+    "transport": "SCX2"
+  },
+
+  "@vocab": {
+    "tokenizer": "GLYPH_FOLD",
+    "compression": "SCXQ2"
+  },
+
+  "@idb": {
+    "schema": "MICRONAUT_PORTABILITY_V1",
+    "frozen": true
+  },
+
+  "@merge": {
+    "mode": "DETERMINISTIC",
+    "conflict": "WEIGHTED_EPOCH_WINS"
+  },
+
+  "@runtime": {
+    "targets": ["BROWSER", "GAS", "PHP"],
+    "kernel": "sw.js"
+  },
+
+  "@io": {
+    "sandboxed": true,
+    "tools": "BRIDGED"
+  },
+
+  "@mesh": {
+    "broadcast": true,
+    "federation": "OPTIONAL"
+  },
+
+  "@ui": {
+    "projection": "ATOMIC_CSS",
+    "logic": "NONE"
+  },
+
+  "@svg": {
+    "role": "PRIMARY_INTERFACE",
+    "glyph_debug": true
+  },
+
+  "@dashboard": {
+    "metrics": [
+      "entropy",
+      "reward",
+      "activation",
+      "epochs"
+    ]
+  },
+
+  "@tape": {
+    "loadable": true,
+    "self_contained": true
+  },
+
+  "@world": {
+    "deterministic": true,
+    "replayable": true
+  },
+
+  "@learning": {
+    "curriculum": true,
+    "phases": 4
+  },
+
+  "@rlhf": {
+    "enabled": true,
+    "event_based": true
+  },
+
+  "@evolution": {
+    "stability_pressure": 0.7,
+    "innovation_pressure": 0.3
+  },
+
+  "@gas": {
+    "enabled": true,
+    "builtin": ["math", "hash", "string", "array", "json"],
+    "user": []
+  },
+
+  "@shards": {
+    "enabled": true,
+    "backends": []
+  }
+}

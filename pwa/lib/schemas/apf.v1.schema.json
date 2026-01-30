@@ -1,0 +1,202 @@
+{
+  "$id": "https://kuhul.mx2lm/schemas/apf.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Atomic Prompt Fold v1 (APF-1)",
+  "description": "Deterministic, glyph-addressable prompt grammar for LLM execution. A prompt is not text — a prompt is an executable semantic fold.",
+  "version": "1.0.0",
+  "status": "canonical",
+  "frozen": true,
+
+  "type": "object",
+  "required": ["@fold", "@intent", "@role"],
+
+  "properties": {
+    "@fold": {
+      "type": "string",
+      "pattern": "^[A-Z]+\\.[A-Z]+\\.V[0-9]+$",
+      "description": "Fold identifier (e.g., LLM.REASON.V1)",
+      "examples": ["LLM.REASON.V1", "APF.EXPLAIN.V1", "SYS.CONTROL.V1"]
+    },
+
+    "@intent": {
+      "type": "string",
+      "enum": [
+        "EXPLAIN",
+        "REASON",
+        "DECIDE",
+        "GENERATE",
+        "TRANSFORM",
+        "VERIFY",
+        "SUMMARIZE",
+        "SIMULATE",
+        "EXECUTE"
+      ],
+      "description": "Execution intent opcode — what the model is doing"
+    },
+
+    "@role": {
+      "type": "string",
+      "enum": [
+        "SYSTEM",
+        "CONTROL",
+        "REASON",
+        "TASK",
+        "CONTEXT",
+        "DATA",
+        "OUTPUT",
+        "EVAL"
+      ],
+      "description": "Execution domain role — who speaks (not tone)"
+    },
+
+    "@scope": {
+      "type": "string",
+      "enum": ["LOCAL", "SESSION", "EPOCH", "GLOBAL"],
+      "default": "LOCAL",
+      "description": "Visibility and memory scope — prevents prompt bleed"
+    },
+
+    "@symbols": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]\\.[A-Z]$",
+        "description": "Glyph symbol reference (e.g., M.I, T.R, G.S)"
+      },
+      "description": "Glyph symbol references — activate kernels, not suggest behavior"
+    },
+
+    "@constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "NO_HALLUCINATION",
+          "CONCISE",
+          "STRUCTURED_ONLY",
+          "SAFE_OUTPUT",
+          "DETERMINISTIC",
+          "NO_EXTERNAL_KNOWLEDGE"
+        ]
+      },
+      "description": "Execution gate constraints — hard limits, not preferences. Violation invalidates the fold."
+    },
+
+    "@input": {
+      "type": "object",
+      "description": "Input payload",
+      "additionalProperties": true
+    },
+
+    "@output": {
+      "type": "object",
+      "description": "Output contract — must be satisfied or execution fails",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["structured_text", "json", "xml", "bytes", "code", "svg"],
+          "default": "structured_text"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["plain", "markdown", "json_min", "json_pretty", "xml_pretty"],
+          "default": "plain"
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128000,
+          "default": 256
+        },
+        "schema": {
+          "type": "object",
+          "description": "Optional JSON Schema for output validation"
+        }
+      }
+    },
+
+    "@epoch": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Training/execution epoch"
+    },
+
+    "@policy_hash": {
+      "type": "string",
+      "pattern": "^0x[a-f0-9]+$",
+      "description": "Policy hash for replay verification — any change = new hash"
+    }
+  },
+
+  "definitions": {
+    "intent_semantics": {
+      "EXPLAIN": "Describe / teach",
+      "REASON": "Think stepwise",
+      "DECIDE": "Choose / classify",
+      "GENERATE": "Produce content",
+      "TRANSFORM": "Rewrite / convert",
+      "VERIFY": "Check correctness",
+      "SUMMARIZE": "Compress meaning",
+      "SIMULATE": "Hypothetical reasoning",
+      "EXECUTE": "Tool / action logic"
+    },
+
+    "role_semantics": {
+      "SYSTEM": "Immutable law / policy",
+      "CONTROL": "Flow & execution control",
+      "REASON": "Internal cognition",
+      "TASK": "Primary objective",
+      "CONTEXT": "Background knowledge",
+      "DATA": "Raw inputs",
+      "OUTPUT": "Expected result",
+      "EVAL": "Verification / scoring"
+    },
+
+    "scope_semantics": {
+      "LOCAL": "Fold-only visibility",
+      "SESSION": "Conversation scope",
+      "EPOCH": "Training/run scope",
+      "GLOBAL": "Persistent policy"
+    },
+
+    "constraint_semantics": {
+      "NO_HALLUCINATION": "Disallow invention",
+      "CONCISE": "Length bounded",
+      "STRUCTURED_ONLY": "No prose allowed",
+      "SAFE_OUTPUT": "Safety gate active",
+      "DETERMINISTIC": "Stable, reproducible result",
+      "NO_EXTERNAL_KNOWLEDGE": "Context-limited only"
+    }
+  },
+
+  "execution_rules": {
+    "rule_1": "No fold executes without a valid policy hash",
+    "rule_2": "Constraints override intent",
+    "rule_3": "Symbols override prose",
+    "rule_4": "Output contract overrides style",
+    "rule_5": "Violations produce failure, not fallback text"
+  },
+
+  "serializations": {
+    "json": {
+      "example": {
+        "@fold": "LLM.REASON.V1",
+        "@role": "REASON",
+        "@intent": "REASON",
+        "@scope": "LOCAL",
+        "@symbols": ["T.R", "M.I", "G.S"],
+        "@constraints": ["DETERMINISTIC", "SAFE_OUTPUT"],
+        "@input": { "question": "Why does entropy increase?" },
+        "@output": { "type": "structured_text", "max_tokens": 200 },
+        "@epoch": 42,
+        "@policy_hash": "0x8af3c1"
+      }
+    },
+    "glyph_shortform": {
+      "pattern": "⟁{FOLD}.{INTENT} ⟁SYM[...] ⟁CST[...] ⟁OUT[...] ⟁EPOCH[n]",
+      "example": "⟁LLM.RSN ⟁SYM[T.R M.I G.S] ⟁CST[DET SAFE] ⟁OUT[TXT 200] ⟁EPOCH[42]"
+    }
+  },
+
+  "law": "Atomic Prompt Fold v1 turns prompting from art into engineering. Meaning becomes executable. Language becomes law."
+}
